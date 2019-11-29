@@ -110,7 +110,7 @@ public class WorldBiomeSource extends BiomeSource {
         }
         if (height < 140) {
             if (midlandsLayer.sample(x, z)*0.03 > 2.0) {
-                if (midlandsLayer.sample(x, z)*0.03 > 12.0)
+                if (midlandsLayer.sample(x, z)*0.03 > 9.0)
                     return Biomes.TALL_BIRCH_FOREST;
                 return Biomes.BIRCH_FOREST;
             }
