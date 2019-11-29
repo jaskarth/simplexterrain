@@ -21,7 +21,7 @@ Y200 - Y256: Mountains
 ![](https://cdn.discordapp.com/attachments/546812532070023186/649767151627927553/unknown.png "")
 ![](https://cdn.discordapp.com/attachments/546812532070023186/649767773597204505/unknown.png "")
 
-##Disclaimers
+## Disclaimers
 This project is heavily in development. This means things can break and there will be bugs. A forge port will not be made of this mod (by me at least). If you want to port the mod yourself, go ahead!
 Notable issues currently: 
 
@@ -30,6 +30,6 @@ Notable issues currently:
 * Oceans can sometimes go to bedrock and mountains can sometimes go up to the height limit. This will be fixed soon too.  
 * Villages spawn in some... *interesting* locations. This is a vanilla issue and can't easily be solved without some major time and effort.  
 
-##Credits
+## Credits
 SuperCoder79 - Idea and code  
 Valoeghese - Help with some code
