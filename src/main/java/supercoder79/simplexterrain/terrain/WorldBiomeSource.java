@@ -97,20 +97,23 @@ public class WorldBiomeSource extends BiomeSource {
         if (height < 90) {
             if (lowlandsLayer.sample(x, z)*0.01 > 4)
                 return Biomes.SWAMP;
-            else if (lowlandsLayer.sample(x, z)*0.01 > 4)
+            else if (lowlandsLayer.sample(x, z)*0.01 > 3)
                 return Biomes.DESERT;
-            else if (lowlandsLayer.sample(x, z)*0.01 < -6)
+            else if (lowlandsLayer.sample(x, z)*0.01 < -4)
                 return Biomes.SAVANNA;
-            else if (lowlandsLayer.sample(z, x)*0.01 < -4)
+            else if (lowlandsLayer.sample(z, x)*0.01 < -3)
                 return Biomes.JUNGLE;
-            else if (lowlandsLayer.sample(z, x)*0.01 < -3.9)
+            else if (lowlandsLayer.sample(z, x)*0.01 < -2.9)
                 return Biomes.JUNGLE_EDGE;
             else
                 return Biomes.PLAINS;
         }
         if (height < 140) {
-            if (midlandsLayer.sample(x, z)*0.03 > 2.0)
+            if (midlandsLayer.sample(x, z)*0.03 > 2.0) {
+                if (midlandsLayer.sample(x, z)*0.03 > 12.0)
+                    return Biomes.TALL_BIRCH_FOREST;
                 return Biomes.BIRCH_FOREST;
+            }
             else if (midlandsLayer.sample(z, x)*0.03 > 2.0)
                 return Biomes.DARK_FOREST;
             else
