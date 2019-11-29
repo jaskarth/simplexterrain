@@ -47,6 +47,26 @@ public final class OctaveOSNoiseSampler {
         return result > 0 ? result * amplitudeHigh : result * amplitudeLow;
     }
     
+    public double sampleCustom(double x, double y, double freqModifier, double amplitudeHMod, double amplitudeLMod, int octaves) {
+   	 double amplFreq = 0.5D;
+        double result = 0;
+        
+        double sampleFreq = frequency * freqModifier;
+        
+        for (int i = 0; i < octaves; ++i) {
+       	 OSNoiseSampler sampler = samplers[i];
+       	 
+       	 double freq = amplFreq * sampleFreq;
+            result += (amplFreq * sampler.sample(x / freq, y / freq));
+
+            amplFreq *= 0.5D;
+        }
+        
+        double sampleClamp = 1D / (1D - (1D / Math.pow(2, octaves)));
+        result = result * sampleClamp;
+        return result > 0 ? result * amplitudeHigh * amplitudeHMod : result * amplitudeLow * amplitudeLMod;
+   }
+    
     public double sampleCustom(double x, double y, double z, double freqModifier, double amplitudeHMod, double amplitudeLMod, int octaves) {
     	 double amplFreq = 0.5D;
          double result = 0;
