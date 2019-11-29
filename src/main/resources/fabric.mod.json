@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "simplexterrain",
+  "version": "0.1",
+
+  "name": "Simplex Terrain",
+  "description": "Creates worlds with mountainous terrain unlike anything else!",
+  "authors": [
+    "SuperCoder79"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": ""
+  },
+
+  "license": "LGPLv3",
+  "icon": "assets/simplexterrain/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "supercoder79.simplexterrain.SimplexTerrain"
+    ]
+  },
+  "mixins": [
+    "simplexterrain.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.0"
+  }
+}

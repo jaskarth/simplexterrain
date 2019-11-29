@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "supercoder79.simplexterrain.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "AccessorLevelGeneratorType",
+    "MixinLevelGeneratorType",
+    "MixinOverworldDimension"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
