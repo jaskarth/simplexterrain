@@ -1,27 +1,21 @@
 package supercoder79.simplexterrain.terrain.biomesource;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
-import net.minecraft.util.math.noise.SimplexNoiseSampler;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.biome.source.VanillaLayeredBiomeSourceConfig;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
-import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.level.LevelProperties;
 import supercoder79.simplexterrain.api.Heightmap;
-import supercoder79.simplexterrain.terrain.WorldBiomeSourceConfig;
+import supercoder79.simplexterrain.terrain.biomelayers.LandBiomeLayers;
 
 import java.util.*;
 
 public class WorldBiomeSource extends BiomeSource {
-//    private final BiomeLayerSampler noiseLayer;
-//    private final BiomeLayerSampler biomeLayer;
+    private final BiomeLayerSampler lowlandsSampler;
+    private final BiomeLayerSampler midlandslandsSampler;
     private OctaveSimplexNoiseSampler lowlandsLayer;
     private OctaveSimplexNoiseSampler lowlandsLayer2;
     private OctaveSimplexNoiseSampler midlandsLayer;
@@ -37,9 +31,9 @@ public class WorldBiomeSource extends BiomeSource {
         WorldBiomeSourceConfig config = (WorldBiomeSourceConfig)o;
         long seed = config.getSeed();
         OverworldChunkGeneratorConfig overworldChunkGeneratorConfig = config.getGeneratorSettings();
-//        BiomeLayerSampler[] biomeLayerSamplers = WorldBiomeLayers.build(levelProperties.getSeed(), levelProperties.getGeneratorType(), overworldChunkGeneratorConfig);
-//        this.noiseLayer = biomeLayerSamplers[0];
-//        this.biomeLayer = biomeLayerSamplers[1];
+        BiomeLayerSampler[] biomeLayerSamplers = LandBiomeLayers.build(seed, config.getGeneratorType(), overworldChunkGeneratorConfig);
+        this.lowlandsSampler = biomeLayerSamplers[0];
+        this.midlandslandsSampler = biomeLayerSamplers[1];
         lowlandsLayer = new OctaveSimplexNoiseSampler(new ChunkRandom(seed), 10, 0);
         lowlandsLayer2 = new OctaveSimplexNoiseSampler(new ChunkRandom(seed), 10, 0);
         midlandsLayer = new OctaveSimplexNoiseSampler(new ChunkRandom(seed), 10, 0);
@@ -57,8 +51,7 @@ public class WorldBiomeSource extends BiomeSource {
     }
 
     private Biome sampleBiomeWithMathTM(int x, int z) {
-        int height = heightmap.getHeight(x, z);
-//        System.out.println(lowlandsLayer.sample(x, z, false)*0.02);
+        int height = heightmap.getHeight((x << 2), (z << 2));
         if (height < 30) {
             if (oceanTemperatureLayer.sample(x, z, false)*0.005 > 2.5)
                 return Biomes.DEEP_WARM_OCEAN;
@@ -85,29 +78,10 @@ public class WorldBiomeSource extends BiomeSource {
         }
         if (height < 66) return Biomes.BEACH;
         if (height < 90) {
-            if (lowlandsLayer.sample(x, z, false)*0.01 > 4)
-                return Biomes.SWAMP;
-            else if (lowlandsLayer.sample(x, z, false)*0.01 > 3)
-                return Biomes.DESERT;
-            else if (lowlandsLayer.sample(x, z, false)*0.01 < -4)
-                return Biomes.SAVANNA;
-            else if (lowlandsLayer.sample(z, x, false)*0.01 < -3)
-                return Biomes.JUNGLE;
-            else if (lowlandsLayer.sample(z, x, false)*0.01 < -2.9)
-                return Biomes.JUNGLE_EDGE;
-            else
-                return Biomes.PLAINS;
+            lowlandsSampler.sample(x, z);
         }
         if (height < 140) {
-            if (midlandsLayer.sample(x, z, false)*0.03 > 2.0) {
-                if (midlandsLayer.sample(x, z, false)*0.03 > 9.0)
-                    return Biomes.TALL_BIRCH_FOREST;
-                return Biomes.BIRCH_FOREST;
-            }
-            else if (midlandsLayer.sample(z, x, false)*0.03 > 2.0)
-                return Biomes.DARK_FOREST;
-            else
-                return Biomes.FOREST;
+            midlandslandsSampler.sample(x, z);
         }
         if (height < 190) return Biomes.TAIGA;
         return Biomes.MOUNTAINS;

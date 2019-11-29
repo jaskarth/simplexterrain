@@ -53,23 +53,6 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
     @Override
     public void populateBiomes(Chunk chunk) {
         super.populateBiomes(chunk);
-        //        ArrayList<Biome> biomeArray = new ArrayList<>(256);
-        //        for (int x = 0; x < 16; ++x) {
-        //            for (int z = 0; z < 16; ++z) {
-        //                int height = (int) (NOISE_SAMPLERS[10].sample(chunk.getPos().x * 16 + x, chunk.getPos().z * 16 + z, true) * 0.1 + 100);
-        //                if (height > 130)
-        //                    biomeArray.add(Biomes.MOUNTAINS);
-        //                else if (height > 100)
-        //                    biomeArray.add(Biomes.MOUNTAIN_EDGE);
-        //                else if (height > 63)
-        //                    biomeArray.add(Biomes.FOREST);
-        //                else
-        //                    biomeArray.add(Biomes.OCEAN);
-        //            }
-        //        }
-        //        Biome[] b = new Biome[256];
-        //        b = biomeArray.toArray(b);
-        //        chunk.setBiomeArray(b);
     }
 
     @Override
@@ -84,15 +67,15 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
 
             for (int z = 0; z < 16; ++z) {
                 posMutable.setZ(z);
-                int height = getHeight(chunkX * 16 + x, chunkZ * 16 + z);
-//                System.out.println(chunkX+x);
-//                System.out.println(chunkZ+z);
+                int height = getHeight((chunkX * 16) + x, (chunkZ * 16) + z);
+//                System.out.println((chunkX * 16) + x);
+//                System.out.println((chunkZ * 16) + z);
 //                System.out.println(height);
 //                System.out.println("***");
 
                 for (int y = 0; y < 256; ++y) {
                     posMutable.setY(y);
-                    if (y <= height) {
+                    if (height >= y) {
                         chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
                     } else if (y < 63) {
                         chunk.setBlockState(posMutable, Blocks.WATER.getDefaultState(), false);

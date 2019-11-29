@@ -2,12 +2,12 @@ package supercoder79.simplexterrain.terrain;
 
 import com.google.common.collect.Maps;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.source.VanillaLayeredBiomeSourceConfig;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import net.minecraft.world.level.LevelGeneratorType;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.mixin.AccessorLevelGeneratorType;
+import supercoder79.simplexterrain.terrain.biomesource.WorldBiomeSourceConfig;
 
 import java.util.Map;
 

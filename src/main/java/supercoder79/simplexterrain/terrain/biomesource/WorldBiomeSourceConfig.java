@@ -1,7 +1,6 @@
-package supercoder79.simplexterrain.terrain;
+package supercoder79.simplexterrain.terrain.biomesource;
 
 import net.minecraft.world.biome.source.BiomeSourceConfig;
-import net.minecraft.world.biome.source.VanillaLayeredBiomeSourceConfig;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import net.minecraft.world.level.LevelGeneratorType;
 import net.minecraft.world.level.LevelProperties;
@@ -27,5 +26,9 @@ public class WorldBiomeSourceConfig implements BiomeSourceConfig {
 
     public long getSeed() {
         return seed;
+    }
+
+    public LevelGeneratorType getGeneratorType() {
+        return generatorType;
     }
 }
