@@ -9,8 +9,10 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.NoiseSampler;
 import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
+import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
@@ -18,6 +20,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.noise.OctaveOpenSimplexNoise;
+import supercoder79.simplexterrain.terrain.biomesource.WorldBiomeSource;
 
 public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
     private final OctaveOpenSimplexNoise heightNoise;
@@ -39,7 +42,7 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
 
         ((WorldBiomeSource)(this.biomeSource)).setHeightmap(this);
 
-        this.surfaceDepthNoise = new OctavePerlinNoiseSampler(this.random, 4);
+        this.surfaceDepthNoise = new OctavePerlinNoiseSampler(this.random, 4, 0);
     }
 
     @Override
@@ -82,10 +85,14 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
             for (int z = 0; z < 16; ++z) {
                 posMutable.setZ(z);
                 int height = getHeight(chunkX * 16 + x, chunkZ * 16 + z);
+//                System.out.println(chunkX+x);
+//                System.out.println(chunkZ+z);
+//                System.out.println(height);
+//                System.out.println("***");
 
                 for (int y = 0; y < 256; ++y) {
                     posMutable.setY(y);
-                    if (height >= y) {
+                    if (y <= height) {
                         chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
                     } else if (y < 63) {
                         chunk.setBlockState(posMutable, Blocks.WATER.getDefaultState(), false);
@@ -137,7 +144,8 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
         return sample;
     }
 
-    public void buildSurface(Chunk chunk) {
+    @Override
+    public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
         ChunkPos chunkPos = chunk.getPos();
         int i = chunkPos.x;
         int j = chunkPos.z;
@@ -146,7 +154,8 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
         ChunkPos chunkPos2 = chunk.getPos();
         int startX = chunkPos2.getStartX();
         int startZ = chunkPos2.getStartZ();
-        Biome[] biomes = chunk.getBiomeArray();
+        BiomeArray biomes = chunk.getBiomeArray();
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
 
         for(int localX = 0; localX < 16; ++localX) {
             for(int localZ = 0; localZ < 16; ++localZ) {
@@ -154,7 +163,7 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
                 int z = startZ + localZ;
                 int height = chunk.sampleHeightmap(net.minecraft.world.Heightmap.Type.WORLD_SURFACE_WG, localX, localZ) + 1;
                 double noise = this.surfaceDepthNoise.sample((double)x * 0.0625D, (double)z * 0.0625D, 0.0625D, (double)localX * 0.0625D);
-                biomes[localZ * 16 + localX].buildSurface(chunkRandom, chunk, x, z, height, noise, this.getConfig().getDefaultBlock(), this.getConfig().getDefaultFluid(), this.getSeaLevel(), this.world.getSeed());
+                chunkRegion.getBiome(mutable.set(startX + localX, height, startZ + localZ)).buildSurface(chunkRandom, chunk, x, z, height, noise, this.getConfig().getDefaultBlock(), this.getConfig().getDefaultFluid(), this.getSeaLevel(), this.world.getSeed());
             }
         }
 

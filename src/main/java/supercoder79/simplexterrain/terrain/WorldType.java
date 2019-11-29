@@ -34,7 +34,7 @@ public class WorldType<T extends ChunkGenerator<?>> {
     public static final WorldType<WorldChunkGenerator> SIMPLEX = new WorldType<>("simplex", (world) -> {
         OverworldChunkGeneratorConfig chunkGenConfig = new OverworldChunkGeneratorConfig();
 
-        VanillaLayeredBiomeSourceConfig config = new VanillaLayeredBiomeSourceConfig().setLevelProperties(world.getLevelProperties()).setGeneratorSettings(chunkGenConfig);
+        WorldBiomeSourceConfig config = new WorldBiomeSourceConfig(world.getLevelProperties()).setGeneratorSettings(chunkGenConfig);
         return SimplexTerrain.WORLDGEN_TYPE.create(world, SimplexTerrain.WORLD_BIOME_SOURCE.applyConfig(config), chunkGenConfig);
     });
 
