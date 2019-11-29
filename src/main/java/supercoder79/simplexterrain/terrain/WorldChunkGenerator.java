@@ -23,7 +23,7 @@ import net.minecraft.world.gen.chunk.SurfaceChunkGenerator;
 import supercoder79.simplexterrain.api.Heightmap;
 
 public class WorldChunkGenerator extends SurfaceChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
-    private static final float[] BIOME_WEIGHT_TABLE = (float[]) SystemUtil.consume(new float[25], (fs) -> {
+    private static final float[] BIOME_WEIGHT_TABLE = SystemUtil.consume(new float[25], (fs) -> {
         for(int i = -2; i <= 2; ++i) {
             for(int j = -2; j <= 2; ++j) {
                 float f = 10.0F / MathHelper.sqrt((float)(i * i + j * j) + 0.2F);
@@ -158,6 +158,11 @@ public class WorldChunkGenerator extends SurfaceChunkGenerator<OverworldChunkGen
                 }
             }
         }
+    }
+
+    @Override
+    public int getHeightOnGround(int i, int j, net.minecraft.world.Heightmap.Type type) {
+        return getHeight(i, j);
     }
 
     @Override
