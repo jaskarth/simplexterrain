@@ -1,6 +1,7 @@
 package supercoder79.simplexterrain.terrain;
 
 import com.google.common.collect.Maps;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
@@ -19,7 +20,7 @@ public class WorldType<T extends ChunkGenerator<?>> {
     public final WorldTypeChunkGeneratorFactory<T> chunkGenSupplier;
 
     public WorldType(String name, WorldTypeChunkGeneratorFactory<T> chunkGenSupplier) {
-        this.generatorType = AccessorLevelGeneratorType.create(9, name);
+        this.generatorType = AccessorLevelGeneratorType.create(FabricLoader.getInstance().isModLoaded("cwt") ? 10 : 9, name);
         generatorType.setCustomizable(false);
         this.chunkGenSupplier = chunkGenSupplier;
 

@@ -76,6 +76,8 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
                     } else if (y < 63) {
                         chunk.setBlockState(posMutable, Blocks.WATER.getDefaultState(), false);
                     }
+                    //TODO: see if this actually improves performance
+                    if (y > height && y > 63) break;
                 }
             }
         }
