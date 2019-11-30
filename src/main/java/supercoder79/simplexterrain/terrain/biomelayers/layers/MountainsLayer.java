@@ -5,11 +5,11 @@ import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.type.InitLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
-public enum TaigaLayer implements InitLayer {
+public enum MountainsLayer implements InitLayer {
     INSTANCE;
 
     @Override
     public int sample(LayerRandomnessSource layerRandomnessSource, int i, int j) {
-        return Registry.BIOME.getRawId(Biomes.TAIGA);
+        return Registry.BIOME.getRawId(Biomes.MOUNTAINS);
     }
 }

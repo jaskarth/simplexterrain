@@ -35,6 +35,8 @@ public class LandBiomeLayers {
         //this is done specifically for jungle biomes
         lowlandsBiomeLayer = EaseBiomeEdgeLayer.INSTANCE.create(longFunction.apply(20), lowlandsBiomeLayer);
 
+
+
         //midlands (y91-y140)
         LayerFactory<T> midlandsBiomeLayer = ForestLayer.INSTANCE.create(longFunction.apply(1L));
         for (int i = 0; i < 3; i++) {
@@ -46,14 +48,37 @@ public class LandBiomeLayers {
         }
         midlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), midlandsBiomeLayer);
 
-        //highlands (y91-y140)
-        LayerFactory<T> highlandsBiomeLayer = TaigaLayer.INSTANCE.create(longFunction.apply(1L));
 
-        return new LayerFactory[]{lowlandsBiomeLayer, midlandsBiomeLayer};
+
+        //highlands (y141-y190)
+        LayerFactory<T> highlandsBiomeLayer = TaigaLayer.INSTANCE.create(longFunction.apply(1L));
+        for (int i = 0; i < 3; i++) {
+            highlandsBiomeLayer = HighlandsBiomePassLayer.INSTANCE.create(longFunction.apply( (1000*i)+i), highlandsBiomeLayer);
+        }
+        for(int k = 0; k < 7; ++k) {
+            highlandsBiomeLayer = ScaleLayer.NORMAL.create(longFunction.apply((1000 + k)), highlandsBiomeLayer);
+        }
+        highlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), highlandsBiomeLayer);
+
+
+
+        //toplands (y191+)
+        LayerFactory<T> toplandsBiomeLayer = MountainsLayer.INSTANCE.create(longFunction.apply(1L));
+        for (int i = 0; i < 2; i++) {
+            toplandsBiomeLayer = ToplandsBiomePassLayer.INSTANCE.create(longFunction.apply( (1000*i)+i), toplandsBiomeLayer);
+        }
+        for(int k = 0; k < 7; ++k) {
+            toplandsBiomeLayer = ScaleLayer.NORMAL.create(longFunction.apply((1000 + k)), toplandsBiomeLayer);
+        }
+        toplandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), toplandsBiomeLayer);
+
+
+
+        return new LayerFactory[]{lowlandsBiomeLayer, midlandsBiomeLayer, highlandsBiomeLayer, toplandsBiomeLayer};
     }
 
     public static BiomeLayerSampler[] build(long l, LevelGeneratorType levelGeneratorType, OverworldChunkGeneratorConfig overworldChunkGeneratorConfig) {
         LayerFactory<CachingLayerSampler>[] layerFactory = build(levelGeneratorType, overworldChunkGeneratorConfig, (m) -> new CachingLayerContext(25, l, m));
-        return new BiomeLayerSampler[]{new BiomeLayerSampler(layerFactory[0]), new BiomeLayerSampler(layerFactory[1])};
+        return new BiomeLayerSampler[]{new BiomeLayerSampler(layerFactory[0]), new BiomeLayerSampler(layerFactory[1]), new BiomeLayerSampler(layerFactory[2]), new BiomeLayerSampler(layerFactory[3])};
     }
 }
