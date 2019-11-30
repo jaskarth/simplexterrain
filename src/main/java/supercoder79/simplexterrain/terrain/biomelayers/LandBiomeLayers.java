@@ -22,23 +22,31 @@ public class LandBiomeLayers {
     }
 
     public static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T>[] build(LevelGeneratorType levelGeneratorType, OverworldChunkGeneratorConfig overworldChunkGeneratorConfig, LongFunction<C> longFunction) {
+        //lowlands (y67 - y90)
         LayerFactory<T> lowlandsBiomeLayer = PlainsLayer.INSTANCE.create(longFunction.apply(1L));
         for (int i = 0; i < 3; i++) {
             lowlandsBiomeLayer = LowlandsBiomePassLayer.INSTANCE.create(longFunction.apply( (1000*i)+i), lowlandsBiomeLayer);
         }
-        for(int k = 0; k < 4; ++k) {
+        for(int k = 0; k < 7; ++k) {
             lowlandsBiomeLayer = ScaleLayer.NORMAL.create(longFunction.apply((1000 + k)), lowlandsBiomeLayer);
         }
+        lowlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), lowlandsBiomeLayer);
 
+        //this is done specifically for jungle biomes
+        lowlandsBiomeLayer = EaseBiomeEdgeLayer.INSTANCE.create(longFunction.apply(20), lowlandsBiomeLayer);
+
+        //midlands (y91-y140)
         LayerFactory<T> midlandsBiomeLayer = ForestLayer.INSTANCE.create(longFunction.apply(1L));
         for (int i = 0; i < 3; i++) {
             midlandsBiomeLayer = MidlandsBiomePassLayer.INSTANCE.create(longFunction.apply( (1000*i)+i), midlandsBiomeLayer);
         }
-        midlandsBiomeLayer = AddTallBirchTreesLayer.INSTANCE.create(longFunction.apply(2000), midlandsBiomeLayer);
-        for(int k = 0; k < 4; ++k) {
+        midlandsBiomeLayer = AddSpecialForestsLayer.INSTANCE.create(longFunction.apply(2000), midlandsBiomeLayer);
+        for(int k = 0; k < 7; ++k) {
             midlandsBiomeLayer = ScaleLayer.NORMAL.create(longFunction.apply((1000 + k)), midlandsBiomeLayer);
         }
+        midlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), midlandsBiomeLayer);
 
+        //TODO: Add Highlands and mountain...lands
 
         return new LayerFactory[]{lowlandsBiomeLayer, midlandsBiomeLayer};
     }

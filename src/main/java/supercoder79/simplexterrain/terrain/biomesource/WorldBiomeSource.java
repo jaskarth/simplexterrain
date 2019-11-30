@@ -47,11 +47,12 @@ public class WorldBiomeSource extends BiomeSource {
 
     @Override
     public Biome getBiomeForNoiseGen(int x, int j, int z) {
-        return sampleBiomeWithMathTM(x, z);
+        return sampleBiomeWithMathTM((x << 2), (z << 2));
     }
 
     private Biome sampleBiomeWithMathTM(int x, int z) {
-        int height = heightmap.getHeight((x << 2), (z << 2));
+        int height = heightmap.getHeight(x, z);
+//        System.out.println(height);
         if (height < 30) {
             if (oceanTemperatureLayer.sample(x, z, false)*0.005 > 2.5)
                 return Biomes.DEEP_WARM_OCEAN;
@@ -78,10 +79,10 @@ public class WorldBiomeSource extends BiomeSource {
         }
         if (height < 66) return Biomes.BEACH;
         if (height < 90) {
-            lowlandsSampler.sample(x, z);
+            return lowlandsSampler.sample(x, z);
         }
         if (height < 140) {
-            midlandslandsSampler.sample(x, z);
+            return midlandslandsSampler.sample(x, z);
         }
         if (height < 190) return Biomes.TAIGA;
         return Biomes.MOUNTAINS;

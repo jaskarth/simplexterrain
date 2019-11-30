@@ -11,10 +11,10 @@ public enum LowlandsBiomePassLayer implements SouthEastSamplingLayer {
     @Override
     public int sample(LayerRandomnessSource layerRandomnessSource, int se) {
         if (se == Registry.BIOME.getRawId(Biomes.PLAINS)) {
-            if (layerRandomnessSource.nextInt(8) == 0) return Registry.BIOME.getRawId(Biomes.SWAMP);
-            if (layerRandomnessSource.nextInt(8) == 0) return Registry.BIOME.getRawId(Biomes.DESERT);
-            if (layerRandomnessSource.nextInt(8) == 0) return Registry.BIOME.getRawId(Biomes.SAVANNA);
-            if (layerRandomnessSource.nextInt(8) == 0) return Registry.BIOME.getRawId(Biomes.JUNGLE);
+            if (layerRandomnessSource.nextInt(11) == 0) return Registry.BIOME.getRawId(Biomes.SWAMP);
+            if (layerRandomnessSource.nextInt(11) == 0) return Registry.BIOME.getRawId(Biomes.DESERT);
+            if (layerRandomnessSource.nextInt(11) == 0) return Registry.BIOME.getRawId(Biomes.SAVANNA);
+            if (layerRandomnessSource.nextInt(12) == 0) return Registry.BIOME.getRawId(Biomes.JUNGLE);
         }
         return se;
     }

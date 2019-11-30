@@ -13,7 +13,6 @@ public enum MidlandsBiomePassLayer implements SouthEastSamplingLayer {
         if (se == Registry.BIOME.getRawId(Biomes.FOREST)) {
             if (layerRandomnessSource.nextInt(6) == 0) return Registry.BIOME.getRawId(Biomes.BIRCH_FOREST);
             if (layerRandomnessSource.nextInt(6) == 0) return Registry.BIOME.getRawId(Biomes.DARK_FOREST);
-            if (layerRandomnessSource.nextInt(8) == 0) return Registry.BIOME.getRawId(Biomes.FLOWER_FOREST);
         }
         return se;
     }

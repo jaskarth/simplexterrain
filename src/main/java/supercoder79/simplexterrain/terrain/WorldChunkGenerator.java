@@ -68,10 +68,6 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
             for (int z = 0; z < 16; ++z) {
                 posMutable.setZ(z);
                 int height = getHeight((chunkX * 16) + x, (chunkZ * 16) + z);
-//                System.out.println((chunkX * 16) + x);
-//                System.out.println((chunkZ * 16) + z);
-//                System.out.println(height);
-//                System.out.println("***");
 
                 for (int y = 0; y < 256; ++y) {
                     posMutable.setY(y);
