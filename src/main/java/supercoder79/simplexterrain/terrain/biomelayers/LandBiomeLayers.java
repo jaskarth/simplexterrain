@@ -46,7 +46,8 @@ public class LandBiomeLayers {
         }
         midlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), midlandsBiomeLayer);
 
-        //TODO: Add Highlands and mountain...lands
+        //highlands (y91-y140)
+        LayerFactory<T> highlandsBiomeLayer = TaigaLayer.INSTANCE.create(longFunction.apply(1L));
 
         return new LayerFactory[]{lowlandsBiomeLayer, midlandsBiomeLayer};
     }
