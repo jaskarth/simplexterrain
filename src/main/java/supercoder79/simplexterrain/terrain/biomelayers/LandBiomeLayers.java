@@ -32,6 +32,8 @@ public class LandBiomeLayers {
         }
         lowlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), lowlandsBiomeLayer);
 
+        lowlandsBiomeLayer = PutBiomesOutOfTheirMiseryLayer.INSTANCE.create(longFunction.apply(1), lowlandsBiomeLayer);
+
 
 
         //midlands (y91-y140)
@@ -45,6 +47,8 @@ public class LandBiomeLayers {
         }
         midlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), midlandsBiomeLayer);
 
+        midlandsBiomeLayer = PutBiomesOutOfTheirMiseryLayer.INSTANCE.create(longFunction.apply(1), midlandsBiomeLayer);
+
 
 
         //highlands (y141-y190)
@@ -57,6 +61,8 @@ public class LandBiomeLayers {
         }
         highlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), highlandsBiomeLayer);
 
+        highlandsBiomeLayer = PutBiomesOutOfTheirMiseryLayer.INSTANCE.create(longFunction.apply(1), highlandsBiomeLayer);
+
 
 
         //toplands (y191+)
@@ -68,6 +74,8 @@ public class LandBiomeLayers {
             toplandsBiomeLayer = ScaleLayer.NORMAL.create(longFunction.apply((1000 + k)), toplandsBiomeLayer);
         }
         toplandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), toplandsBiomeLayer);
+
+        toplandsBiomeLayer = PutBiomesOutOfTheirMiseryLayer.INSTANCE.create(longFunction.apply(1), toplandsBiomeLayer);
 
 
 

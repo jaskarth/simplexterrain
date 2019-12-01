@@ -26,4 +26,14 @@ public interface SquareCrossSamplingLayer extends ParentedLayer {
                 layerSampler.sample(this.transformX(x - 1), this.transformZ(z - 1)),
                 layerSampler.sample(this.transformX(x + 0), this.transformZ(z + 0)));
     }
+
+    @Override
+    default int transformX(int i) {
+        return i;
+    }
+
+    @Override
+    default int transformZ(int i) {
+        return i;
+    }
 }

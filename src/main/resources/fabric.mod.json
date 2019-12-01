@@ -28,5 +28,10 @@
 
   "depends": {
     "fabricloader": ">=0.7.0"
+  },
+
+  "suggests": {
+    "winterbiomemod": "*",
+    "traverse": "*"
   }
 }
