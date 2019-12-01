@@ -4,6 +4,9 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.type.SouthEastSamplingLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
+import supercoder79.simplexterrain.api.LandBiomeLayerHolder;
+
+import java.util.Map;
 
 public enum LowlandsBiomePassLayer implements SouthEastSamplingLayer {
     INSTANCE;
@@ -11,10 +14,9 @@ public enum LowlandsBiomePassLayer implements SouthEastSamplingLayer {
     @Override
     public int sample(LayerRandomnessSource layerRandomnessSource, int se) {
         if (se == Registry.BIOME.getRawId(Biomes.PLAINS)) {
-            if (layerRandomnessSource.nextInt(11) == 0) return Registry.BIOME.getRawId(Biomes.SWAMP);
-            if (layerRandomnessSource.nextInt(11) == 0) return Registry.BIOME.getRawId(Biomes.DESERT);
-            if (layerRandomnessSource.nextInt(11) == 0) return Registry.BIOME.getRawId(Biomes.SAVANNA);
-            if (layerRandomnessSource.nextInt(12) == 0) return Registry.BIOME.getRawId(Biomes.JUNGLE);
+            for (Map.Entry<Integer, Integer> entry : LandBiomeLayerHolder.lowlandBiomes.entrySet()) {
+                if (layerRandomnessSource.nextInt(entry.getValue()) == 0) return entry.getKey();
+            }
         }
         return se;
     }

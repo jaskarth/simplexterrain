@@ -32,9 +32,6 @@ public class LandBiomeLayers {
         }
         lowlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), lowlandsBiomeLayer);
 
-        //this is done specifically for jungle biomes
-        lowlandsBiomeLayer = EaseBiomeEdgeLayer.INSTANCE.create(longFunction.apply(20), lowlandsBiomeLayer);
-
 
 
         //midlands (y91-y140)
