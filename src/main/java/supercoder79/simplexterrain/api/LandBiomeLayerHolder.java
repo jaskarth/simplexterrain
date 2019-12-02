@@ -59,10 +59,8 @@ public class LandBiomeLayerHolder {
         if (FabricLoader.getInstance().isModLoaded("traverse")) {
             addToLowlands(new Identifier("traverse", "arid_highlands"), 8);
             addToHighlands(new Identifier("traverse", "cliffs"), 8);
-            addToHighlands(new Identifier("traverse", "coniferous_forest"), 8);
             addToMidlands(new Identifier("traverse", "coniferous_forest"), 8);
 
-            addToHighlands(new Identifier("traverse", "snowy_coniferous_forest"), 8);
             addToHighlands(new Identifier("traverse", "snowy_coniferous_forest"), 8);
 
             addToLowlands(new Identifier("traverse", "desert_shrubland"), 8);
