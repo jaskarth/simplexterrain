@@ -6,6 +6,9 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.source.BiomeSourceType;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.api.LandBiomeLayerHolder;
+import supercoder79.simplexterrain.command.ReloadSimplexTerrainCommand;
+import supercoder79.simplexterrain.configs.Config;
+import supercoder79.simplexterrain.configs.ConfigData;
 import supercoder79.simplexterrain.terrain.biomesource.WorldBiomeSourceConfig;
 import supercoder79.simplexterrain.terrain.biomesource.WorldBiomeSource;
 import supercoder79.simplexterrain.terrain.WorldGeneratorType;
@@ -20,9 +23,16 @@ public class SimplexTerrain implements ModInitializer {
 	public static WorldGeneratorType WORLDGEN_TYPE;
 	public static BiomeSourceType<WorldBiomeSourceConfig, WorldBiomeSource> WORLD_BIOME_SOURCE;
 
+	public static ConfigData CONFIG;
+
 	static WorldType<?> loadMeOnClientPls; // make sure world types are loaded on client by referencing a field in onInitialize()
 	@Override
 	public void onInitialize() {
+		CONFIG = Config.init();
+
+		//TODO: remove this in non dev builds!
+		ReloadSimplexTerrainCommand.register();
+
 		loadMeOnClientPls = WorldType.SIMPLEX;
 		LandBiomeLayerHolder.init();
 
