@@ -20,13 +20,16 @@ public class SimplexTerrain implements ModInitializer {
 	public static ConfigData CONFIG;
 
 	static WorldType<?> loadMeOnClientPls; // make sure world types are loaded on client by referencing a field in onInitialize()
-	
+
 	private static Identifier SWAMP;
 	private static Identifier PLAINS;
 	private static Identifier FOREST;
 	private static Identifier TAIGA;
 	private static Identifier BIRCH_FOREST;
 	private static Identifier JUNGLE;
+	private static Identifier MOUNTAINS;
+	private static Identifier MOUNTAIN_EDGE;
+	private static Identifier WOODED_MOUNTAINS;
 
 	@Override
 	public void onInitialize() {
@@ -36,7 +39,10 @@ public class SimplexTerrain implements ModInitializer {
 		TAIGA = biomeId(Biomes.TAIGA);
 		BIRCH_FOREST = biomeId(Biomes.BIRCH_FOREST);
 		JUNGLE = biomeId(Biomes.JUNGLE);
-		
+		MOUNTAINS = biomeId(Biomes.MOUNTAINS);
+		MOUNTAIN_EDGE = biomeId(Biomes.MOUNTAIN_EDGE);
+		WOODED_MOUNTAINS = biomeId(Biomes.WOODED_MOUNTAINS);
+
 		CONFIG = Config.init();
 
 		loadMeOnClientPls = WorldType.SIMPLEX;
@@ -44,22 +50,13 @@ public class SimplexTerrain implements ModInitializer {
 
 		WORLDGEN_TYPE = Registry.register(Registry.CHUNK_GENERATOR_TYPE, new Identifier("simplexterrain", "simplex"), new WorldGeneratorType(false, OverworldChunkGeneratorConfig::new));
 	}
-	
+
 	private static void addDefaultBiomes() {
 		//holy shit this code is still cursed
 
-		//highlands
-		double mountainEdgeWeight = 0.8;
-		double woodedMountainsWeight = 0.8;
-		double taigaWeight = 1.0;
-
-		//toplands
-		double gravellyMountainsWeight = 0.6;
-		double woodedMountainsToplandsWeight = 0.7;
-		double iceSpikesWeight = 1.6;
-		double mountainsWeight = 1.0;
-
+		// TODO Re-Add Mod Compat
 		if (SimplexTerrain.CONFIG.doModCompat) {
+			/*
 			//mod compat
 			if (FabricLoader.getInstance().isModLoaded("winterbiomemod")) {
 				addToHighlands(new Identifier("winterbiomemod", "white_oaks"), 8);
@@ -107,17 +104,13 @@ public class SimplexTerrain implements ModInitializer {
 			if (FabricLoader.getInstance().isModLoaded("terrestria")) {
 				System.out.println("Terrestria biomes registered!");
 			}
+			*/
 		}
 
 		addVanillaLowlands();
 		addVanillaMidlands();
-
-		addToHighlands(Registry.BIOME.getId(Biomes.MOUNTAIN_EDGE), mountainEdgeWeight);
-		addToHighlands(Registry.BIOME.getId(Biomes.WOODED_MOUNTAINS), woodedMountainsWeight);
-
-		addToToplands(Registry.BIOME.getId(Biomes.GRAVELLY_MOUNTAINS), gravellyMountainsWeight);
-		addToToplands(Registry.BIOME.getId(Biomes.WOODED_MOUNTAINS), woodedMountainsToplandsWeight);
-		addToToplands(Registry.BIOME.getId(Biomes.ICE_SPIKES), iceSpikesWeight);
+		addVanillaHighlands();
+		addVanillaMountainPeaks();
 	}
 
 	private static void addVanillaLowlands() {
@@ -129,85 +122,151 @@ public class SimplexTerrain implements ModInitializer {
 		final double forestWeight = 1.0;
 		final double taigaWeight = 1.2;
 		final double birchForestWeight = 0.3;
-		final double snowyTaigaWeight = 1.2;
-		final double snowyTundraWeight = 0.8;
-		
+		final double snowyTaigaWeight = 1.4;
+		final double snowyTundraWeight = 0.6;
+		final double iceSpikesWeight = 0.4;
+
 		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.DESERT), SimplexClimate.DRY_TROPICAL, desertWeight);
-		
+
 		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.SAVANNA), SimplexClimate.TROPICAL, savannahWeight);
 		SimplexBiomes.addLowlandsBiome(PLAINS, SimplexClimate.TROPICAL, plainsWeight);
-		
+
 		SimplexBiomes.addLowlandsBiome(JUNGLE, SimplexClimate.LUSH_TROPICAL, jungleWeight);
 		SimplexBiomes.addLowlandsBiome(SWAMP, SimplexClimate.LUSH_TROPICAL, swampWeight / 2);
-		
+
 		SimplexBiomes.addLowlandsBiome(PLAINS, SimplexClimate.DRY_TEMPERATE, plainsWeight);
-		
+
 		SimplexBiomes.addLowlandsBiome(SWAMP, SimplexClimate.TEMPERATE, swampWeight);
 		SimplexBiomes.addLowlandsBiome(PLAINS, SimplexClimate.TEMPERATE, plainsWeight);
 		SimplexBiomes.addLowlandsBiome(FOREST, SimplexClimate.TEMPERATE, forestWeight * 0.8);
-		
+
 		SimplexBiomes.addLowlandsBiome(SWAMP, SimplexClimate.LUSH_TEMPERATE, swampWeight);
 		SimplexBiomes.addLowlandsBiome(PLAINS, SimplexClimate.LUSH_TEMPERATE, plainsWeight);
 		SimplexBiomes.addLowlandsBiome(FOREST, SimplexClimate.LUSH_TEMPERATE, forestWeight * 1.5);
-		
+
 		SimplexBiomes.addLowlandsBiome(PLAINS, SimplexClimate.DRY_BOREAL, plainsWeight);
 		SimplexBiomes.addLowlandsBiome(TAIGA, SimplexClimate.DRY_BOREAL, taigaWeight);
-		
+
 		SimplexBiomes.addLowlandsBiome(TAIGA, SimplexClimate.BOREAL, taigaWeight);
 		SimplexBiomes.addLowlandsBiome(BIRCH_FOREST, SimplexClimate.BOREAL, birchForestWeight);
-		
+
 		SimplexBiomes.addLowlandsBiome(TAIGA, SimplexClimate.LUSH_BOREAL, taigaWeight);
-		
+
 		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.SNOWY_TAIGA), SimplexClimate.SNOWY, snowyTaigaWeight);
 		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.SNOWY_TUNDRA), SimplexClimate.SNOWY, snowyTundraWeight);
+		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.ICE_SPIKES), SimplexClimate.SNOWY, iceSpikesWeight);
 	}
-	
+
 	private static void addVanillaMidlands() {
-		double jungleWeight = 1.0;
-		double savannaPlateauWeight = 1.0;
-		double birchForestWeight = 0.8;
-		double darkForestWeight = 1.0;
-		double forestWeight = 1.5;
-		double plainsWeight = 0.6;
-		double swampWeight = 0.4;
-		double taigaWeight = 0.9;
-		double snowyTaigaWeight = 1.0;
-		double snowyTundraWeight = 1.0;
-		
+		final double jungleWeight = 1.0;
+		final double savannaPlateauWeight = 1.0;
+		final double birchForestWeight = 0.8;
+		final double darkForestWeight = 1.0;
+		final double forestWeight = 1.5;
+		final double plainsWeight = 0.6;
+		final double swampWeight = 0.4;
+		final double taigaWeight = 0.9;
+		final double snowyTaigaWeight = 1.0;
+		final double snowyTundraWeight = 1.0;
+
 		SimplexBiomes.addMidlandsBiome(biomeId(Biomes.SAVANNA_PLATEAU), SimplexClimate.DRY_TROPICAL, savannaPlateauWeight);
-		
+
 		SimplexBiomes.addMidlandsBiome(PLAINS, SimplexClimate.TROPICAL, plainsWeight * 1.6);
 		SimplexBiomes.addMidlandsBiome(biomeId(Biomes.SAVANNA_PLATEAU), SimplexClimate.TROPICAL, savannaPlateauWeight);
-		
+
 		SimplexBiomes.addMidlandsBiome(JUNGLE, SimplexClimate.LUSH_TROPICAL, jungleWeight);
 		SimplexBiomes.addMidlandsBiome(biomeId(Biomes.DARK_FOREST), SimplexClimate.LUSH_TROPICAL, darkForestWeight);
-		
+
 		SimplexBiomes.addMidlandsBiome(BIRCH_FOREST, SimplexClimate.TEMPERATE, birchForestWeight);
 		SimplexBiomes.addMidlandsBiome(PLAINS, SimplexClimate.TEMPERATE, plainsWeight * 0.5);
-		
+
 		SimplexBiomes.addMidlandsBiome(BIRCH_FOREST, SimplexClimate.TEMPERATE, birchForestWeight);
 		SimplexBiomes.addMidlandsBiome(FOREST, SimplexClimate.TEMPERATE, forestWeight);
 		SimplexBiomes.addMidlandsBiome(PLAINS, SimplexClimate.TEMPERATE, plainsWeight);
-		
+
 		SimplexBiomes.addMidlandsBiome(biomeId(Biomes.DARK_FOREST), SimplexClimate.LUSH_TEMPERATE, darkForestWeight);
 		SimplexBiomes.addMidlandsBiome(FOREST, SimplexClimate.LUSH_TEMPERATE, forestWeight);
 		SimplexBiomes.addMidlandsBiome(SWAMP, SimplexClimate.LUSH_TEMPERATE, swampWeight);
-		
+
 		SimplexBiomes.addMidlandsBiome(TAIGA, SimplexClimate.DRY_BOREAL, birchForestWeight);
-		
+
 		SimplexBiomes.addMidlandsBiome(BIRCH_FOREST, SimplexClimate.BOREAL, birchForestWeight);
 		SimplexBiomes.addMidlandsBiome(TAIGA, SimplexClimate.BOREAL, taigaWeight);
-		
+
 		SimplexBiomes.addMidlandsBiome(BIRCH_FOREST, SimplexClimate.LUSH_BOREAL, birchForestWeight * 1.5);
 		SimplexBiomes.addMidlandsBiome(FOREST, SimplexClimate.LUSH_BOREAL, forestWeight * 0.5);
 		SimplexBiomes.addMidlandsBiome(TAIGA, SimplexClimate.LUSH_BOREAL, taigaWeight);
-		
+
 		SimplexBiomes.addMidlandsBiome(biomeId(Biomes.SNOWY_TAIGA), SimplexClimate.SNOWY, snowyTaigaWeight);
 		SimplexBiomes.addMidlandsBiome(biomeId(Biomes.SNOWY_TUNDRA), SimplexClimate.SNOWY, snowyTundraWeight);
 	}
-	
+
 	private static void addVanillaHighlands() {
+		final double plainsWeight = 1.0;
+		final double jungleWeight = 0.4;
+		final double savannaPlateauMWeight = 0.4;
+		final double mountainEdgeWeight = 1.0;
+		final double woodedMountainsWeight = 1.0;
+		final double taigaWeight = 0.8;
+		final double snowyTaigaWeight = 0.6;
 		
+		SimplexBiomes.addHighlandsBiome(PLAINS, SimplexClimate.DRY_TROPICAL, plainsWeight);
+		SimplexBiomes.addHighlandsBiome(biomeId(Biomes.SHATTERED_SAVANNA_PLATEAU), SimplexClimate.DRY_TROPICAL, savannaPlateauMWeight);
+
+		SimplexBiomes.addHighlandsBiome(PLAINS, SimplexClimate.TROPICAL, plainsWeight);
+
+		SimplexBiomes.addHighlandsBiome(JUNGLE, SimplexClimate.LUSH_TROPICAL, jungleWeight);
+		SimplexBiomes.addHighlandsBiome(PLAINS, SimplexClimate.LUSH_TROPICAL, plainsWeight);
+
+		SimplexBiomes.addHighlandsBiome(WOODED_MOUNTAINS, SimplexClimate.DRY_TEMPERATE, woodedMountainsWeight);
+		SimplexBiomes.addHighlandsBiome(MOUNTAIN_EDGE, SimplexClimate.DRY_TEMPERATE, mountainEdgeWeight);
+
+		SimplexBiomes.addHighlandsBiome(MOUNTAIN_EDGE, SimplexClimate.TEMPERATE, mountainEdgeWeight);
+
+		SimplexBiomes.addHighlandsBiome(MOUNTAIN_EDGE, SimplexClimate.LUSH_TEMPERATE, mountainEdgeWeight);
+
+		SimplexBiomes.addHighlandsBiome(WOODED_MOUNTAINS, SimplexClimate.DRY_BOREAL, woodedMountainsWeight);
+		SimplexBiomes.addHighlandsBiome(MOUNTAIN_EDGE, SimplexClimate.DRY_BOREAL, mountainEdgeWeight * 1.5);
+		SimplexBiomes.addHighlandsBiome(TAIGA, SimplexClimate.DRY_BOREAL, taigaWeight);
+
+		SimplexBiomes.addHighlandsBiome(WOODED_MOUNTAINS, SimplexClimate.BOREAL, woodedMountainsWeight);
+		SimplexBiomes.addHighlandsBiome(MOUNTAIN_EDGE, SimplexClimate.BOREAL, mountainEdgeWeight);
+		SimplexBiomes.addHighlandsBiome(TAIGA, SimplexClimate.BOREAL, taigaWeight);
+
+		SimplexBiomes.addHighlandsBiome(WOODED_MOUNTAINS, SimplexClimate.LUSH_BOREAL, woodedMountainsWeight);
+		SimplexBiomes.addHighlandsBiome(TAIGA, SimplexClimate.LUSH_BOREAL, taigaWeight);
+
+		SimplexBiomes.addHighlandsBiome(MOUNTAIN_EDGE, SimplexClimate.SNOWY, mountainEdgeWeight);
+		SimplexBiomes.addHighlandsBiome(biomeId(Biomes.SNOWY_TAIGA), SimplexClimate.SNOWY, snowyTaigaWeight);
+	}
+	
+	private static void addVanillaMountainPeaks() {
+		final double gravellyMountainsWeight = 0.6;
+		final double mountainsWeight = 1.0;
+		final double plainsWeight = 1.0;
+		
+		SimplexBiomes.addMountainPeaksBiome(PLAINS, SimplexClimate.DRY_TROPICAL, plainsWeight);
+
+		SimplexBiomes.addMountainPeaksBiome(PLAINS, SimplexClimate.TROPICAL, plainsWeight);
+		SimplexBiomes.addMountainPeaksBiome(biomeId(Biomes.GRAVELLY_MOUNTAINS), SimplexClimate.TROPICAL, gravellyMountainsWeight);
+
+		SimplexBiomes.addMountainPeaksBiome(PLAINS, SimplexClimate.LUSH_TROPICAL, plainsWeight);
+		SimplexBiomes.addMountainPeaksBiome(biomeId(Biomes.GRAVELLY_MOUNTAINS), SimplexClimate.TROPICAL, gravellyMountainsWeight * 0.4);
+
+		SimplexBiomes.addMountainPeaksBiome(biomeId(Biomes.GRAVELLY_MOUNTAINS), SimplexClimate.DRY_TEMPERATE, gravellyMountainsWeight);
+
+		SimplexBiomes.addMountainPeaksBiome(biomeId(Biomes.GRAVELLY_MOUNTAINS), SimplexClimate.TEMPERATE, gravellyMountainsWeight);
+		SimplexBiomes.addMountainPeaksBiome(MOUNTAINS, SimplexClimate.TEMPERATE, mountainsWeight);
+
+		SimplexBiomes.addMountainPeaksBiome(MOUNTAINS, SimplexClimate.LUSH_TEMPERATE, mountainsWeight);
+
+		SimplexBiomes.addMountainPeaksBiome(MOUNTAINS, SimplexClimate.DRY_BOREAL, mountainsWeight);
+
+		SimplexBiomes.addMountainPeaksBiome(MOUNTAINS, SimplexClimate.BOREAL, mountainsWeight);
+
+		SimplexBiomes.addMountainPeaksBiome(MOUNTAINS, SimplexClimate.LUSH_BOREAL, mountainsWeight);
+
+		SimplexBiomes.addMountainPeaksBiome(MOUNTAINS, SimplexClimate.SNOWY, mountainsWeight);
 	}
 
 	private static final Identifier biomeId(Biome biome) {
