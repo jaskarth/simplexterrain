@@ -1,13 +1,14 @@
 package supercoder79.simplexterrain.terrain;
 
 import com.google.common.collect.Maps;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.source.VanillaLayeredBiomeSourceConfig;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import net.minecraft.world.level.LevelGeneratorType;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.mixin.AccessorLevelGeneratorType;
+import supercoder79.simplexterrain.terrain.biomesource.WorldBiomeSourceConfig;
 
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public class WorldType<T extends ChunkGenerator<?>> {
     public final WorldTypeChunkGeneratorFactory<T> chunkGenSupplier;
 
     public WorldType(String name, WorldTypeChunkGeneratorFactory<T> chunkGenSupplier) {
-        this.generatorType = AccessorLevelGeneratorType.create(9, name);
+        this.generatorType = AccessorLevelGeneratorType.create(FabricLoader.getInstance().isModLoaded("cwt") ? 10 : 9, name);
         generatorType.setCustomizable(false);
         this.chunkGenSupplier = chunkGenSupplier;
 
@@ -34,7 +35,7 @@ public class WorldType<T extends ChunkGenerator<?>> {
     public static final WorldType<WorldChunkGenerator> SIMPLEX = new WorldType<>("simplex", (world) -> {
         OverworldChunkGeneratorConfig chunkGenConfig = new OverworldChunkGeneratorConfig();
 
-        VanillaLayeredBiomeSourceConfig config = new VanillaLayeredBiomeSourceConfig().setLevelProperties(world.getLevelProperties()).setGeneratorSettings(chunkGenConfig);
+        WorldBiomeSourceConfig config = new WorldBiomeSourceConfig(world.getLevelProperties()).setGeneratorSettings(chunkGenConfig);
         return SimplexTerrain.WORLDGEN_TYPE.create(world, SimplexTerrain.WORLD_BIOME_SOURCE.applyConfig(config), chunkGenConfig);
     });
 
