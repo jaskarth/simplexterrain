@@ -1,7 +1,6 @@
 package supercoder79.simplexterrain.terrain;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
@@ -14,7 +13,6 @@ import net.minecraft.util.math.noise.NoiseSampler;
 import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
