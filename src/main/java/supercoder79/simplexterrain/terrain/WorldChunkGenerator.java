@@ -1,9 +1,7 @@
 package supercoder79.simplexterrain.terrain;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicReference;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -18,6 +16,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
+import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.noise.OctaveOpenSimplexNoise;
 import supercoder79.simplexterrain.terrain.biomesource.WorldBiomeSource;
@@ -34,11 +33,11 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
 		super(world, biomeSource, config);
 		this.random = new ChunkRandom(world.getSeed());
 
-		double amplitude = Math.pow(2, 11);
+		double amplitude = Math.pow(2, SimplexTerrain.CONFIG.baseOctaveAmount);
 
-		heightNoise = new OctaveOpenSimplexNoise(this.random, 11, 0.75 * amplitude, amplitude, amplitude);
-		detailNoise = new OctaveOpenSimplexNoise(this.random, 2, 20, 2, 4);
-		scaleNoise = new OctaveOpenSimplexNoise(this.random, 2, Math.pow(2, 10), 0.2, 0.09); // 0.06 * 2 = 0.12, maximum scale is 0.12 (default constant before noise was 0.1)
+		heightNoise = new OctaveOpenSimplexNoise(this.random, SimplexTerrain.CONFIG.baseOctaveAmount, SimplexTerrain.CONFIG.baseNoiseFrequencyCoefficient * amplitude, amplitude, amplitude);
+		detailNoise = new OctaveOpenSimplexNoise(this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
+		scaleNoise = new OctaveOpenSimplexNoise(this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow); // 0.06 * 2 = 0.12, maximum scale is 0.12 (default constant before noise was 0.1)
 
 		((WorldBiomeSource)(this.biomeSource)).setHeightmap(this);
 
@@ -62,20 +61,12 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
 		int chunkX = chunk.getPos().x;
 		int chunkZ = chunk.getPos().z;
 
-		//hold the height for every block in this chunk
-		int[] chunkHeightmap = new int[256];
-		for (int x = 0; x < 16; ++x) {
-			for (int z = 0; z < 16; ++z) {
-				chunkHeightmap[x + (z * 16)] = getHeight((chunkX * 16) + x, (chunkZ * 16) + z);
-			}
-		}
-
 		for (int x = 0; x < 16; ++x) {
 			posMutable.setX(x);
 
 			for (int z = 0; z < 16; ++z) {
 				posMutable.setZ(z);
-				int height = chunkHeightmap[x + (z * 16)];
+				int height = getHeight((chunkX * 16) + x, (chunkZ * 16) + z);
 
 				for (int y = 0; y < 256; ++y) {
 					posMutable.setY(y);
@@ -119,14 +110,14 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
 	}
 
 	private double sampleNoise(int x, int z) {
-		double amplitudeSample = scaleNoise.sample(x, z) + 0.09; // change range [-0.06, 0.06] to [0.0, 0.12]
-		return heightNoise.sampleCustom(x, z, 1.0, amplitudeSample, amplitudeSample, 11) + 100;
+		double amplitudeSample = scaleNoise.sample(x, z) + SimplexTerrain.CONFIG.scaleAmplitudeLow; // change range [-0.06, 0.06] to [0.0, 0.12]
+		return heightNoise.sampleCustom(x, z, SimplexTerrain.CONFIG.baseNoiseSamplingFrequency, amplitudeSample, amplitudeSample, SimplexTerrain.CONFIG.baseOctaveAmount) + SimplexTerrain.CONFIG.baseHeight;
 	}
 
 	private double sampleDetail(int x, int z) {
 		double sample = detailNoise.sample(x, z);
-		if (sample < 0.0) {
-			if (scaleNoise.sample(x, z) < -0.02) {
+		if (sample < SimplexTerrain.CONFIG.detailNoiseThreshold) {
+			if (scaleNoise.sample(x, z) < SimplexTerrain.CONFIG.scaleNoiseThreshold) {
 				sample = 0;
 			}
 		}
