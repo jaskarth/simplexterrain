@@ -5,7 +5,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.source.BiomeSourceType;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
-import supercoder79.simplexterrain.api.ClassIEnumSimplexBiomeLayerHolderManager;
+import supercoder79.simplexterrain.api.SimplexBiomes;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.ConfigData;
 import supercoder79.simplexterrain.terrain.biomesource.WorldBiomeSourceConfig;
@@ -30,7 +30,7 @@ public class SimplexTerrain implements ModInitializer {
 		CONFIG = Config.init();
 
 		loadMeOnClientPls = WorldType.SIMPLEX;
-		ClassIEnumSimplexBiomeLayerHolderManager.init();
+		SimplexBiomes.init();
 
 		//Reflection hacks
 		Constructor<BiomeSourceType> constructor = null;

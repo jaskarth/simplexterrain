@@ -15,7 +15,7 @@ import java.util.Map;
  *
  * @author SuperCoder79
  */
-public final class ClassIEnumSimplexBiomeLayerHolderManager {
+public final class SimplexBiomes {
     public static final Map<Identifier, Integer> lowlandBiomes = new HashMap<>();
     public static final Map<Identifier, Integer> midlandBiomes = new HashMap<>();
     public static final Map<Identifier, Integer> highlandBiomes = new HashMap<>();
