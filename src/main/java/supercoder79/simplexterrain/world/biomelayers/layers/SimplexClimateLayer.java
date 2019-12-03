@@ -30,5 +30,5 @@ public class SimplexClimateLayer implements InitLayer {
 		return value / 6D;
 	}
 	
-	public static final SimplexClimate[] REVERSE_ID_MAP = new SimplexClimate[9];
+	public static final SimplexClimate[] REVERSE_ID_MAP = new SimplexClimate[10];
 }

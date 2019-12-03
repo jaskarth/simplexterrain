@@ -30,6 +30,7 @@ public class SimplexTerrain implements ModInitializer {
 	private static Identifier MOUNTAINS;
 	private static Identifier MOUNTAIN_EDGE;
 	private static Identifier WOODED_MOUNTAINS;
+	private static Identifier GRAVELLY_MOUNTAINS;
 
 	@Override
 	public void onInitialize() {
@@ -42,6 +43,7 @@ public class SimplexTerrain implements ModInitializer {
 		MOUNTAINS = biomeId(Biomes.MOUNTAINS);
 		MOUNTAIN_EDGE = biomeId(Biomes.MOUNTAIN_EDGE);
 		WOODED_MOUNTAINS = biomeId(Biomes.WOODED_MOUNTAINS);
+		GRAVELLY_MOUNTAINS = biomeId(Biomes.GRAVELLY_MOUNTAINS);
 
 		CONFIG = Config.init();
 
@@ -248,14 +250,14 @@ public class SimplexTerrain implements ModInitializer {
 		SimplexBiomes.addMountainPeaksBiome(PLAINS, SimplexClimate.DRY_TROPICAL, plainsWeight);
 
 		SimplexBiomes.addMountainPeaksBiome(PLAINS, SimplexClimate.TROPICAL, plainsWeight);
-		SimplexBiomes.addMountainPeaksBiome(biomeId(Biomes.GRAVELLY_MOUNTAINS), SimplexClimate.TROPICAL, gravellyMountainsWeight);
+		SimplexBiomes.addMountainPeaksBiome(GRAVELLY_MOUNTAINS, SimplexClimate.TROPICAL, gravellyMountainsWeight);
 
 		SimplexBiomes.addMountainPeaksBiome(PLAINS, SimplexClimate.LUSH_TROPICAL, plainsWeight);
-		SimplexBiomes.addMountainPeaksBiome(biomeId(Biomes.GRAVELLY_MOUNTAINS), SimplexClimate.TROPICAL, gravellyMountainsWeight * 0.4);
+		SimplexBiomes.addMountainPeaksBiome(GRAVELLY_MOUNTAINS, SimplexClimate.TROPICAL, gravellyMountainsWeight * 0.4);
 
-		SimplexBiomes.addMountainPeaksBiome(biomeId(Biomes.GRAVELLY_MOUNTAINS), SimplexClimate.DRY_TEMPERATE, gravellyMountainsWeight);
+		SimplexBiomes.addMountainPeaksBiome(GRAVELLY_MOUNTAINS, SimplexClimate.DRY_TEMPERATE, gravellyMountainsWeight);
 
-		SimplexBiomes.addMountainPeaksBiome(biomeId(Biomes.GRAVELLY_MOUNTAINS), SimplexClimate.TEMPERATE, gravellyMountainsWeight);
+		SimplexBiomes.addMountainPeaksBiome(GRAVELLY_MOUNTAINS, SimplexClimate.TEMPERATE, gravellyMountainsWeight);
 		SimplexBiomes.addMountainPeaksBiome(MOUNTAINS, SimplexClimate.TEMPERATE, mountainsWeight);
 
 		SimplexBiomes.addMountainPeaksBiome(MOUNTAINS, SimplexClimate.LUSH_TEMPERATE, mountainsWeight);
