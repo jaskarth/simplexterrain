@@ -59,30 +59,30 @@ public class LandBiomeLayerHolder {
             }
 
             if (FabricLoader.getInstance().isModLoaded("traverse")) {
-                addToLowlands(new Identifier("traverse", "arid_highlands"), 8);
-                addToHighlands(new Identifier("traverse", "cliffs"), 8);
-                addToMidlands(new Identifier("traverse", "coniferous_forest"), 8);
+                addToLowlands(new Identifier("traverse", "arid_highlands"), 10);
+                addToHighlands(new Identifier("traverse", "cliffs"), 12);
+                addToMidlands(new Identifier("traverse", "coniferous_forest"), 11);
 
-                addToHighlands(new Identifier("traverse", "snowy_coniferous_forest"), 8);
+                addToHighlands(new Identifier("traverse", "snowy_coniferous_forest"), 9);
 
-                addToLowlands(new Identifier("traverse", "desert_shrubland"), 8);
-                addToLowlands(new Identifier("traverse", "lush_swamp"), 8);
-                addToLowlands(new Identifier("traverse", "meadow"), 8);
+                addToLowlands(new Identifier("traverse", "desert_shrubland"), 12);
+                addToLowlands(new Identifier("traverse", "lush_swamp"), 11);
+                addToLowlands(new Identifier("traverse", "meadow"), 9);
 
-                addToMidlands(new Identifier("traverse", "mini_jungle"), 8);
-                addToMidlands(new Identifier("traverse", "meadow"), 8);
+                addToLowlands(new Identifier("traverse", "mini_jungle"), 10);
+                addToMidlands(new Identifier("traverse", "meadow"), 9);
 
-                addToMidlands(new Identifier("traverse", "plains_plateau"), 8);
-                addToLowlands(new Identifier("traverse", "plains_plateau"), 8);
+                addToMidlands(new Identifier("traverse", "plains_plateau"), 11);
+                addToLowlands(new Identifier("traverse", "plains_plateau"), 9);
 
-                addToMidlands(new Identifier("traverse", "wooded_plateau"), 8);
-                addToLowlands(new Identifier("traverse", "wooded_plateau"), 8);
+                addToMidlands(new Identifier("traverse", "wooded_plateau"), 9);
+                addToLowlands(new Identifier("traverse", "wooded_plateau"), 11);
 
                 addToMidlands(new Identifier("traverse", "rolling_hills"), 8);
-                addToLowlands(new Identifier("traverse", "rolling_hills"), 8);
+                addToLowlands(new Identifier("traverse", "rolling_hills"), 9);
 
-                addToMidlands(new Identifier("traverse", "woodlands"), 8);
-                addToLowlands(new Identifier("traverse", "woodlands"), 8);
+                addToMidlands(new Identifier("traverse", "woodlands"), 10);
+                addToLowlands(new Identifier("traverse", "woodlands"), 12);
 
 
                 System.out.println("Traverse biomes registered!");
