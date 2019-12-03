@@ -5,7 +5,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.type.SouthEastSamplingLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
-import supercoder79.simplexterrain.api.LandBiomeLayerHolder;
+import supercoder79.simplexterrain.api.ClassIEnumSimplexBiomeLayerHolderManager;
 
 import java.util.Map;
 
@@ -15,7 +15,7 @@ public enum MidlandsBiomePassLayer implements SouthEastSamplingLayer {
     @Override
     public int sample(LayerRandomnessSource layerRandomnessSource, int se) {
         if (se == Registry.BIOME.getRawId(Biomes.FOREST)) {
-            for (Map.Entry<Identifier, Integer> entry : LandBiomeLayerHolder.midlandBiomes.entrySet()) {
+            for (Map.Entry<Identifier, Integer> entry : ClassIEnumSimplexBiomeLayerHolderManager.midlandBiomes.entrySet()) {
                 if (layerRandomnessSource.nextInt(entry.getValue()) == 0) return Registry.BIOME.getRawId(Registry.BIOME.get(entry.getKey()));
             }
         }

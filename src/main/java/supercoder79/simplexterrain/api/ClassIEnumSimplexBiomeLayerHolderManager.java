@@ -15,11 +15,11 @@ import java.util.Map;
  *
  * @author SuperCoder79
  */
-public class LandBiomeLayerHolder {
-    public static Map<Identifier, Integer> lowlandBiomes = new HashMap<>();
-    public static Map<Identifier, Integer> midlandBiomes = new HashMap<>();
-    public static Map<Identifier, Integer> highlandBiomes = new HashMap<>();
-    public static Map<Identifier, Integer> toplandBiomes = new HashMap<>();
+public final class ClassIEnumSimplexBiomeLayerHolderManager {
+    public static final Map<Identifier, Integer> lowlandBiomes = new HashMap<>();
+    public static final Map<Identifier, Integer> midlandBiomes = new HashMap<>();
+    public static final Map<Identifier, Integer> highlandBiomes = new HashMap<>();
+    public static final Map<Identifier, Integer> toplandBiomes = new HashMap<>();
 
     public static void init() {
         //holy shit this code is cursed
