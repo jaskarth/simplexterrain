@@ -20,11 +20,11 @@ public final class SimplexBiomes {
 		SimplexBiomesImpl.addToMidlands(biome, climate, weight);
 	}
 	
-	public void addHighlandsBiome(Identifier biome, SimplexClimate climate, double weight) {
+	public static void addHighlandsBiome(Identifier biome, SimplexClimate climate, double weight) {
 		SimplexBiomesImpl.addToHighlands(biome, climate, weight);
 	}
 	
-	public void addMountainPeaksBiome(Identifier biome, SimplexClimate climate, double weight) {
+	public static void addMountainPeaksBiome(Identifier biome, SimplexClimate climate, double weight) {
 		SimplexBiomesImpl.addToMountainPeaks(biome, climate, weight);
 	}
 }
