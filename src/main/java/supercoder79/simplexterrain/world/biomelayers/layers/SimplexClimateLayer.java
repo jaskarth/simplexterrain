@@ -22,7 +22,6 @@ public class SimplexClimateLayer implements InitLayer {
 	public int sample(LayerRandomnessSource rand, int x, int z) {
 		double temperature = temperatureNoise.sample(transformTemperatureXZ(x), transformTemperatureXZ(z));
 		double humidity = humidityNoise.sample(transformHumidityXZ(x), transformHumidityXZ(z));
-		System.out.println(x + " : " + z);
 		
 		return SimplexClimate.fromTemperatureHumidity(temperature, humidity).id;
 	}
