@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.terrain.biomelayers.layers;
+package supercoder79.simplexterrain.world.biomelayers.layers;
 
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import supercoder79.simplexterrain.api.SquareCrossSamplingLayer;

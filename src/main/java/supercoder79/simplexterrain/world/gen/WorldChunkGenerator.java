@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.terrain;
+package supercoder79.simplexterrain.world.gen;
 
 import java.util.Iterator;
 import java.util.Random;
@@ -19,7 +19,6 @@ import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.noise.OctaveOpenSimplexNoise;
-import supercoder79.simplexterrain.terrain.biomesource.WorldBiomeSource;
 
 public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
 	private final OctaveOpenSimplexNoise heightNoise;

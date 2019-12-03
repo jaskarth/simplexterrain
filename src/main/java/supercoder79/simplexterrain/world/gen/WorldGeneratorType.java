@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.terrain;
+package supercoder79.simplexterrain.world.gen;
 
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;

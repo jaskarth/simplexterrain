@@ -29,13 +29,5 @@ public class ConfigData {
     public int highlandStartHeight = 140;
     public int toplandStartHeight = 190;
 
-    public int lowlandBiomeAdditionAttempts = 2;
-    public int midlandBiomeAdditionAttempts = 2;
-    public int highlandBiomeAdditionAttempts = 2;
-    public int toplandBiomeAdditionAttempts = 2;
-
-    public int lowlandBiomeScaleAmount = 7;
-    public int midlandBiomeScaleAmount = 7;
-    public int highlandBiomeScaleAmount = 7;
-    public int toplandBiomeScaleAmount = 7;
+    public int biomeScaleAmount = 7;
 }

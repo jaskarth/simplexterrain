@@ -1,6 +1,5 @@
 package supercoder79.simplexterrain.mixin;
 
-import supercoder79.simplexterrain.terrain.WorldType;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
@@ -8,6 +7,8 @@ import net.minecraft.world.dimension.OverworldDimension;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.level.LevelGeneratorType;
+import supercoder79.simplexterrain.world.WorldType;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

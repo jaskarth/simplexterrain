@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.terrain.biomelayers.layers;
+package supercoder79.simplexterrain.world.biomelayers.layers;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -9,13 +9,13 @@ import supercoder79.simplexterrain.api.SimplexBiomes;
 
 import java.util.Map;
 
-public enum LowlandsBiomePassLayer implements SouthEastSamplingLayer {
+public enum HighlandsBiomePassLayer implements SouthEastSamplingLayer {
     INSTANCE;
 
     @Override
     public int sample(LayerRandomnessSource layerRandomnessSource, int se) {
-        if (se == Registry.BIOME.getRawId(Biomes.PLAINS)) {
-            for (Map.Entry<Identifier, Integer> entry : SimplexBiomes.lowlandBiomes.entrySet()) {
+        if (se == Registry.BIOME.getRawId(Biomes.TAIGA)) {
+            for (Map.Entry<Identifier, Integer> entry : SimplexBiomes.highlandBiomes.entrySet()) {
                 if (layerRandomnessSource.nextInt(entry.getValue()) == 0) return Registry.BIOME.getRawId(Registry.BIOME.get(entry.getKey()));
             }
         }

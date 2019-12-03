@@ -1,18 +1,18 @@
-package supercoder79.simplexterrain.terrain.biomesource;
+package supercoder79.simplexterrain.world.gen;
+
+import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
-import supercoder79.simplexterrain.terrain.biomelayers.LandBiomeLayers;
-
-import java.util.*;
+import supercoder79.simplexterrain.world.biomelayers.LandBiomeLayers;
 
 public class WorldBiomeSource extends BiomeSource {
 	private final BiomeLayerSampler lowlandsSampler;
@@ -25,12 +25,10 @@ public class WorldBiomeSource extends BiomeSource {
 
 	private Heightmap heightmap = Heightmap.NONE;
 
-	public WorldBiomeSource(Object o) {
+	public WorldBiomeSource(WorldBiomeSourceConfig config) {
 		super(biomes);
-		WorldBiomeSourceConfig config = (WorldBiomeSourceConfig)o;
 		long seed = config.getSeed();
-		OverworldChunkGeneratorConfig overworldChunkGeneratorConfig = config.getGeneratorSettings();
-		BiomeLayerSampler[] biomeLayerSamplers = LandBiomeLayers.build(seed, config.getGeneratorType(), overworldChunkGeneratorConfig);
+		BiomeLayerSampler[] biomeLayerSamplers = LandBiomeLayers.build(seed, config.getGeneratorType());
 		this.lowlandsSampler = biomeLayerSamplers[0];
 		this.midlandsSampler = biomeLayerSamplers[1];
 		this.highlandsSampler = biomeLayerSamplers[2];

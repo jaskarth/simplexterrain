@@ -2,8 +2,10 @@ package supercoder79.simplexterrain.mixin;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Shadow;
-import supercoder79.simplexterrain.terrain.WorldType;
+
 import net.minecraft.world.level.LevelGeneratorType;
+import supercoder79.simplexterrain.world.WorldType;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

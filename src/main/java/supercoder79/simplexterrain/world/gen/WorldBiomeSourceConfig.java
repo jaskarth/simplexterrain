@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.terrain.biomesource;
+package supercoder79.simplexterrain.world.gen;
 
 import net.minecraft.world.biome.source.BiomeSourceConfig;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
