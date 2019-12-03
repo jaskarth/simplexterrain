@@ -3,18 +3,26 @@ package supercoder79.simplexterrain.api;
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 
 public enum SimplexClimate {
+	//lush: humidity > 0.3
+	//dry: humidity < -0.3
+	//normal: between -0.3 and 0.3
+
+	//temp above 0.28
 	LUSH_TROPICAL(0),
 	TROPICAL(1),
 	DRY_TROPICAL(2),
+	//temp between -0.58 and 0.28
 	LUSH_TEMPERATE(3),
 	TEMPERATE(4),
 	DRY_TEMPERATE(5),
+	//temp between -0.58 and -0.28
 	LUSH_BOREAL(6),
 	BOREAL(7),
 	DRY_BOREAL(8),
+	// temp less than -0.58
 	SNOWY(9);
 
-	private SimplexClimate(int id) {
+	SimplexClimate(int id) {
 		this.id = id;
 		SimplexClimateLayer.REVERSE_ID_MAP[id] = this;
 	}

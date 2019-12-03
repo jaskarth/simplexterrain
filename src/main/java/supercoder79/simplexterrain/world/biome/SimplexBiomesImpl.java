@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.impl;
+package supercoder79.simplexterrain.world.biome;
 
 import java.util.HashMap;
 import java.util.Map;

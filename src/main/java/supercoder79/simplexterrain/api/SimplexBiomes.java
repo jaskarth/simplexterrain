@@ -1,7 +1,7 @@
 package supercoder79.simplexterrain.api;
 
 import net.minecraft.util.Identifier;
-import supercoder79.simplexterrain.impl.SimplexBiomesImpl;
+import supercoder79.simplexterrain.world.biome.SimplexBiomesImpl;
 
 /**
  * API front for Simplex Biomes generator

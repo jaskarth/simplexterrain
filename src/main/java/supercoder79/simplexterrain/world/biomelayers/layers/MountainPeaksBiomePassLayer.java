@@ -2,8 +2,8 @@ package supercoder79.simplexterrain.world.biomelayers.layers;
 
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
-import supercoder79.simplexterrain.impl.BiomePicker;
-import supercoder79.simplexterrain.impl.SimplexBiomesImpl;
+import supercoder79.simplexterrain.world.biome.BiomePicker;
+import supercoder79.simplexterrain.world.biome.SimplexBiomesImpl;
 
 public enum MountainPeaksBiomePassLayer implements BiomePassLayer {
     INSTANCE;
