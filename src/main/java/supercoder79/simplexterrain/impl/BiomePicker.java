@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
 /**
@@ -45,7 +46,7 @@ public class BiomePicker {
 		}
 		
 		private Biome getBiome() {
-			return biome == null ? biome : calculateBiome();
+			return biome == null ? calculateBiome() : biome;
 		}
 		
 		private Biome calculateBiome() {

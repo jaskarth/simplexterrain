@@ -38,7 +38,9 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
 		detailNoise = new OctaveOpenSimplexNoise(this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
 		scaleNoise = new OctaveOpenSimplexNoise(this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow); // 0.06 * 2 = 0.12, maximum scale is 0.12 (default constant before noise was 0.1)
 
-		((WorldBiomeSource)(this.biomeSource)).setHeightmap(this);
+		if (biomeSource instanceof WorldBiomeSource) {
+			((WorldBiomeSource)(this.biomeSource)).setHeightmap(this);
+		}
 
 		this.surfaceDepthNoise = new OctavePerlinNoiseSampler(this.random, 4, 0);
 	}
