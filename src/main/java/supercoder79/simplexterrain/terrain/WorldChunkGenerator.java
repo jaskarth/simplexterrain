@@ -109,7 +109,13 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
                 MathHelper.lerp(xProgress, sampleNW, sampleNE),
                 MathHelper.lerp(xProgress, sampleSW, sampleSE));
 
-        return (int) (sample + sampleDetail(x, z));
+        double detail = 0;
+
+        if (SimplexTerrain.CONFIG.addDetailNoise) {
+			detail = sampleDetail(x, z);
+		}
+
+        return (int) (sample + detail);
     }
 
     private double sampleNoise(int x, int z) {
