@@ -70,18 +70,6 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
 			}
 		}
 
-		AtomicReference<Float> averageHolder = new AtomicReference<>((float) 0);
-		Arrays.stream(chunkHeightmap).forEach((i) -> averageHolder.updateAndGet(v -> (float) (v + i)));
-		float average = averageHolder.get() / 256.f;
-		float[] deviation = new float[256];
-		for (int i = 0; i < deviation.length; i++) {
-			deviation[i] = chunkHeightmap[i] - average;
-		}
-
-		Arrays.sort(deviation);
-		//        System.out.println(deviation[deviation.length-1]);
-		//        chunkHeightmap[i] = (int) (chunkHeightmap[i] + (deviation[i]/2));
-
 		for (int x = 0; x < 16; ++x) {
 			posMutable.setX(x);
 
