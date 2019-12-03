@@ -1,24 +1,17 @@
 package supercoder79.simplexterrain.world.biomelayers.layers;
 
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.biome.layer.type.SouthEastSamplingLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
-import supercoder79.simplexterrain.api.SimplexBiomes;
+import supercoder79.simplexterrain.impl.BiomePicker;
+import supercoder79.simplexterrain.impl.SimplexBiomesImpl;
 
-import java.util.Map;
-
-public enum HighlandsBiomePassLayer implements SouthEastSamplingLayer {
+public enum HighlandsBiomePassLayer implements BiomePassLayer {
     INSTANCE;
 
-    @Override
-    public int sample(LayerRandomnessSource layerRandomnessSource, int se) {
-        if (se == Registry.BIOME.getRawId(Biomes.TAIGA)) {
-            for (Map.Entry<Identifier, Integer> entry : SimplexBiomes.highlandBiomes.entrySet()) {
-                if (layerRandomnessSource.nextInt(entry.getValue()) == 0) return Registry.BIOME.getRawId(Registry.BIOME.get(entry.getKey()));
-            }
-        }
-        return se;
+	@Override
+    public int sample(LayerRandomnessSource rand, int value) {
+        BiomePicker picker = SimplexBiomesImpl.getHighlandsBiomePicker(SimplexClimateLayer.REVERSE_ID_MAP[value]);
+        
+        return picker == null ? TAIGA : Registry.BIOME.getRawId(picker.pickBiome(rand));
     }
 }

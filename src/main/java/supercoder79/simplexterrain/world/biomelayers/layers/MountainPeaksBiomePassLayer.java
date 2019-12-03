@@ -5,13 +5,13 @@ import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import supercoder79.simplexterrain.impl.BiomePicker;
 import supercoder79.simplexterrain.impl.SimplexBiomesImpl;
 
-public enum LowlandsBiomePassLayer implements BiomePassLayer {
+public enum MountainPeaksBiomePassLayer implements BiomePassLayer {
     INSTANCE;
 
-    @Override
+	@Override
     public int sample(LayerRandomnessSource rand, int value) {
-        BiomePicker picker = SimplexBiomesImpl.getLowlandsBiomePicker(SimplexClimateLayer.REVERSE_ID_MAP[value]);
+        BiomePicker picker = SimplexBiomesImpl.getMountainPeaksBiomePicker(SimplexClimateLayer.REVERSE_ID_MAP[value]);
         
-        return picker == null ? PLAINS : Registry.BIOME.getRawId(picker.pickBiome(rand));
+        return picker == null ? MOUNTAINS : Registry.BIOME.getRawId(picker.pickBiome(rand));
     }
 }
