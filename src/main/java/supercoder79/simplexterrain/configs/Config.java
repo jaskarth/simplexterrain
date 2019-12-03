@@ -15,7 +15,7 @@ public class Config {
             GsonBuilder builder = new GsonBuilder();
             builder.setPrettyPrinting();
             Gson gson = builder.create();
-            Path configDir = Paths.get("", "config", "simplexterrain.cfg");
+            Path configDir = Paths.get("", "config", "simplexterrain.json");
             if (Files.exists(configDir)) {
                 configHolder = gson.fromJson(new FileReader(configDir.toFile()), ConfigData.class);
             } else {

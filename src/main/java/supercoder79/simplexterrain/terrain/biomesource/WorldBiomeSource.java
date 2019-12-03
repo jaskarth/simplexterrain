@@ -8,6 +8,7 @@ import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
+import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.terrain.biomelayers.LandBiomeLayers;
 
@@ -72,10 +73,10 @@ public class WorldBiomeSource extends BiomeSource {
 
             else return Biomes.OCEAN;
         }
-        if (height < 66) return Biomes.BEACH;
-        if (height < 90)  return lowlandsSampler.sample(x, z);
-        if (height < 140) return midlandsSampler.sample(x, z);
-        if (height < 190) return highlandsSampler.sample(x, z);
+        if (height < SimplexTerrain.CONFIG.lowlandStartHeight) return Biomes.BEACH;
+        if (height < SimplexTerrain.CONFIG.midlandStartHeight)  return lowlandsSampler.sample(x, z);
+        if (height < SimplexTerrain.CONFIG.highlandStartHeight) return midlandsSampler.sample(x, z);
+        if (height < SimplexTerrain.CONFIG.toplandStartHeight) return highlandsSampler.sample(x, z);
         return toplandsSampler.sample(x, z);
     }
 }

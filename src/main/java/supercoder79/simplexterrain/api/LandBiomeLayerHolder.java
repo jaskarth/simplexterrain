@@ -5,6 +5,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import supercoder79.simplexterrain.SimplexTerrain;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,52 +43,54 @@ public class LandBiomeLayerHolder {
         int woodedMountainsToplandsWeight = 7;
         int iceSpikesWeight = 16;
 
-        //mod compat
-        if (FabricLoader.getInstance().isModLoaded("winterbiomemod")) {
-            addToHighlands(new Identifier("winterbiomemod", "white_oaks"), 8);
-            addToHighlands(new Identifier("winterbiomemod", "white_oaks_thicket"), 10);
-            addToHighlands(new Identifier("winterbiomemod", "alpine"), 7);
-            addToHighlands(new Identifier("winterbiomemod", "subalpine"), 10);
-            addToHighlands(new Identifier("winterbiomemod", "subalpine_crag"), 10);
+        if (SimplexTerrain.CONFIG.doModCompat) {
+            //mod compat
+            if (FabricLoader.getInstance().isModLoaded("winterbiomemod")) {
+                addToHighlands(new Identifier("winterbiomemod", "white_oaks"), 8);
+                addToHighlands(new Identifier("winterbiomemod", "white_oaks_thicket"), 10);
+                addToHighlands(new Identifier("winterbiomemod", "alpine"), 7);
+                addToHighlands(new Identifier("winterbiomemod", "subalpine"), 10);
+                addToHighlands(new Identifier("winterbiomemod", "subalpine_crag"), 10);
 
-            addToToplands(new Identifier("winterbiomemod", "alpine_peaks"), 8);
-            addToToplands(new Identifier("winterbiomemod", "alpine_glacier"), 9);
+                addToToplands(new Identifier("winterbiomemod", "alpine_peaks"), 8);
+                addToToplands(new Identifier("winterbiomemod", "alpine_glacier"), 9);
 
-            System.out.println("Winter biomes registered!");
-        }
+                System.out.println("Winter biomes registered!");
+            }
 
-        if (FabricLoader.getInstance().isModLoaded("traverse")) {
-            addToLowlands(new Identifier("traverse", "arid_highlands"), 8);
-            addToHighlands(new Identifier("traverse", "cliffs"), 8);
-            addToMidlands(new Identifier("traverse", "coniferous_forest"), 8);
+            if (FabricLoader.getInstance().isModLoaded("traverse")) {
+                addToLowlands(new Identifier("traverse", "arid_highlands"), 8);
+                addToHighlands(new Identifier("traverse", "cliffs"), 8);
+                addToMidlands(new Identifier("traverse", "coniferous_forest"), 8);
 
-            addToHighlands(new Identifier("traverse", "snowy_coniferous_forest"), 8);
+                addToHighlands(new Identifier("traverse", "snowy_coniferous_forest"), 8);
 
-            addToLowlands(new Identifier("traverse", "desert_shrubland"), 8);
-            addToLowlands(new Identifier("traverse", "lush_swamp"), 8);
-            addToLowlands(new Identifier("traverse", "meadow"), 8);
+                addToLowlands(new Identifier("traverse", "desert_shrubland"), 8);
+                addToLowlands(new Identifier("traverse", "lush_swamp"), 8);
+                addToLowlands(new Identifier("traverse", "meadow"), 8);
 
-            addToMidlands(new Identifier("traverse", "mini_jungle"), 8);
-            addToMidlands(new Identifier("traverse", "meadow"), 8);
+                addToMidlands(new Identifier("traverse", "mini_jungle"), 8);
+                addToMidlands(new Identifier("traverse", "meadow"), 8);
 
-            addToMidlands(new Identifier("traverse", "plains_plateau"), 8);
-            addToLowlands(new Identifier("traverse", "plains_plateau"), 8);
+                addToMidlands(new Identifier("traverse", "plains_plateau"), 8);
+                addToLowlands(new Identifier("traverse", "plains_plateau"), 8);
 
-            addToMidlands(new Identifier("traverse", "wooded_plateau"), 8);
-            addToLowlands(new Identifier("traverse", "wooded_plateau"), 8);
+                addToMidlands(new Identifier("traverse", "wooded_plateau"), 8);
+                addToLowlands(new Identifier("traverse", "wooded_plateau"), 8);
 
-            addToMidlands(new Identifier("traverse", "rolling_hills"), 8);
-            addToLowlands(new Identifier("traverse", "rolling_hills"), 8);
+                addToMidlands(new Identifier("traverse", "rolling_hills"), 8);
+                addToLowlands(new Identifier("traverse", "rolling_hills"), 8);
 
-            addToMidlands(new Identifier("traverse", "woodlands"), 8);
-            addToLowlands(new Identifier("traverse", "woodlands"), 8);
+                addToMidlands(new Identifier("traverse", "woodlands"), 8);
+                addToLowlands(new Identifier("traverse", "woodlands"), 8);
 
 
-            System.out.println("Traverse biomes registered!");
-        }
+                System.out.println("Traverse biomes registered!");
+            }
 
-        if (FabricLoader.getInstance().isModLoaded("terrestria")) {
-            System.out.println("Terrestria biomes registered!");
+            if (FabricLoader.getInstance().isModLoaded("terrestria")) {
+                System.out.println("Terrestria biomes registered!");
+            }
         }
 
         addToLowlands(Registry.BIOME.getId(Biomes.SWAMP), swampWeight);

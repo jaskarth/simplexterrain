@@ -6,6 +6,7 @@ import net.minecraft.world.biome.layer.util.*;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import net.minecraft.world.level.LevelGeneratorType;
+import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.terrain.biomelayers.layers.*;
 
 import java.util.function.LongFunction;
@@ -24,10 +25,10 @@ public class LandBiomeLayers {
     public static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T>[] build(LevelGeneratorType levelGeneratorType, OverworldChunkGeneratorConfig overworldChunkGeneratorConfig, LongFunction<C> longFunction) {
         //lowlands (y67 - y90)
         LayerFactory<T> lowlandsBiomeLayer = PlainsLayer.INSTANCE.create(longFunction.apply(1L));
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < SimplexTerrain.CONFIG.lowlandBiomeAdditionAttempts; i++) {
             lowlandsBiomeLayer = LowlandsBiomePassLayer.INSTANCE.create(longFunction.apply( (1000*i)+i), lowlandsBiomeLayer);
         }
-        for(int k = 0; k < 7; ++k) {
+        for(int k = 0; k < SimplexTerrain.CONFIG.lowlandBiomeScaleAmount; ++k) {
             lowlandsBiomeLayer = ScaleLayer.NORMAL.create(longFunction.apply((1000 + k)), lowlandsBiomeLayer);
         }
         lowlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), lowlandsBiomeLayer);
@@ -38,11 +39,11 @@ public class LandBiomeLayers {
 
         //midlands (y91-y140)
         LayerFactory<T> midlandsBiomeLayer = ForestLayer.INSTANCE.create(longFunction.apply(1L));
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < SimplexTerrain.CONFIG.midlandBiomeAdditionAttempts; i++) {
             midlandsBiomeLayer = MidlandsBiomePassLayer.INSTANCE.create(longFunction.apply( (1000*i)+i), midlandsBiomeLayer);
         }
         midlandsBiomeLayer = AddSpecialForestsLayer.INSTANCE.create(longFunction.apply(2000), midlandsBiomeLayer);
-        for(int k = 0; k < 7; ++k) {
+        for(int k = 0; k < SimplexTerrain.CONFIG.midlandBiomeScaleAmount; ++k) {
             midlandsBiomeLayer = ScaleLayer.NORMAL.create(longFunction.apply((1000 + k)), midlandsBiomeLayer);
         }
         midlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), midlandsBiomeLayer);
@@ -53,10 +54,10 @@ public class LandBiomeLayers {
 
         //highlands (y141-y190)
         LayerFactory<T> highlandsBiomeLayer = TaigaLayer.INSTANCE.create(longFunction.apply(1L));
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < SimplexTerrain.CONFIG.highlandBiomeAdditionAttempts; i++) {
             highlandsBiomeLayer = HighlandsBiomePassLayer.INSTANCE.create(longFunction.apply( (1000*i)+i), highlandsBiomeLayer);
         }
-        for(int k = 0; k < 7; ++k) {
+        for(int k = 0; k < SimplexTerrain.CONFIG.highlandBiomeScaleAmount; ++k) {
             highlandsBiomeLayer = ScaleLayer.NORMAL.create(longFunction.apply((1000 + k)), highlandsBiomeLayer);
         }
         highlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), highlandsBiomeLayer);
@@ -67,10 +68,10 @@ public class LandBiomeLayers {
 
         //toplands (y191+)
         LayerFactory<T> toplandsBiomeLayer = MountainsLayer.INSTANCE.create(longFunction.apply(1L));
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < SimplexTerrain.CONFIG.toplandBiomeAdditionAttempts; i++) {
             toplandsBiomeLayer = ToplandsBiomePassLayer.INSTANCE.create(longFunction.apply( (1000*i)+i), toplandsBiomeLayer);
         }
-        for(int k = 0; k < 7; ++k) {
+        for(int k = 0; k < SimplexTerrain.CONFIG.toplandBiomeScaleAmount; ++k) {
             toplandsBiomeLayer = ScaleLayer.NORMAL.create(longFunction.apply((1000 + k)), toplandsBiomeLayer);
         }
         toplandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(longFunction.apply(20), toplandsBiomeLayer);
