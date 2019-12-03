@@ -12,7 +12,7 @@ import supercoder79.simplexterrain.terrain.biomelayers.layers.*;
 import java.util.function.LongFunction;
 
 public class LandBiomeLayers {
-	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> stack(long l, ParentedLayer parentedLayer, LayerFactory<T> layerFactory, int i, LongFunction<C> longFunction) {
+	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> repeat(long l, ParentedLayer parentedLayer, LayerFactory<T> layerFactory, int i, LongFunction<C> longFunction) {
 		LayerFactory<T> layerFactory2 = layerFactory;
 
 		for(int j = 0; j < i; ++j) {
@@ -22,7 +22,7 @@ public class LandBiomeLayers {
 		return layerFactory2;
 	}
 
-	public static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T>[] build(LevelGeneratorType levelGeneratorType, OverworldChunkGeneratorConfig overworldChunkGeneratorConfig, LongFunction<C> longFunction) {
+	public static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T>[] stackFactories(LevelGeneratorType levelGeneratorType, OverworldChunkGeneratorConfig overworldChunkGeneratorConfig, LongFunction<C> longFunction) {
 		//lowlands (y67 - y90)
 		LayerFactory<T> lowlandsBiomeLayer = PlainsLayer.INSTANCE.create(longFunction.apply(1L));
 		for (int i = 0; i < SimplexTerrain.CONFIG.lowlandBiomeAdditionAttempts; i++) {
@@ -84,7 +84,7 @@ public class LandBiomeLayers {
 	}
 
 	public static BiomeLayerSampler[] build(long l, LevelGeneratorType levelGeneratorType, OverworldChunkGeneratorConfig overworldChunkGeneratorConfig) {
-		LayerFactory<CachingLayerSampler>[] layerFactory = build(levelGeneratorType, overworldChunkGeneratorConfig, (m) -> new CachingLayerContext(25, l, m));
+		LayerFactory<CachingLayerSampler>[] layerFactory = stackFactories(levelGeneratorType, overworldChunkGeneratorConfig, (m) -> new CachingLayerContext(25, l, m));
 		return new BiomeLayerSampler[]{new BiomeLayerSampler(layerFactory[0]), new BiomeLayerSampler(layerFactory[1]), new BiomeLayerSampler(layerFactory[2]), new BiomeLayerSampler(layerFactory[3])};
 	}
 }
