@@ -13,33 +13,33 @@ import supercoder79.simplexterrain.terrain.biomesource.WorldBiomeSourceConfig;
 import java.util.Map;
 
 public class WorldType<T extends ChunkGenerator<?>> {
-    public static final Map<LevelGeneratorType, WorldType<?>> LGT_TO_WT_MAP = Maps.newHashMap();
-    public static final Map<String, WorldType<?>> STR_TO_WT_MAP = Maps.newHashMap();
+	public static final Map<LevelGeneratorType, WorldType<?>> LGT_TO_WT_MAP = Maps.newHashMap();
+	public static final Map<String, WorldType<?>> STR_TO_WT_MAP = Maps.newHashMap();
 
-    public final LevelGeneratorType generatorType;
-    public final WorldTypeChunkGeneratorFactory<T> chunkGenSupplier;
+	public final LevelGeneratorType generatorType;
+	public final WorldTypeChunkGeneratorFactory<T> chunkGenSupplier;
 
-    public WorldType(String name, WorldTypeChunkGeneratorFactory<T> chunkGenSupplier) {
-        this.generatorType = AccessorLevelGeneratorType.create(FabricLoader.getInstance().isModLoaded("cwt") ? 10 : 9, name);
-        generatorType.setCustomizable(false);
-        this.chunkGenSupplier = chunkGenSupplier;
+	public WorldType(String name, WorldTypeChunkGeneratorFactory<T> chunkGenSupplier) {
+		this.generatorType = AccessorLevelGeneratorType.create(FabricLoader.getInstance().isModLoaded("cwt") ? 10 : 9, name);
+		generatorType.setCustomizable(false);
+		this.chunkGenSupplier = chunkGenSupplier;
 
-        if (this.generatorType == null) {
-            throw new NullPointerException("An old world type has a null generator type: " + name + "!");
-        }
+		if (this.generatorType == null) {
+			throw new NullPointerException("An old world type has a null generator type: " + name + "!");
+		}
 
-        LGT_TO_WT_MAP.put(generatorType, this);
-        STR_TO_WT_MAP.put(name, this);
-    }
+		LGT_TO_WT_MAP.put(generatorType, this);
+		STR_TO_WT_MAP.put(name, this);
+	}
 
-    public static final WorldType<WorldChunkGenerator> SIMPLEX = new WorldType<>("simplex", (world) -> {
-        OverworldChunkGeneratorConfig chunkGenConfig = new OverworldChunkGeneratorConfig();
+	public static final WorldType<WorldChunkGenerator> SIMPLEX = new WorldType<>("simplex", (world) -> {
+		OverworldChunkGeneratorConfig chunkGenConfig = new OverworldChunkGeneratorConfig();
 
-        WorldBiomeSourceConfig config = new WorldBiomeSourceConfig(world.getLevelProperties()).setGeneratorSettings(chunkGenConfig);
-        return SimplexTerrain.WORLDGEN_TYPE.create(world, SimplexTerrain.WORLD_BIOME_SOURCE.applyConfig(config), chunkGenConfig);
-    });
+		WorldBiomeSourceConfig config = new WorldBiomeSourceConfig(world.getLevelProperties()).setGeneratorSettings(chunkGenConfig);
+		return SimplexTerrain.WORLDGEN_TYPE.create(world, SimplexTerrain.WORLD_BIOME_SOURCE.applyConfig(config), chunkGenConfig);
+	});
 
-    public interface WorldTypeChunkGeneratorFactory<T extends ChunkGenerator<?>> {
-        T create(World world);
-    }
+	public interface WorldTypeChunkGeneratorFactory<T extends ChunkGenerator<?>> {
+		T create(World world);
+	}
 }

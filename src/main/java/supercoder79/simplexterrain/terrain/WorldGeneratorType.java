@@ -9,16 +9,16 @@ import java.util.function.Supplier;
 
 public class WorldGeneratorType extends ChunkGeneratorType<OverworldChunkGeneratorConfig, WorldChunkGenerator> {
 
-    public WorldGeneratorType(boolean buffetScreen, Supplier<OverworldChunkGeneratorConfig> configSupplier) {
-        super(null, buffetScreen, configSupplier);
-    }
+	public WorldGeneratorType(boolean buffetScreen, Supplier<OverworldChunkGeneratorConfig> configSupplier) {
+		super(null, buffetScreen, configSupplier);
+	}
 
-    public static void init() {
-        // NO-OP
-    }
+	public static void init() {
+		// NO-OP
+	}
 
-    @Override
-    public WorldChunkGenerator create(World world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
-        return new WorldChunkGenerator(world, biomeSource, config);
-    }
+	@Override
+	public WorldChunkGenerator create(World world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
+		return new WorldChunkGenerator(world, biomeSource, config);
+	}
 }
