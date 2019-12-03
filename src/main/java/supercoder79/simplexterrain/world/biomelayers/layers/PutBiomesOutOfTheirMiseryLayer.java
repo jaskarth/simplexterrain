@@ -1,7 +1,7 @@
 package supercoder79.simplexterrain.world.biomelayers.layers;
 
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
-import supercoder79.simplexterrain.api.SquareCrossSamplingLayer;
+import supercoder79.simplexterrain.api.biomes.SquareCrossSamplingLayer;
 
 public enum PutBiomesOutOfTheirMiseryLayer implements SquareCrossSamplingLayer {
     INSTANCE;

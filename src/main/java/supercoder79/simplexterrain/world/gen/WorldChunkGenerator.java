@@ -18,12 +18,15 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
-import supercoder79.simplexterrain.noise.OctaveOpenSimplexNoise;
+import supercoder79.simplexterrain.api.noise.Noise;
+import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
+import supercoder79.simplexterrain.noise.PerlinNoise;
+import supercoder79.simplexterrain.noise.WorleyNoise;
 
 public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
-	private final OctaveOpenSimplexNoise heightNoise;
-	private final OctaveOpenSimplexNoise detailNoise;
-	private final OctaveOpenSimplexNoise scaleNoise;
+	private final OctaveNoiseSampler heightNoise;
+	private final OctaveNoiseSampler detailNoise;
+	private final OctaveNoiseSampler scaleNoise;
 
 	private final ChunkRandom random;
 	private final NoiseSampler surfaceDepthNoise;
@@ -34,9 +37,10 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
 
 		double amplitude = Math.pow(2, SimplexTerrain.CONFIG.baseOctaveAmount);
 
-		heightNoise = new OctaveOpenSimplexNoise(this.random, SimplexTerrain.CONFIG.baseOctaveAmount, SimplexTerrain.CONFIG.baseNoiseFrequencyCoefficient * amplitude, amplitude, amplitude);
-		detailNoise = new OctaveOpenSimplexNoise(this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
-		scaleNoise = new OctaveOpenSimplexNoise(this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow); // 0.06 * 2 = 0.12, maximum scale is 0.12 (default constant before noise was 0.1)
+		Class<? extends Noise> noiseClass = WorleyNoise.class; //In testing code
+		heightNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.baseOctaveAmount, SimplexTerrain.CONFIG.baseNoiseFrequencyCoefficient * amplitude, amplitude, amplitude);
+		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
+		scaleNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow); // 0.06 * 2 = 0.12, maximum scale is 0.12 (default constant before noise was 0.1)
 
 		if (biomeSource instanceof WorldBiomeSource) {
 			((WorldBiomeSource)(this.biomeSource)).setHeightmap(this);

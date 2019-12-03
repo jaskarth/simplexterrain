@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.api;
+package supercoder79.simplexterrain.api.biomes;
 
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 

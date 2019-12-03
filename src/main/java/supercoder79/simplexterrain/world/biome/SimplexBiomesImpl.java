@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.util.Identifier;
-import supercoder79.simplexterrain.api.SimplexClimate;
+import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 
 public final class SimplexBiomesImpl {
 	private SimplexBiomesImpl() {

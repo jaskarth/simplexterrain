@@ -7,10 +7,11 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
-import supercoder79.simplexterrain.api.SimplexBiomes;
-import supercoder79.simplexterrain.api.SimplexClimate;
+import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
+import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.ConfigData;
+import supercoder79.simplexterrain.noise.ValueNoise;
 import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
 
@@ -44,6 +45,13 @@ public class SimplexTerrain implements ModInitializer {
 		MOUNTAIN_EDGE = biomeId(Biomes.MOUNTAIN_EDGE);
 		WOODED_MOUNTAINS = biomeId(Biomes.WOODED_MOUNTAINS);
 		GRAVELLY_MOUNTAINS = biomeId(Biomes.GRAVELLY_MOUNTAINS);
+
+		ValueNoise noise = new ValueNoise(1);
+		for (int i = 0; i < 100; i++) {
+			for (int j = 0; j < 100; j++) {
+				System.out.println(noise.sample(i, j));
+			}
+		}
 
 		CONFIG = Config.init();
 

@@ -1,5 +1,7 @@
 package supercoder79.simplexterrain.noise;
 
+import supercoder79.simplexterrain.api.noise.Noise;
+
 /*
  * OpenSimplex Noise in Java.
  * (Using implementation by Kurt Spencer)
@@ -15,7 +17,7 @@ package supercoder79.simplexterrain.noise;
  *   of any particular randomization library, so results
  *   will be the same when ported to other languages.
  */
-public class OpenSimplexNoise {
+public class OpenSimplexNoise extends Noise {
     private static final double STRETCH_CONSTANT_2D = -0.211324865405187;    //(1/Math.sqrt(2+1)-1)/2;
     private static final double SQUISH_CONSTANT_2D = 0.366025403784439;      //(Math.sqrt(2+1)-1)/2;
     private static final double STRETCH_CONSTANT_3D = -1.0 / 6;              //(1/Math.sqrt(3+1)-1)/3;
@@ -55,21 +57,22 @@ public class OpenSimplexNoise {
         this(DEFAULT_SEED);
     }
 
-    public OpenSimplexNoise(short[] perm) {
-        this.perm = perm;
-        permGradIndex3D = new short[256];
-
-        for (int i = 0; i < 256; i++) {
-            //Since 3D has 24 gradients, simple bitmask won't work, so precompute modulo array.
-            permGradIndex3D[i] = (short) ((perm[i] % (gradients3D.length / 3)) * 3);
-        }
-    }
+//    public OpenSimplexNoise(short[] perm) {
+//        super(seed);
+//        this.perm = perm;
+//        permGradIndex3D = new short[256];
+//
+//        for (int i = 0; i < 256; i++) {
+//            //Since 3D has 24 gradients, simple bitmask won't work, so precompute modulo array.
+//            permGradIndex3D[i] = (short) ((perm[i] % (gradients3D.length / 3)) * 3);
+//        }
+//    }
 
     //Initializes the class using a permutation array generated from a 64-bit seed.
     //Generates a proper permutation (i.e. doesn't merely perform N successive pair swaps on a base array)
     //Uses a simple 64-bit LCG.
     public OpenSimplexNoise(long seed) {
-
+        super(seed);
         this.seed = seed;
         perm = new short[256];
         permGradIndex3D = new short[256];

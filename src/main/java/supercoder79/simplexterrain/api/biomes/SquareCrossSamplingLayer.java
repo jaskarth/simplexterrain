@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.api;
+package supercoder79.simplexterrain.api.biomes;
 
 import net.minecraft.world.biome.layer.type.ParentedLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
