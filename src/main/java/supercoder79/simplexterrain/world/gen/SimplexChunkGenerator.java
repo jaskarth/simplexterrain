@@ -22,7 +22,7 @@ import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.WorleyNoise;
 
-public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
+public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
 	private final OctaveNoiseSampler heightNoise;
 	private final OctaveNoiseSampler detailNoise;
 	private final OctaveNoiseSampler scaleNoise;
@@ -30,7 +30,7 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
 	private final ChunkRandom random;
 	private final NoiseSampler surfaceDepthNoise;
 
-	public WorldChunkGenerator(IWorld world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
+	public SimplexChunkGenerator(IWorld world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
 		super(world, biomeSource, config);
 		this.random = new ChunkRandom(world.getSeed());
 
@@ -41,8 +41,8 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
 		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
 		scaleNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow); // 0.06 * 2 = 0.12, maximum scale is 0.12 (default constant before noise was 0.1)
 
-		if (biomeSource instanceof WorldBiomeSource) {
-			((WorldBiomeSource)(this.biomeSource)).setHeightmap(this);
+		if (biomeSource instanceof SimplexBiomeSource) {
+			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
 		}
 
 		this.surfaceDepthNoise = new OctavePerlinNoiseSampler(this.random, 4, 0);
@@ -110,7 +110,11 @@ public class WorldChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorC
 				MathHelper.lerp(xProgress, sampleNW, sampleNE),
 				MathHelper.lerp(xProgress, sampleSW, sampleSE));
 
-		return (int) (sample + sampleDetail(x, z));
+		double detail = 0;
+		if (SimplexTerrain.CONFIG.addDetailNoise) {
+			detail = sampleDetail(x, z);
+		}
+		return (int) (sample + detail);
 	}
 
 	private double sampleNoise(int x, int z) {

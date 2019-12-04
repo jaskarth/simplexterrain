@@ -14,7 +14,7 @@ import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.world.biomelayers.LandBiomeLayers;
 
-public class WorldBiomeSource extends BiomeSource {
+public class SimplexBiomeSource extends BiomeSource {
 	private final BiomeLayerSampler lowlandsSampler;
 	private final BiomeLayerSampler midlandsSampler;
 	private final BiomeLayerSampler highlandsSampler;
@@ -24,7 +24,7 @@ public class WorldBiomeSource extends BiomeSource {
 
 	private Heightmap heightmap = Heightmap.NONE;
 
-	public WorldBiomeSource(WorldBiomeSourceConfig config) {
+	public SimplexBiomeSource(SimplexBiomeSourceConfig config) {
 		super(biomes);
 		long seed = config.getSeed();
 		BiomeLayerSampler[] biomeLayerSamplers = LandBiomeLayers.build(seed, config.getGeneratorType());

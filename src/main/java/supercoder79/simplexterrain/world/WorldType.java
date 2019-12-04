@@ -8,9 +8,9 @@ import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import net.minecraft.world.level.LevelGeneratorType;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.mixin.AccessorLevelGeneratorType;
-import supercoder79.simplexterrain.world.gen.WorldBiomeSource;
-import supercoder79.simplexterrain.world.gen.WorldBiomeSourceConfig;
-import supercoder79.simplexterrain.world.gen.WorldChunkGenerator;
+import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
+import supercoder79.simplexterrain.world.gen.SimplexBiomeSourceConfig;
+import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 
 import java.util.Map;
 
@@ -34,11 +34,11 @@ public class WorldType<T extends ChunkGenerator<?>> {
 		STR_TO_WT_MAP.put(name, this);
 	}
 
-	public static final WorldType<WorldChunkGenerator> SIMPLEX = new WorldType<>("simplex", (world) -> {
+	public static final WorldType<SimplexChunkGenerator> SIMPLEX = new WorldType<>("simplex", (world) -> {
 		OverworldChunkGeneratorConfig chunkGenConfig = new OverworldChunkGeneratorConfig();
-		WorldBiomeSourceConfig biomeSourceConfig = new WorldBiomeSourceConfig(world.getLevelProperties()).setGeneratorSettings(chunkGenConfig);
+		SimplexBiomeSourceConfig biomeSourceConfig = new SimplexBiomeSourceConfig(world.getLevelProperties()).setGeneratorSettings(chunkGenConfig);
 		
-		return SimplexTerrain.WORLDGEN_TYPE.create(world, new WorldBiomeSource(biomeSourceConfig), chunkGenConfig);
+		return SimplexTerrain.WORLDGEN_TYPE.create(world, new SimplexBiomeSource(biomeSourceConfig), chunkGenConfig);
 	});
 
 	public interface WorldTypeChunkGeneratorFactory<T extends ChunkGenerator<?>> {

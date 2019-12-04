@@ -7,7 +7,7 @@ import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 
 import java.util.function.Supplier;
 
-public class WorldGeneratorType extends ChunkGeneratorType<OverworldChunkGeneratorConfig, WorldChunkGenerator> {
+public class WorldGeneratorType extends ChunkGeneratorType<OverworldChunkGeneratorConfig, SimplexChunkGenerator> {
 
 	public WorldGeneratorType(boolean buffetScreen, Supplier<OverworldChunkGeneratorConfig> configSupplier) {
 		super(null, buffetScreen, configSupplier);
@@ -18,7 +18,7 @@ public class WorldGeneratorType extends ChunkGeneratorType<OverworldChunkGenerat
 	}
 
 	@Override
-	public WorldChunkGenerator create(World world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
-		return new WorldChunkGenerator(world, biomeSource, config);
+	public SimplexChunkGenerator create(World world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
+		return new SimplexChunkGenerator(world, biomeSource, config);
 	}
 }
