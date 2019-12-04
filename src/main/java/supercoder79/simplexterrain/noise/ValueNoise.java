@@ -1,6 +1,7 @@
 package supercoder79.simplexterrain.noise;
 
 import supercoder79.simplexterrain.api.noise.Noise;
+import supercoder79.simplexterrain.api.noise.NoiseImplementation;
 
 /**
  * @author Valoeghese
@@ -32,8 +33,8 @@ public class ValueNoise extends Noise {
 		int z0 = floor(z);
 		int x1 = ceil(x);
 		int z1 = ceil(z);
-		x -= (double) x0;
-		z -= (double) z0;
+		x -= x0;
+		z -= z0;
 		x = fade(x);
 		z = fade(z);
 
@@ -59,7 +60,7 @@ public class ValueNoise extends Noise {
 			index += 32;
 		}
 
-		return (double) q[index] * 0.03125D;
+		return q[index] * 0.03125D;
 	}
 
 	private static double lerp(double progress, double start, double end) {
@@ -78,5 +79,10 @@ public class ValueNoise extends Noise {
 
 	private static double fade(double n) {
 		return n * n * (3 - (n * 2));
+	}
+
+	@Override
+	public int implementedFunctions() {
+		return NoiseImplementation.NOISE_2D;
 	}
 }

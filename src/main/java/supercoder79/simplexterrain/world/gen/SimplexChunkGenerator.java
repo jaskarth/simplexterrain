@@ -20,6 +20,7 @@ import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
+import supercoder79.simplexterrain.noise.ValueNoise;
 import supercoder79.simplexterrain.noise.WorleyNoise;
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
@@ -36,7 +37,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		double amplitude = Math.pow(2, SimplexTerrain.CONFIG.baseOctaveAmount);
 
-		Class<? extends Noise> noiseClass = WorleyNoise.class; //In testing code
+		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
 		heightNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.baseOctaveAmount, SimplexTerrain.CONFIG.baseNoiseFrequencyCoefficient * amplitude, amplitude, amplitude);
 		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
 		scaleNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow); // 0.06 * 2 = 0.12, maximum scale is 0.12 (default constant before noise was 0.1)
@@ -60,6 +61,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	@Override
 	public void populateNoise(IWorld iWorld, Chunk chunk) {
+		long time = System.currentTimeMillis();
 		BlockPos.Mutable posMutable = new BlockPos.Mutable();
 
 		int chunkX = chunk.getPos().x;
@@ -84,6 +86,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				}
 			}
 		}
+		System.out.println(System.currentTimeMillis() - time);
 	}
 
 	@Override

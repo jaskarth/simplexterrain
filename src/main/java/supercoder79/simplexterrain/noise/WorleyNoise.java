@@ -18,7 +18,9 @@ package supercoder79.simplexterrain.noise;
  *  *&#47;
  */
 
+import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.Noise;
+import supercoder79.simplexterrain.api.noise.NoiseImplementation;
 
 /**
  * This is an implementation of Steve Worley's cellular noise function. It is
@@ -107,54 +109,58 @@ public class WorleyNoise extends Noise {
 	private static double minimumDistance(XorShift.Instance r, Point origin) {
 		// hack, but easier than handling points that are exactly at negative
 		// integer latice-points correctly.
-		Point p = new Point(origin.x + 1e-7, origin.y + 1e-7, origin.z + 1e-7);
+		Point p = new Point(origin.x + 1e-7, 0, origin.z + 1e-7);
 		// get the coordinate that this point resides at
 		int x = floor(p.x);
-		int y = floor(p.y);
+//		int y = floor(p.y);
 		int z = floor(p.z);
 		// create storage to track lowest values
 		double s = Double.MAX_VALUE;
 		// first check voxel the point is in
-		s = processVoxel(r, p, s, x, y, z);
+		s = processVoxel(r, p, s, x, z);
 		// check each of the voxels that share a face with the
 		// point's voxel, if they're close enough to possibly
 		// make a difference
 		// squared distance to the voxel in the +x direction
 		double dpx2 = p.x >= 0. ? square(1.0 - frac(p.x)) : square(frac(p.x));
 		if(dpx2 < s) {
-			s = processVoxel(r, p, s, x + 1, y, z);
+			s = processVoxel(r, p, s, x + 1, z);
 		}
 		// -x
 		double dnx2 = p.x >= 0. ? square(frac(p.x)) : square(1. - frac(p.x));
 		if(dnx2 < s) {
-			s = processVoxel(r, p, s, x - 1, y, z);
+			s = processVoxel(r, p, s, x - 1, z);
 		}
-		// +y
-		double dpy2 = p.y >= 0. ? square(1. - frac(p.y)) : square(frac(p.y));
-		if(dpy2 < s) {
-			s = processVoxel(r, p, s, x, y + 1, z);
-		}
-		// -y
-		double dny2 = p.y >= 0. ? square(frac(p.y)) : square(1. - frac(p.y));
-		if(dny2 < s) {
-			s = processVoxel(r, p, s, x, y - 1, z);
-		}
+
+		//We can safely ignore the y value, improving the performance
+
+//		// +y
+//		double dpy2 = p.y >= 0. ? square(1. - frac(p.y)) : square(frac(p.y));
+//		if(dpy2 < s) {
+//			s = processVoxel(r, p, s, x, y + 1, z);
+//		}
+//		// -y
+//		double dny2 = p.y >= 0. ? square(frac(p.y)) : square(1. - frac(p.y));
+//		if(dny2 < s) {
+//			s = processVoxel(r, p, s, x, y - 1, z);
+//		}
+
 		// +z
 		double dpz2 = p.z >= 0. ? square(1. - frac(p.z)) : square(frac(p.z));
 		if(dpz2 < s) {
-			s = processVoxel(r, p, s, x, y, z + 1);
+			s = processVoxel(r, p, s, x, z + 1);
 		}
 		// -z
 		double dnz2 = p.z >= 0. ? square(frac(p.z)) : square(1. - frac(p.z));
 		if(dnz2 < s) {
-			s = processVoxel(r, p, s, x, y, z - 1);
+			s = processVoxel(r, p, s, x, z - 1);
 		}
 		// finally check the remaining adjacent voxels
 		for(int i = -1; i <= 1; ++i) {
-			for(int j = -1; j <= 1; ++j) {
+//			for(int j = -1; j <= 1; ++j) {
 				for(int k = -1; k <= 1; ++k) {
 					// don't check the ones we already did above
-					if(Math.abs(i) + Math.abs(j) + Math.abs(k) <= 1) {
+					if(Math.abs(i) + /*Math.abs(j)*/ + Math.abs(k) <= 1) {
 						continue;
 					}
 					// find squared distance to voxel
@@ -163,10 +169,10 @@ public class WorleyNoise extends Noise {
 						vd2 += dnx2;
 					else if(i > 0)
 						vd2 += dpx2;
-					if(j < 0)
-						vd2 += dny2;
-					else if(j > 0)
-						vd2 += dpy2;
+//					if(j < 0)
+//						vd2 += dny2;
+//					else if(j > 0)
+//						vd2 += dpy2;
 					if(k < 0)
 						vd2 += dnz2;
 					else if(k > 0)
@@ -174,14 +180,20 @@ public class WorleyNoise extends Noise {
 					// and check it if it's close enough to matter
 					if(vd2 < s)
 					{
-						s = processVoxel(r, p, s, x + i, y + j, z + k);
+						s = processVoxel(r, p, s, x + i, z + k);
 					}
 				}
-			}
+//			}
 		}
 		// provide minimum. be sure to square root it to get the
 		// true distance.
-		return Math.sqrt(s);
+
+		//use fastsqrt based on user choice
+		return SimplexTerrain.CONFIG.sacrificeAccuracyForSpeed ? fastSqrt(s) : Math.sqrt(s);
+	}
+
+	public static double fastSqrt(double d) {
+		return Double.longBitsToDouble(((Double.doubleToLongBits(d)-(1l<<52))>>1 ) + (1l<<61));
 	}
 
 	/**
@@ -199,20 +211,22 @@ public class WorleyNoise extends Noise {
 	 *            encountered.
 	 * @param x
 	 *            the x coordinate of the voxel.
-	 * @param y
-	 *            the y coordinate of the voxel.
 	 * @param z
 	 *            the z coordinate of the voxel.
 	 * @return the closest distance of the points within the voxel to the
 	 *         provided point.
 	 */
-	private static double processVoxel(XorShift.Instance r, Point p, double s, int x, int y, int z) {
+	private static double processVoxel(XorShift.Instance r, Point p, double s, int x, int z) {
 		// reset random number generator for the voxel
-		r.setSeed(x, y, z);
+		r.setSeed(x, 0, z);
 		// each voxel always has one point
+//		Point created = new Point(
+//				x + r.nextDouble(),
+//				y + r.nextDouble(),
+//				z + r.nextDouble());
 		Point created = new Point(
 				x + r.nextDouble(),
-				y + r.nextDouble(),
+				0,
 				z + r.nextDouble());
 		// determine the distance between the generated point
 		// and the source point we're checking.
@@ -260,5 +274,10 @@ public class WorleyNoise extends Noise {
 	@Override
 	public double sample(double x, double y, double z) {
 		return noise(x, y, z);
+	}
+
+	@Override
+	public int implementedFunctions() {
+		return NoiseImplementation.NOISE_2D;
 	}
 }

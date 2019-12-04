@@ -36,10 +36,6 @@ public class OctaveNoiseSampler<T extends Noise> {
 			samplers[i] = create(classT, rand.nextLong());
 		}
 
-		for (int i = 0; i < samplers.length; i++) {
-			System.out.println(samplers[i]);
-		}
-
 		this.frequency = frequency;
 		this.amplitudeLow = amplitudeLow;
 		this.amplitudeHigh = amplitudeHigh;
@@ -49,6 +45,7 @@ public class OctaveNoiseSampler<T extends Noise> {
 		double amplFreq = 0.5D;
 		double result = 0;
 		for (Noise sampler : samplers) {
+			if (!NoiseImplementation.is2DNoiseImplemented(sampler.implementedFunctions())) throw new UnsupportedOperationException("2D Noise can't be generated with the specified noise function!");
 			result += (amplFreq * sampler.sample(x / (amplFreq * frequency), y / (amplFreq * frequency)));
 
 			amplFreq *= 0.5D;
@@ -62,6 +59,7 @@ public class OctaveNoiseSampler<T extends Noise> {
 		double amplFreq = 0.5D;
 		double result = 0;
 		for (Noise sampler : samplers) {
+			if (!NoiseImplementation.is3DNoiseImplemented(sampler.implementedFunctions())) throw new UnsupportedOperationException("3D Noise can't be generated with the specified noise function!");
 			double freq = amplFreq * frequency;
 			result += (amplFreq * sampler.sample(x / freq, y / freq, z / freq));
 
@@ -80,6 +78,7 @@ public class OctaveNoiseSampler<T extends Noise> {
 
 		for (int i = 0; i < octaves; ++i) {
 			Noise sampler = samplers[i];
+			if (!NoiseImplementation.is2DNoiseImplemented(sampler.implementedFunctions())) throw new UnsupportedOperationException("2D Noise can't be generated with the specified noise function!");
 
 			double freq = amplFreq * sampleFreq;
 			result += (amplFreq * sampler.sample(x / freq, y / freq));
@@ -100,6 +99,7 @@ public class OctaveNoiseSampler<T extends Noise> {
 
 		for (int i = 0; i < octaves; ++i) {
 			Noise sampler = samplers[i];
+			if (!NoiseImplementation.is3DNoiseImplemented(sampler.implementedFunctions())) throw new UnsupportedOperationException("3D Noise can't be generated with the specified noise function!");
 
 			double freq = amplFreq * sampleFreq;
 			result += (amplFreq * sampler.sample(x / freq, y / freq, z / freq));

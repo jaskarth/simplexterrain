@@ -1,8 +1,15 @@
 package supercoder79.simplexterrain.configs;
 
+import supercoder79.simplexterrain.api.noise.NoiseType;
+
 public class ConfigData {
+    public String configVersion = "0.3.0";
     public boolean doModCompat = true;
     public boolean addDetailNoise = true;
+
+    public boolean sacrificeAccuracyForSpeed = true;
+
+    public NoiseType noiseGenerator = NoiseType.SIMPLEX;
 
     public int baseHeight = 100;
 
