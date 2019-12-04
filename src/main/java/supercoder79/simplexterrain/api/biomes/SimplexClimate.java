@@ -2,6 +2,12 @@ package supercoder79.simplexterrain.api.biomes;
 
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 
+/**
+ * Specifies the climates used to determine the biomes.
+ * It's basically just a couple of if statements with values fed in from simplex noise.
+ *
+ * @author Valoeghese
+ */
 public enum SimplexClimate {
 	//lush: humidity > 0.3
 	//dry: humidity < -0.3

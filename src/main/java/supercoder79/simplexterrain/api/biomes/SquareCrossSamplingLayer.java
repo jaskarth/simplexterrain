@@ -6,7 +6,7 @@ import net.minecraft.world.biome.layer.util.LayerSampleContext;
 import net.minecraft.world.biome.layer.util.LayerSampler;
 
 /**
- * Samples all biomes in a 3x3 grid. No, i'm not calling it KingTransformer, what gave you that idea?
+ * Samples all biomes in a 3x3 grid. No, I'm not calling it KingTransformer, what gave you that idea?
  * This is probably very bad for performance, so use it sparingly.
  *
  * @author SuperCoder79

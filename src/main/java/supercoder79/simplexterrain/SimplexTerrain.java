@@ -11,7 +11,6 @@ import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.ConfigData;
-import supercoder79.simplexterrain.noise.ValueNoise;
 import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
 
@@ -46,13 +45,6 @@ public class SimplexTerrain implements ModInitializer {
 		WOODED_MOUNTAINS = biomeId(Biomes.WOODED_MOUNTAINS);
 		GRAVELLY_MOUNTAINS = biomeId(Biomes.GRAVELLY_MOUNTAINS);
 
-		ValueNoise noise = new ValueNoise(1);
-		for (int i = 0; i < 100; i++) {
-			for (int j = 0; j < 100; j++) {
-				System.out.println(noise.sample(i, j));
-			}
-		}
-
 		CONFIG = Config.init();
 
 		loadMeOnClientPls = WorldType.SIMPLEX;
@@ -70,7 +62,6 @@ public class SimplexTerrain implements ModInitializer {
 			//mod compat
 			if (FabricLoader.getInstance().isModLoaded("winterbiomemod")) {
 				addWinterBiomes();
-
 				System.out.println("Winter biomes registered!");
 			}
 

@@ -5,6 +5,15 @@ import supercoder79.simplexterrain.noise.OpenSimplexNoise;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
+/**
+ * A helper class used to generify the usage of octaves in noise generation.
+ * It clamps the values between amplitudeLow and amplitudeHigh
+ *
+ * valo you should add more doc to this when you have time thanks
+ *
+ * @param <T> The noise sampler that you are using. It must have a constructor with just a long parameter.
+ * @author Valoeghese and SuperCoder79
+ */
 public class OctaveNoiseSampler<T extends Noise> {
 	private Noise[] samplers;
 	private double clamp;
