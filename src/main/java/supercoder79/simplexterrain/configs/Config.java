@@ -3,6 +3,7 @@ package supercoder79.simplexterrain.configs;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import supercoder79.simplexterrain.SimplexTerrain;
+import supercoder79.simplexterrain.api.noise.NoiseType;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -36,6 +37,10 @@ public class Config {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (configHolder.noiseGenerator == null) {
+            System.out.println("[Simplex Terrain] The noise generator was null! Falling back to Simplex!");
+            configHolder.noiseGenerator = NoiseType.SIMPLEX;
         }
         return configHolder;
     }
