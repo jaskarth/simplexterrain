@@ -1,7 +1,5 @@
 package supercoder79.simplexterrain.api.noise;
 
-import supercoder79.simplexterrain.noise.OpenSimplexNoise;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.noise;
+package supercoder79.simplexterrain.noise.worley;
 
 /*
  * This code is released into the public domain.

@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.noise;
+package supercoder79.simplexterrain.noise.gradient;
 
 import supercoder79.simplexterrain.api.noise.Noise;
 
