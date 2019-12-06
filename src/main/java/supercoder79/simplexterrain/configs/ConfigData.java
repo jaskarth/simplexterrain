@@ -7,7 +7,7 @@ public class ConfigData {
     public boolean doModCompat = true;
     public boolean addDetailNoise = true;
 
-    public boolean sacrificeAccuracyForSpeed = true;
+    public boolean sacrificeAccuracyForSpeed = false;
 
     public NoiseType noiseGenerator = NoiseType.SIMPLEX;
 

@@ -9,8 +9,8 @@ public class CubicNoise extends Noise {
 
 	private long seed;
 	private int octave;
-	private int periodx = (int)Math.pow(2, 12);
-	private int periody = (int)Math.pow(2, 12);
+	private int periodx = (int)Math.pow(2, 10);
+	private int periody = (int)Math.pow(2, 10);
 
 //	public CubicNoise(final int seed, final int octave, final int periodx, final int periody) {
 //		this(seed);
@@ -54,9 +54,8 @@ public class CubicNoise extends Noise {
 					randomize(seed, tile(xi + 1, periodx), tile(yi - 1 + i, periody)),
 					randomize(seed, tile(xi + 2, periodx), tile(yi - 1 + i, periody)),
 					lerpx);
-		double d = (interpolate(xSamples[0], xSamples[1], xSamples[2], xSamples[3], lerpy) * 0.25f + 0.25f);
+		double d = (interpolate(xSamples[0], xSamples[1], xSamples[2], xSamples[3], lerpy) * 0.125f + 0.25f);
 		d /= Math.pow(10, 9) / 2;
-//		System.out.println(d);
 		return d;
 	}
 

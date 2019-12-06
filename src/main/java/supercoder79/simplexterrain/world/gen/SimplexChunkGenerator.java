@@ -20,6 +20,7 @@ import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
+import supercoder79.simplexterrain.noise.gradient.CubicNoise;
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
 	private final OctaveNoiseSampler heightNoise;
@@ -59,7 +60,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	@Override
 	public void populateNoise(IWorld iWorld, Chunk chunk) {
-		long time = System.currentTimeMillis();
+//		long time = System.currentTimeMillis();
 		BlockPos.Mutable posMutable = new BlockPos.Mutable();
 
 		int chunkX = chunk.getPos().x;
@@ -84,7 +85,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				}
 			}
 		}
-		System.out.println(System.currentTimeMillis() - time);
+//		System.out.println(System.currentTimeMillis() - time);
 	}
 
 	@Override

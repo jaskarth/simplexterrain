@@ -50,12 +50,12 @@ public class SimplexTerrain implements ModInitializer {
 
 		CONFIG = Config.init();
 
-		CubicNoise noise = new CubicNoise(0L);
-		for (int i = 0; i < 32; i++) {
-			for (int j = 0; j < 32; j++) {
-				System.out.println(noise.sample(i, j));
-			}
-		}
+//		CubicNoise noise = new CubicNoise(0L);
+//		for (int i = 0; i < 32; i++) {
+//			for (int j = 0; j < 32; j++) {
+//				System.out.println(noise.sample(i, j));
+//			}
+//		}
 
 		loadMeOnClientPls = WorldType.SIMPLEX;
 		addDefaultBiomes();
