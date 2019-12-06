@@ -1,7 +1,11 @@
 package supercoder79.simplexterrain.world.gen;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
+import java.util.function.LongFunction;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -20,6 +24,7 @@ import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
+import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
@@ -29,6 +34,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	private final ChunkRandom random;
 	private final NoiseSampler surfaceDepthNoise;
+	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
 
 	public SimplexChunkGenerator(IWorld world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
 		super(world, biomeSource, config);
@@ -46,6 +52,16 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		}
 
 		this.surfaceDepthNoise = new OctavePerlinNoiseSampler(this.random, 4, 0);
+
+		List<TerrainPostProcessor> postProcessors = new ArrayList<>();
+		postProcessorFactories.forEach(factory -> postProcessors.add(factory.apply(this.seed)));
+		terrainPostProcessors = postProcessors;
+	}
+
+	private static final Collection<LongFunction<TerrainPostProcessor>> postProcessorFactories = new ArrayList<>();
+
+	public static void addTerrainPostProcessor(LongFunction<TerrainPostProcessor> factory) {
+		postProcessorFactories.add(factory);
 	}
 
 	@Override
@@ -190,5 +206,16 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				}
 			}
 		}
+	}
+
+	@Override
+	public void generateFeatures(ChunkRegion region) {
+		int chunkX = region.getCenterChunkZ();
+		int chunkZ = region.getCenterChunkZ();
+		ChunkRandom rand = new ChunkRandom();
+		rand.setSeed(chunkX, chunkZ);
+		this.terrainPostProcessors.forEach(postProcessor -> postProcessor.postProcess(region, rand, chunkX, chunkZ));
+
+		super.generateFeatures(region);
 	}
 }

@@ -5,9 +5,9 @@ package supercoder79.simplexterrain.api.noise;
  * a specified task.
  */
 public class NoiseImplementation {
-	public static final int NOISE_2D = 1;
-	public static final int NOISE_3D = 2;
-	public static final int NOISE_4D = 4;
+	public static final int NOISE_2D = 0b001;
+	public static final int NOISE_3D = 0b010;
+	public static final int NOISE_4D = 0b100;
 	public static final int GOOD_ENOUGH = NOISE_2D | NOISE_3D;
 	public static final int ALL = NOISE_2D | NOISE_3D | NOISE_4D;
 
