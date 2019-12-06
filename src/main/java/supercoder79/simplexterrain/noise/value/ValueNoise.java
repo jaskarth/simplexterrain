@@ -9,7 +9,7 @@ import supercoder79.simplexterrain.api.noise.NoiseImplementation;
 public class ValueNoise extends Noise {
 
 	public ValueNoise(long seed) {
-		super(seed);
+		super(seed); // e
 	}
 
 	public static double[] q = {
