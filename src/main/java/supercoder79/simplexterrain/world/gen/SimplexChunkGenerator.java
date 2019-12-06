@@ -1,7 +1,11 @@
 package supercoder79.simplexterrain.world.gen;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
+import java.util.function.LongFunction;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -20,7 +24,8 @@ import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
-import supercoder79.simplexterrain.noise.gradient.CubicNoise;
+import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
+
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
 	private final OctaveNoiseSampler heightNoise;
@@ -29,6 +34,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	private final ChunkRandom random;
 	private final NoiseSampler surfaceDepthNoise;
+	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
 
 	public SimplexChunkGenerator(IWorld world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
 		super(world, biomeSource, config);
@@ -39,13 +45,23 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
 		heightNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.baseOctaveAmount, SimplexTerrain.CONFIG.baseNoiseFrequencyCoefficient * amplitude, amplitude, amplitude);
 		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
-		scaleNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow); // 0.06 * 2 = 0.12, maximum scale is 0.12 (default constant before noise was 0.1)
+		scaleNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow);
 
 		if (biomeSource instanceof SimplexBiomeSource) {
 			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
 		}
 
 		this.surfaceDepthNoise = new OctavePerlinNoiseSampler(this.random, 4, 0);
+
+		List<TerrainPostProcessor> postProcessors = new ArrayList<>();
+		postProcessorFactories.forEach(factory -> postProcessors.add(factory.apply(this.seed)));
+		terrainPostProcessors = postProcessors;
+	}
+
+	private static final Collection<LongFunction<TerrainPostProcessor>> postProcessorFactories = new ArrayList<>();
+
+	public static void addTerrainPostProcessor(LongFunction<TerrainPostProcessor> factory) {
+		postProcessorFactories.add(factory);
 	}
 
 	@Override
@@ -60,7 +76,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	@Override
 	public void populateNoise(IWorld iWorld, Chunk chunk) {
-//		long time = System.currentTimeMillis();
 		BlockPos.Mutable posMutable = new BlockPos.Mutable();
 
 		int chunkX = chunk.getPos().x;
@@ -85,7 +100,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				}
 			}
 		}
-//		System.out.println(System.currentTimeMillis() - time);
 	}
 
 	@Override
@@ -192,5 +206,16 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				}
 			}
 		}
+	}
+
+	@Override
+	public void generateFeatures(ChunkRegion region) {
+		int chunkX = region.getCenterChunkZ();
+		int chunkZ = region.getCenterChunkZ();
+		ChunkRandom rand = new ChunkRandom();
+		rand.setSeed(chunkX, chunkZ);
+		this.terrainPostProcessors.forEach(postProcessor -> postProcessor.postProcess(region, rand, chunkX, chunkZ));
+
+		super.generateFeatures(region);
 	}
 }
