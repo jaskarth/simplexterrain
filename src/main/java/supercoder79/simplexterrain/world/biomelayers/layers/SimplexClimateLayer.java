@@ -4,7 +4,7 @@ import net.minecraft.world.biome.layer.type.InitLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
-import supercoder79.simplexterrain.noise.OpenSimplexNoise;
+import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 import java.util.Random;
 

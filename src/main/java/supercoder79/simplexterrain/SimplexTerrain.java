@@ -11,6 +11,7 @@ import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.ConfigData;
+import supercoder79.simplexterrain.noise.gradient.CubicNoise;
 import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
 
@@ -48,6 +49,13 @@ public class SimplexTerrain implements ModInitializer {
 		GRAVELLY_MOUNTAINS = biomeId(Biomes.GRAVELLY_MOUNTAINS);
 
 		CONFIG = Config.init();
+
+//		CubicNoise noise = new CubicNoise(0L);
+//		for (int i = 0; i < 32; i++) {
+//			for (int j = 0; j < 32; j++) {
+//				System.out.println(noise.sample(i, j));
+//			}
+//		}
 
 		loadMeOnClientPls = WorldType.SIMPLEX;
 		addDefaultBiomes();
