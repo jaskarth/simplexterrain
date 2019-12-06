@@ -2,6 +2,9 @@ package supercoder79.simplexterrain.noise.gradient;
 
 import supercoder79.simplexterrain.api.noise.Noise;
 
+/**
+ * @author Ken Perlin
+ */
 public class PerlinNoise extends Noise {
 	public PerlinNoise(long seed) {
 		super(seed);
@@ -34,18 +37,18 @@ public class PerlinNoise extends Noise {
 						lerp(u, grad(p[AB+1], x  , y-1, z-1 ),
 								grad(p[BB+1], x-1, y-1, z-1 ))));
 	}
+
 	static double fade(double t) {
 		return t * t * t * (t * (t * 6 - 15) + 10);
 	}
-	static double lerp(double t, double a, double b) {
-		return a + t * (b - a);
-	}
+
 	static double grad(int hash, double x, double y, double z) {
 		int h = hash & 15;                      // CONVERT LO 4 BITS OF HASH CODE
 		double u = h<8 ? x : y,                 // INTO 12 GRADIENT DIRECTIONS.
 				v = h<4 ? y : h==12||h==14 ? x : z;
 		return ((h&1) == 0 ? u : -u) + ((h&2) == 0 ? v : -v);
 	}
+
 	static final int p[] = new int[512], permutation[] = { 151,160,137,91,90,15,
 			131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
 			190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
