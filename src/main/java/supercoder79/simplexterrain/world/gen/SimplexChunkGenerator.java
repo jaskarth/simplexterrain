@@ -20,10 +20,7 @@ import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
-<<<<<<< HEAD
-=======
-import supercoder79.simplexterrain.noise.gradient.CubicNoise;
->>>>>>> 0fc2072c5d13fab758214347a59e8c203ccbbc34
+
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
 	private final OctaveNoiseSampler heightNoise;
