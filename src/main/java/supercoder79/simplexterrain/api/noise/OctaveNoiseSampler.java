@@ -1,7 +1,6 @@
 package supercoder79.simplexterrain.api.noise;
 
-import supercoder79.simplexterrain.noise.OpenSimplexNoise;
-
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
@@ -19,10 +18,23 @@ public class OctaveNoiseSampler<T extends Noise> {
 	private double clamp;
 	private double frequency, amplitudeLow, amplitudeHigh;
 
-	private T create(Class<T> clazz, long seed) {
+	private Constructor<T> getNoiseConstructor(Class<T> clazz) {
 		try {
-			return clazz.getDeclaredConstructor(long.class).newInstance(seed);
-		} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+			return clazz.getDeclaredConstructor(long.class);
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private T create(Constructor<T> constructor, long seed) {
+		if (constructor == null) {
+			return null;
+		}
+
+		try {
+			return constructor.newInstance(seed);
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -32,8 +44,10 @@ public class OctaveNoiseSampler<T extends Noise> {
 		samplers = new Noise[octaves];
 		clamp = 1D / (1D - (1D / Math.pow(2, octaves)));
 
+		Constructor<T> constructor = this.getNoiseConstructor(classT);
+
 		for (int i = 0; i < octaves; ++i) {
-			samplers[i] = create(classT, rand.nextLong());
+			samplers[i] = create(constructor, rand.nextLong());
 		}
 
 		this.frequency = frequency;
