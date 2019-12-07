@@ -1,6 +1,10 @@
 package supercoder79.simplexterrain.configs;
 
+import supercoder79.simplexterrain.api.caves.CaveType;
 import supercoder79.simplexterrain.api.noise.NoiseType;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class ConfigData {
     public String configVersion = "0.3.0";
@@ -10,6 +14,9 @@ public class ConfigData {
     public boolean sacrificeAccuracyForSpeed = true;
 
     public NoiseType noiseGenerator = NoiseType.SIMPLEX;
+
+    //TODO: change gravelly to simplex
+    public ArrayList<CaveType> caveTypes = new ArrayList<>(Collections.singleton(CaveType.GRAVELLY));
 
     public int baseHeight = 100;
 

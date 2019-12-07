@@ -22,15 +22,19 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
+import supercoder79.simplexterrain.api.caves.CaveType;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
+import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
 	private final OctaveNoiseSampler heightNoise;
 	private final OctaveNoiseSampler detailNoise;
 	private final OctaveNoiseSampler scaleNoise;
+	private final OctaveNoiseSampler caveNoise;
+	private final OctaveNoiseSampler caveHeightNoise;
 
 	private final ChunkRandom random;
 	private final NoiseSampler surfaceDepthNoise;
@@ -46,6 +50,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		heightNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.baseOctaveAmount, SimplexTerrain.CONFIG.baseNoiseFrequencyCoefficient * amplitude, amplitude, amplitude);
 		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
 		scaleNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow);
+		caveNoise  = new OctaveNoiseSampler<>(OpenSimplexNoise.class, this.random, 6, 150, 10, 10);
+		caveHeightNoise  = new OctaveNoiseSampler<>(OpenSimplexNoise.class, this.random, 5, Math.pow(2, 6), 10, 10);
 
 		if (biomeSource instanceof SimplexBiomeSource) {
 			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
@@ -87,9 +93,12 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 			for (int z = 0; z < 16; ++z) {
 				posMutable.setZ(z);
 				int height = getHeight((chunkX * 16) + x, (chunkZ * 16) + z);
+				double[] excluded = generateExcludedBlocks((chunkX * 16) + x, (chunkZ * 16) + z);
 
 				for (int y = 0; y < 256; ++y) {
 					posMutable.setY(y);
+					if (SimplexTerrain.CONFIG.caveTypes.contains(CaveType.GRAVELLY))
+						if (y >= excluded[0] && y <= excluded[1]) continue;
 					if (height >= y) {
 						chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
 					} else if (y < 63) {
@@ -131,6 +140,12 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 			detail = sampleDetail(x, z);
 		}
 		return (int) (sample + detail);
+	}
+
+	private double[] generateExcludedBlocks(double x, double z) {
+		double start = caveNoise.sample(x, z) + 30 +  caveHeightNoise.sample(z, x);
+		double stop = caveNoise.sample(z, x) + start + caveHeightNoise.sample(x, z)*3;
+		return new double[]{start, stop};
 	}
 
 	private double sampleNoise(int x, int z) {
@@ -190,7 +205,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 					return;
 				}
 
-				blockPos = (BlockPos)var9.next();
+				blockPos = var9.next();
 				if (l > 0) {
 					for(n = l; n >= l - 4; --n) {
 						if (n >= l - random.nextInt(5)) {
