@@ -11,7 +11,8 @@ import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.ConfigData;
-import supercoder79.simplexterrain.configs.ReloadConfigCommand;
+import supercoder79.simplexterrain.init.ReloadConfigCommand;
+import supercoder79.simplexterrain.init.SimplexPostProcessors;
 import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
 
@@ -63,6 +64,8 @@ public class SimplexTerrain implements ModInitializer {
 		if (CONFIG.reloadConfigCommand) {
 			ReloadConfigCommand.init();
 		}
+		
+		SimplexPostProcessors.init();
 
 		WORLDGEN_TYPE = Registry.register(Registry.CHUNK_GENERATOR_TYPE, new Identifier("simplexterrain", "simplex"), new WorldGeneratorType(false, OverworldChunkGeneratorConfig::new));
 	}

@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.configs;
+package supercoder79.simplexterrain.init;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -7,6 +7,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import supercoder79.simplexterrain.SimplexTerrain;
+import supercoder79.simplexterrain.configs.Config;
 
 public class ReloadConfigCommand {
 	public static void init() {
