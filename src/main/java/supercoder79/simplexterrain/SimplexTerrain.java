@@ -1,13 +1,7 @@
 package supercoder79.simplexterrain;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -17,6 +11,7 @@ import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.ConfigData;
+import supercoder79.simplexterrain.configs.ReloadConfigCommand;
 import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
 
@@ -65,7 +60,9 @@ public class SimplexTerrain implements ModInitializer {
 		loadMeOnClientPls = WorldType.SIMPLEX;
 		addDefaultBiomes();
 		
-		initCommands();
+		if (CONFIG.reloadConfigCommand) {
+			ReloadConfigCommand.init();
+		}
 
 		WORLDGEN_TYPE = Registry.register(Registry.CHUNK_GENERATOR_TYPE, new Identifier("simplexterrain", "simplex"), new WorldGeneratorType(false, OverworldChunkGeneratorConfig::new));
 	}
@@ -74,7 +71,7 @@ public class SimplexTerrain implements ModInitializer {
 		//holy shit this code is still cursed
 
 		// TODO Re-Add Mod Compat
-		if (SimplexTerrain.CONFIG.doModCompat) {
+		if (CONFIG.doModCompat) {
 
 			//mod compat
 			if (FabricLoader.getInstance().isModLoaded("winterbiomemod")) {
@@ -394,17 +391,5 @@ public class SimplexTerrain implements ModInitializer {
 
 	private static final Identifier biomeId(Biome biome) {
 		return Registry.BIOME.getId(biome);
-	}
-	
-	private static void initCommands() {
-		CommandRegistry.INSTANCE.register(false, dispatcher -> {
-			LiteralArgumentBuilder<ServerCommandSource> lab = CommandManager.literal("reloadterrainconfig").requires(executor -> executor.hasPermissionLevel(2)).executes(cmd -> {
-				ServerCommandSource source = cmd.getSource();
-				CONFIG = Config.init();
-				source.sendFeedback(new LiteralText("§2§lReloaded Configs!"), false);
-				return 1;
-			});
-			dispatcher.register(lab);
-		});
 	}
 }

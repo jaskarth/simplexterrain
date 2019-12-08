@@ -8,6 +8,7 @@ public class ConfigData {
 	public boolean addDetailNoise = true;
 
 	public boolean sacrificeAccuracyForSpeed = true;
+	public boolean reloadConfigCommand = false;
 
 	public NoiseType noiseGenerator = NoiseType.SIMPLEX;
 
