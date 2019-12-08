@@ -14,11 +14,10 @@ import supercoder79.simplexterrain.configs.ConfigData;
 import supercoder79.simplexterrain.init.ReloadConfigCommand;
 import supercoder79.simplexterrain.init.SimplexPostProcessors;
 import supercoder79.simplexterrain.world.WorldType;
-import supercoder79.simplexterrain.world.feature.Carvers;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
 
 public class SimplexTerrain implements ModInitializer {
-	public static final String VERSION = "0.3.0";
+	public static final String VERSION = "0.4.0";
 
 	public static WorldGeneratorType WORLDGEN_TYPE;
 
@@ -49,8 +48,6 @@ public class SimplexTerrain implements ModInitializer {
 		MOUNTAIN_EDGE = biomeId(Biomes.MOUNTAIN_EDGE);
 		WOODED_MOUNTAINS = biomeId(Biomes.WOODED_MOUNTAINS);
 		GRAVELLY_MOUNTAINS = biomeId(Biomes.GRAVELLY_MOUNTAINS);
-
-		Carvers.init();
 
 		CONFIG = Config.init();
 

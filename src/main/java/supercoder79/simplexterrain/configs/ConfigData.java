@@ -1,15 +1,13 @@
 package supercoder79.simplexterrain.configs;
 
-import supercoder79.simplexterrain.api.caves.CaveType;
 import supercoder79.simplexterrain.api.noise.NoiseType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class ConfigData {
-	public String configVersion = "0.3.0";
+	public String configVersion = "0.4.0";
 	public boolean doModCompat = true;
 	public boolean addDetailNoise = true;
 
@@ -18,7 +16,7 @@ public class ConfigData {
 
 	public NoiseType noiseGenerator = NoiseType.SIMPLEX;
 
-    public ArrayList<CaveType> caveTypes = new ArrayList<>(Arrays.asList(CaveType.VANILLA, CaveType.RAVINES, CaveType.SIMPLEX));
+	public List<PostProcessors> postProcessors = new ArrayList<>(Arrays.asList(PostProcessors.RIVERS, PostProcessors.SIMPLEX_CAVES));
 
     public int baseHeight = 100;
 

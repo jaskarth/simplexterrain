@@ -13,11 +13,13 @@ import java.util.Random;
 
 public class CavePostProcessor implements TerrainPostProcessor {
 	private OctaveNoiseSampler caveNoise;
+	private OctaveNoiseSampler caveEnabledNoise;
 	private OctaveNoiseSampler caveHeightNoise;
 
 	public CavePostProcessor(long seed) {
 		caveNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed), 6, 2048, 14, 14);
 		caveHeightNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed), 5, Math.pow(2, 5), 10, 10);
+		caveEnabledNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed+20), 6, 1024, 1, 1);
 	}
 
 	@Override
@@ -26,17 +28,23 @@ public class CavePostProcessor implements TerrainPostProcessor {
 		for (int x = 0; x < 16; x++) {
 			mutable.setX((chunkX*16)+x);
 			for (int z = 0; z < 16; z++) {
-				mutable.setZ((chunkZ*16)+z);
-				int heightOffset = (int)(caveHeightNoise.sample((chunkX*16)+x, (chunkZ*16)+z))+30;
-				int bottom = (int)caveNoise.sample((chunkX*16)+x, (chunkZ*16)+z) + heightOffset;
-				int top = bottom + (int)caveNoise.sample((chunkZ*16)+z, (chunkX*16)+x)*5;
-				if (Math.abs(top - bottom) == 1) continue;
-				double[] vals = new double[]{bottom, top};
-				for (int y = 0; y < 256; y++) {
-					if (y >= vals[0] && y <= vals[1]) {
-						mutable.setY(y);
-						world.setBlockState(mutable, Blocks.CAVE_AIR.getDefaultState(), 2);
-						if (y == vals[1]) break; //we've reached the top, end and continue
+				mutable.setZ((chunkZ * 16) + z);
+
+				if (caveEnabledNoise.sample((chunkX * 16) + x, (chunkZ * 16) + z) > 0) {
+					int heightOffset = (int) (caveHeightNoise.sample((chunkX * 16) + x, (chunkZ * 16) + z)) + 30;
+					int bottom = (int) caveNoise.sample((chunkX * 16) + x, (chunkZ * 16) + z) + heightOffset;
+					int top = bottom + (int) caveNoise.sample((chunkZ * 16) + z, (chunkX * 16) + x) * 2;
+
+					if (Math.abs(top - bottom) <= 3) continue;
+					double[] vals = new double[]{bottom, top};
+
+					for (int y = 0; y < 256; y++) {
+						if (y >= vals[0] && y <= vals[1]) {
+							mutable.setY(y);
+							if (world.getBlockState(mutable) != Blocks.WATER.getDefaultState())
+								world.setBlockState(mutable, Blocks.CAVE_AIR.getDefaultState(), 2);
+							if (y == vals[1]) break; //we've reached the top, end and continue
+						}
 					}
 				}
 			}

@@ -15,26 +15,17 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.OceanBiome;
-import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.ProbabilityConfig;
-import net.minecraft.world.gen.carver.Carver;
-import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
-import net.minecraft.world.gen.feature.FeatureConfig;
-import net.minecraft.world.gen.feature.StructureFeature;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
-import supercoder79.simplexterrain.api.caves.CaveType;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
-import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
@@ -46,7 +37,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	private final ChunkRandom random;
 	private final NoiseSampler surfaceDepthNoise;
 	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
-	private final List<ConfiguredCarver<?>> carvers;
 
 	public SimplexChunkGenerator(IWorld world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
 		super(world, biomeSource, config);
@@ -69,13 +59,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		List<TerrainPostProcessor> postProcessors = new ArrayList<>();
 		postProcessorFactories.forEach(factory -> postProcessors.add(factory.apply(this.seed)));
 		terrainPostProcessors = postProcessors;
-
-		carvers = new ArrayList<>();
-		for (CaveType type : SimplexTerrain.CONFIG.caveTypes) {
-			if (type.carver != null) {
-				carvers.add(Biome.configureCarver(type.carver, type.config));
-			}
-		}
 	}
 
 	private static final Collection<LongFunction<TerrainPostProcessor>> postProcessorFactories = new ArrayList<>();
@@ -268,30 +251,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				CrashReport crashReport = CrashReport.create(exception, "Biome decoration");
 				crashReport.addElement("Generation").add("CenterX", i).add("CenterZ", j).add("Step", feature).add("Seed", seed).add("Biome", Registry.BIOME.getId(biome));
 				throw new CrashException(crashReport);
-			}
-		}
-	}
-
-	@Override
-	public void carve(BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
-		ChunkRandom chunkRandom = new ChunkRandom();
-		ChunkPos chunkPos = chunk.getPos();
-		int j = chunkPos.x;
-		int k = chunkPos.z;
-		BitSet bitSet = chunk.getCarvingMask(carver);
-
-		for(int l = j - 8; l <= j + 8; ++l) {
-			for(int m = k - 8; m <= k + 8; ++m) {
-				ListIterator listIterator = carvers.listIterator();
-
-				while(listIterator.hasNext()) {
-					int carverSeed = listIterator.nextIndex();
-					ConfiguredCarver<?> configuredCarver = (ConfiguredCarver)listIterator.next();
-					chunkRandom.setStructureSeed(this.seed + (long)carverSeed, l, m);
-					if (configuredCarver.shouldCarve(chunkRandom, l, m)) {
-						configuredCarver.carve(chunk, (blockPos) -> this.getDecorationBiome(biomeAccess, blockPos), chunkRandom, this.getSeaLevel(), l, m, j, k, bitSet);
-					}
-				}
 			}
 		}
 	}
