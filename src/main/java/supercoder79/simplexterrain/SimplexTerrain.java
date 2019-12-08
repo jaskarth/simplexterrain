@@ -11,7 +11,7 @@ import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.ConfigData;
-import supercoder79.simplexterrain.noise.gradient.CubicNoise;
+import supercoder79.simplexterrain.configs.ReloadConfigCommand;
 import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.feature.Carvers;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
@@ -62,6 +62,10 @@ public class SimplexTerrain implements ModInitializer {
 
 		loadMeOnClientPls = WorldType.SIMPLEX;
 		addDefaultBiomes();
+		
+		if (CONFIG.reloadConfigCommand) {
+			ReloadConfigCommand.init();
+		}
 
 		WORLDGEN_TYPE = Registry.register(Registry.CHUNK_GENERATOR_TYPE, new Identifier("simplexterrain", "simplex"), new WorldGeneratorType(false, OverworldChunkGeneratorConfig::new));
 	}
@@ -69,10 +73,9 @@ public class SimplexTerrain implements ModInitializer {
 	private static void addDefaultBiomes() {
 		//holy shit this code is still cursed
 
-		// TODO Re-Add Mod Compat
-		if (SimplexTerrain.CONFIG.doModCompat) {
+		if (CONFIG.doModCompat) {
 
-			//mod compat
+			// Mod Compat
 			if (FabricLoader.getInstance().isModLoaded("winterbiomemod")) {
 				addWinterBiomes();
 				System.out.println("Winter biomes registered!");

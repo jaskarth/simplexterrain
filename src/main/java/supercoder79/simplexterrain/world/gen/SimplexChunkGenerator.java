@@ -41,6 +41,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	private final OctaveNoiseSampler heightNoise;
 	private final OctaveNoiseSampler detailNoise;
 	private final OctaveNoiseSampler scaleNoise;
+	private final OctaveNoiseSampler peaksNoise;
 
 	private final ChunkRandom random;
 	private final NoiseSampler surfaceDepthNoise;
@@ -57,6 +58,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		heightNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.baseOctaveAmount, SimplexTerrain.CONFIG.baseNoiseFrequencyCoefficient * amplitude, amplitude, amplitude);
 		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
 		scaleNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow);
+		peaksNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.peaksOctaveAmount, SimplexTerrain.CONFIG.peaksFrequency, 1.0, 1.0);
 
 		if (biomeSource instanceof SimplexBiomeSource) {
 			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
@@ -152,8 +154,20 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	}
 
 	private double sampleNoise(int x, int z) {
-		double amplitudeSample = scaleNoise.sample(x, z) + SimplexTerrain.CONFIG.scaleAmplitudeLow; // change range [-0.06, 0.06] to [0.0, 0.12]
-		return heightNoise.sampleCustom(x, z, SimplexTerrain.CONFIG.baseNoiseSamplingFrequency, amplitudeSample, amplitudeSample, SimplexTerrain.CONFIG.baseOctaveAmount) + SimplexTerrain.CONFIG.baseHeight;
+		double amplitudeSample = this.scaleNoise.sample(x, z) + SimplexTerrain.CONFIG.scaleAmplitudeLow; // change range to have a minimum value of 0.0
+		return this.heightNoise.sampleCustom(x, z, SimplexTerrain.CONFIG.baseNoiseSamplingFrequency, amplitudeSample, amplitudeSample, SimplexTerrain.CONFIG.baseOctaveAmount)
+				+ modifyPeaksNoise(this.peaksNoise.sample(x, z))
+				+ SimplexTerrain.CONFIG.baseHeight;
+	}
+
+	private static double modifyPeaksNoise(double sample) {
+		sample += SimplexTerrain.CONFIG.peaksSampleOffset;
+		if (sample < 0) {
+			return 0;
+		} else {
+			double s = sample * SimplexTerrain.CONFIG.peaksAmplitude;
+			return s;
+		}
 	}
 
 	private double sampleDetail(int x, int z) {
