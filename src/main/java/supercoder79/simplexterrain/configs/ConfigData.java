@@ -4,7 +4,9 @@ import supercoder79.simplexterrain.api.caves.CaveType;
 import supercoder79.simplexterrain.api.noise.NoiseType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class ConfigData {
     public String configVersion = "0.3.0";
@@ -15,8 +17,7 @@ public class ConfigData {
 
     public NoiseType noiseGenerator = NoiseType.SIMPLEX;
 
-    //TODO: change gravelly to simplex
-    public ArrayList<CaveType> caveTypes = new ArrayList<>(Collections.singleton(CaveType.GRAVELLY));
+    public ArrayList<CaveType> caveTypes = new ArrayList<>(Arrays.asList(CaveType.VANILLA, CaveType.RAVINES, CaveType.SIMPLEX));
 
     public int baseHeight = 100;
 
