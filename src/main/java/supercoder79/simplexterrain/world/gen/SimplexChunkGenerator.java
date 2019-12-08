@@ -242,11 +242,11 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	@Override
 	public void generateFeatures(ChunkRegion region) {
-		int chunkX = region.getCenterChunkZ();
+		int chunkX = region.getCenterChunkX();
 		int chunkZ = region.getCenterChunkZ();
 		ChunkRandom rand = new ChunkRandom();
 		rand.setSeed(chunkX, chunkZ);
-		this.terrainPostProcessors.forEach(postProcessor -> postProcessor.postProcess(region, rand, chunkX, chunkZ));
+		this.terrainPostProcessors.forEach(postProcessor -> postProcessor.postProcess(region, rand, chunkX, chunkZ, this));
 
 		int i = region.getCenterChunkX();
 		int j = region.getCenterChunkZ();
