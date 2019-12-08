@@ -70,7 +70,6 @@ public class SimplexTerrain implements ModInitializer {
 	private static void addDefaultBiomes() {
 		//holy shit this code is still cursed
 
-		// TODO Re-Add Mod Compat
 		if (CONFIG.doModCompat) {
 
 			//mod compat
