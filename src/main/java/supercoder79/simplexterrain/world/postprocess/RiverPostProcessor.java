@@ -67,7 +67,7 @@ public final class RiverPostProcessor implements TerrainPostProcessor {
 				bottomBlock = world.getBlockState(pos); 
 			}
 
-			world.setBlockState(pos, yOffset > waterLevel ? AIR : WATER, 2);
+			world.setBlockState(pos, yOffset >= waterLevel ? AIR : WATER, 2);
 		}
 
 		pos.setY(y - 1);
