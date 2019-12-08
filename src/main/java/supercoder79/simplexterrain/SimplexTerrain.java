@@ -72,7 +72,7 @@ public class SimplexTerrain implements ModInitializer {
 
 		if (CONFIG.doModCompat) {
 
-			//mod compat
+			// Mod Compat
 			if (FabricLoader.getInstance().isModLoaded("winterbiomemod")) {
 				addWinterBiomes();
 				System.out.println("Winter biomes registered!");
