@@ -4,20 +4,27 @@ import java.util.Random;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SandBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.api.Coordinate2Function;
 import supercoder79.simplexterrain.api.Heightmap;
+import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 public final class RiverPostProcessor implements TerrainPostProcessor {
 	private static final double RIVER_SCALE = 980;
 	private final OpenSimplexNoise noiseSampler;
+	private final OctaveNoiseSampler sandNoise;
+	private ChunkRandom random;
 
 	public RiverPostProcessor(long seed) {
+		random = new ChunkRandom(seed);
 		noiseSampler = new OpenSimplexNoise(seed - 8);
+		sandNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new Random(seed), 4, Math.pow(2, 12), 2, 2);
 	}
 
 	@Override
@@ -59,6 +66,19 @@ public final class RiverPostProcessor implements TerrainPostProcessor {
 		BlockState bottomBlock = world.getBlockState(pos);
 
 		int waterLevel = calculateWaterLevel(x, z, seaLevel, heightFunction);
+		int[] neighborWaterLevels = new int[] {
+				calculateWaterLevel(x+1, z, seaLevel, heightFunction),
+				calculateWaterLevel(x, z+1, seaLevel, heightFunction),
+				calculateWaterLevel(x, z-1, seaLevel, heightFunction),
+				calculateWaterLevel(x-1, z, seaLevel, heightFunction)};
+		int higher = 0;
+		for (int i : neighborWaterLevels) {
+			if (i < waterLevel) {
+				higher++;
+			}
+		}
+
+		if (higher >= 3) waterLevel = neighborWaterLevels[0];
 
 		for (int yOffset = 0; yOffset <= depth; ++yOffset) {
 			--y;
@@ -69,10 +89,17 @@ public final class RiverPostProcessor implements TerrainPostProcessor {
 			}
 
 			world.setBlockState(pos, y >= waterLevel ? AIR : WATER, 2);
+
 		}
 
 		pos.setY(y - 1);
+		if (sandNoise.sample(x, z) > 0) bottomBlock = Blocks.SAND.getDefaultState();
 		world.setBlockState(pos, bottomBlock, 2);
+
+		if (random.nextInt(6) == 0) {
+			pos.setY(y);
+			world.setBlockState(pos, random.nextInt(3) > 0 ? Blocks.SEAGRASS.getDefaultState() : Blocks.TALL_SEAGRASS.getDefaultState(), 2);
+		}
 	}
 
 	private int calculateWaterLevel(int x, int z, int seaLevel, Coordinate2Function<Integer> heightFunction) {
