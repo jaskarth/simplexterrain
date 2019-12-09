@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.configs;
+package supercoder79.simplexterrain.world.postprocess;
 
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.world.postprocess.CavePostProcessor;

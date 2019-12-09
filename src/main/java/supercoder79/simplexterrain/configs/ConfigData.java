@@ -1,6 +1,7 @@
 package supercoder79.simplexterrain.configs;
 
 import supercoder79.simplexterrain.api.noise.NoiseType;
+import supercoder79.simplexterrain.world.postprocess.PostProcessors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ public class ConfigData {
 
 	public boolean sacrificeAccuracyForSpeed = true;
 	public boolean reloadConfigCommand = false;
+	public boolean optimizeChunkGenerationInvasively = true;
 
 	public NoiseType noiseGenerator = NoiseType.SIMPLEX;
 

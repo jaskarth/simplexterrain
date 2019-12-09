@@ -106,8 +106,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	}
 
 	@Override
-	public int getHeightOnGround(int i, int j, net.minecraft.world.Heightmap.Type type) {
-		return getHeight(i, j);
+	public int getHeightOnGround(int x, int z, net.minecraft.world.Heightmap.Type type) {
+		return getHeight(x, z);
 	}
 
 	@Override
@@ -148,8 +148,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		if (sample < 0) {
 			return 0;
 		} else {
-			double s = sample * SimplexTerrain.CONFIG.peaksAmplitude;
-			return s;
+			return sample * SimplexTerrain.CONFIG.peaksAmplitude;
 		}
 	}
 
