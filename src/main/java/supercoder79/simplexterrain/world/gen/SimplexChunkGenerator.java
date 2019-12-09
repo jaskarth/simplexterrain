@@ -1,23 +1,24 @@
 package supercoder79.simplexterrain.world.gen;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.LongFunction;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.NoiseSampler;
 import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
+import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.SimplexTerrain;
@@ -204,7 +205,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 					return;
 				}
 
-				blockPos = (BlockPos)var9.next();
+				blockPos = var9.next();
 				if (l > 0) {
 					for(n = l; n >= l - 4; --n) {
 						if (n >= l - random.nextInt(5)) {
@@ -230,6 +231,27 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		rand.setSeed(chunkX, chunkZ);
 		this.terrainPostProcessors.forEach(postProcessor -> postProcessor.postProcess(region, rand, chunkX, chunkZ, this));
 
-		super.generateFeatures(region);
+		int i = region.getCenterChunkX();
+		int j = region.getCenterChunkZ();
+		int k = i * 16;
+		int l = j * 16;
+		BlockPos blockPos = new BlockPos(k, 0, l);
+		Biome biome = this.getDecorationBiome(region.getBiomeAccess(), blockPos.add(8, 8, 8));
+		ChunkRandom chunkRandom = new ChunkRandom();
+		long seed = chunkRandom.setSeed(region.getSeed(), k, l);
+		GenerationStep.Feature[] features = GenerationStep.Feature.values();
+		int featureLength = features.length;
+
+		for(int currentFeature = 0; currentFeature < featureLength; ++currentFeature) {
+			GenerationStep.Feature feature = features[currentFeature];
+
+			try {
+				biome.generateFeatureStep(feature, this, region, seed, chunkRandom, blockPos);
+			} catch (Exception exception) {
+				CrashReport crashReport = CrashReport.create(exception, "Biome decoration");
+				crashReport.addElement("Generation").add("CenterX", i).add("CenterZ", j).add("Step", feature).add("Seed", seed).add("Biome", Registry.BIOME.getId(biome));
+				throw new CrashException(crashReport);
+			}
+		}
 	}
 }

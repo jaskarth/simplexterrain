@@ -15,7 +15,7 @@ public class ReloadConfigCommand {
 			LiteralArgumentBuilder<ServerCommandSource> lab = CommandManager.literal("reloadterrainconfig").requires(executor -> executor.hasPermissionLevel(2)).executes(cmd -> {
 				ServerCommandSource source = cmd.getSource();
 				SimplexTerrain.CONFIG = Config.init();
-				source.sendFeedback(new LiteralText("§2§lReloaded Configs!"), false);
+				source.sendFeedback(new LiteralText("§2§lReloaded Configs!"), true);
 				return 1;
 			});
 			dispatcher.register(lab);
