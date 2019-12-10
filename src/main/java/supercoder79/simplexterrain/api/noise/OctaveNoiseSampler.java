@@ -101,7 +101,7 @@ public class OctaveNoiseSampler<T extends Noise> {
 		}
 
 		double sampleClamp = 1D / (1D - (1D / Math.pow(2, octaves)));
-		result = result * sampleClamp;
+		result *= sampleClamp;
 		return result > 0 ? result * amplitudeHigh * amplitudeHMod : result * amplitudeLow * amplitudeLMod;
 	}
 

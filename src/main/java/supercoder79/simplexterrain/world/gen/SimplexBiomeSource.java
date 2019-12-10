@@ -31,8 +31,8 @@ public class SimplexBiomeSource extends BiomeSource {
 		this.lowlandsSampler = biomeLayerSamplers[0];
 		this.midlandsSampler = biomeLayerSamplers[1];
 		this.highlandsSampler = biomeLayerSamplers[2];
-		toplandsSampler = biomeLayerSamplers[3];
-		oceanTemperatureLayer = new OctaveSimplexNoiseSampler(new ChunkRandom(seed), 10, 0);
+		this.toplandsSampler = biomeLayerSamplers[3];
+		this.oceanTemperatureLayer = new OctaveSimplexNoiseSampler(new ChunkRandom(seed), 10, 0);
 	}
 
 	public void setHeightmap(Heightmap heightmap) {

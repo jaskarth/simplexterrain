@@ -1,7 +1,9 @@
 package supercoder79.simplexterrain.world.gen;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.function.LongFunction;
+import java.util.stream.Stream;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.crash.CrashException;
@@ -21,6 +23,7 @@ import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
+import org.apache.commons.lang3.ArrayUtils;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.Noise;
@@ -29,6 +32,7 @@ import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
+
 	private final OctaveNoiseSampler heightNoise;
 	private final OctaveNoiseSampler detailNoise;
 	private final OctaveNoiseSampler scaleNoise;
@@ -81,18 +85,35 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	public void populateNoise(IWorld iWorld, Chunk chunk) {
 		BlockPos.Mutable posMutable = new BlockPos.Mutable();
 
-		int chunkX = chunk.getPos().x;
-		int chunkZ = chunk.getPos().z;
+		ChunkPos pos = chunk.getPos();
+
+		double[] requestedVals = new double[256];
+
+		if (SimplexTerrain.CONFIG.threadedNoiseGeneration) {
+			CompletableFuture[] futures = new CompletableFuture[2];
+			for (int i = 0; i < 2; i++) {
+				int finalI = i;
+				futures[i] = CompletableFuture.runAsync(() -> generateNoise(requestedVals, pos, finalI * 8, 8));
+			}
+
+			for (int i = 0; i < futures.length; i++) {
+				futures[i].join();
+			}
+
+		} else {
+			generateNoise(requestedVals, pos, 0, 16); //generate all noise on the main thread
+		}
 
 		for (int x = 0; x < 16; ++x) {
 			posMutable.setX(x);
 
 			for (int z = 0; z < 16; ++z) {
 				posMutable.setZ(z);
-				int height = getHeight((chunkX * 16) + x, (chunkZ * 16) + z);
 
 				for (int y = 0; y < 256; ++y) {
 					posMutable.setY(y);
+					double height = requestedVals[(x*16) + z];
+//					if (height == 0) height = getHeight((pos.x * 16) + x, (pos.z * 16) + z);
 					if (height >= y) {
 						chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
 					} else if (y < 63) {
@@ -101,6 +122,14 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 					//TODO: see if this actually improves performance
 					if (y > height && y > 63) break;
 				}
+			}
+		}
+	}
+
+	public void generateNoise(double[] noise, ChunkPos pos, int start, int size) {
+		for (int x = start; x < start + size; x++) {
+			for (int z = 0; z < 16; z++) {
+				noise[(x*16) + z] = getHeight((pos.x * 16) + x, (pos.z * 16) + z);
 			}
 		}
 	}

@@ -15,6 +15,7 @@ public class ConfigData {
 	public boolean sacrificeAccuracyForSpeed = true;
 	public boolean reloadConfigCommand = false;
 	public boolean optimizeChunkGenerationInvasively = true;
+	public boolean threadedNoiseGeneration = true;
 
 	public NoiseType noiseGenerator = NoiseType.SIMPLEX;
 

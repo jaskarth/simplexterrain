@@ -23,7 +23,7 @@ public class MixinChunkSection {
 
 	@Shadow private short randomTickableBlockCount;
 
-	@Inject(method = "setBlockState(IIILnet/minecraft/block/BlockState;Z)Lnet/minecraft/block/BlockState;", at = @At("HEAD"))
+	@Inject(method = "setBlockState(IIILnet/minecraft/block/BlockState;Z)Lnet/minecraft/block/BlockState;", at = @At("HEAD"), cancellable = true)
 	private void setBlockState(int x, int y, int z, BlockState state, boolean lock, CallbackInfoReturnable<BlockState> info) {
 		if (SimplexTerrain.CONFIG.optimizeChunkGenerationInvasively) {
 			BlockState blockState2 = this.container.set(x, y, z, state);
