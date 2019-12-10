@@ -1,5 +1,7 @@
 package supercoder79.simplexterrain.mixin;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -24,7 +26,8 @@ public class MixinLevelGeneratorType {
 
 	//dirty hack but i can't be assed to figure out why the lang file won't work
 	@Inject(method = "getTranslationKey", at = @At("HEAD"), cancellable = true)
+	@Environment(EnvType.CLIENT)
 	void getTranslationKey(CallbackInfoReturnable<String> cir) {
-		if (this.name == "simplex") cir.setReturnValue("Simplex Terrain");
+		if (this.name.equals("simplex")) cir.setReturnValue("Simplex Terrain");
 	}
 }

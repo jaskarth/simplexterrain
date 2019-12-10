@@ -1,5 +1,7 @@
 package supercoder79.simplexterrain.noise.worley;
 
+import supercoder79.simplexterrain.SimplexTerrain;
+
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -86,10 +88,12 @@ public  class XorShift {
 			this.z = seeds[(int) (Math.abs(z) % SEED_TABLE_SPACE)
 					+ SEED_TABLE_SPACE + SEED_TABLE_SPACE];
 
-			// decreases spherical artifacts, but obviously is slow
-			// TODO replace by fixing underlying issue
-			for(int i = 0; i < 5; i++)
-				nextLong();
+			if (!SimplexTerrain.CONFIG.sacrificeAccuracyForSpeed) {
+				// decreases spherical artifacts, but obviously is slow
+				// TODO replace by fixing underlying issue
+				for (int i = 0; i < 5; i++)
+					nextLong();
+			}
 		}
 	}
 

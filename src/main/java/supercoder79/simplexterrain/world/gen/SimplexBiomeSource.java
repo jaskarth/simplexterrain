@@ -1,9 +1,12 @@
 package supercoder79.simplexterrain.world.gen;
 
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
@@ -41,11 +44,10 @@ public class SimplexBiomeSource extends BiomeSource {
 
 	@Override
 	public Biome getBiomeForNoiseGen(int x, int j, int z) {
-		return sampleBiomeWithMathTM((x << 2), (z << 2));
+		return sampleBiomeWithMathTM((x << 2), (z << 2), heightmap.getHeight((x << 2), (z << 2)));
 	}
 
-	private Biome sampleBiomeWithMathTM(int x, int z) {
-		int height = heightmap.getHeight(x, z);
+	public Biome sampleBiomeWithMathTM(int x, int z, int height) {
 		if (height < 30) {
 			if (oceanTemperatureLayer.sample(x, z, false)*0.005 > 2.5)
 				return Biomes.DEEP_WARM_OCEAN;
