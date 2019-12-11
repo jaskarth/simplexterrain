@@ -79,7 +79,6 @@ public class SimplexTerrain implements ModInitializer {
 				System.out.println("Traverse biomes registered!");
 			}
 
-
 			if (FabricLoader.getInstance().isModLoaded("terrestria")) {
 				addTerrestriaBiomes();
 				System.out.println("Terrestria biomes registered!");

@@ -19,7 +19,7 @@ public class ConfigData {
 
 	public NoiseType noiseGenerator = NoiseType.SIMPLEX;
 
-	public List<PostProcessors> postProcessors = new ArrayList<>(Arrays.asList(PostProcessors.RIVERS, PostProcessors.SIMPLEX_CAVES));
+	public List<PostProcessors> postProcessors = new ArrayList<>();//TODO: replace default post processors
 
     public int baseHeight = 100;
 
@@ -52,4 +52,6 @@ public class ConfigData {
 	public int toplandStartHeight = 190;
 
 	public int biomeScaleAmount = 7;
+
+	public int seaLevel = 63;
 }

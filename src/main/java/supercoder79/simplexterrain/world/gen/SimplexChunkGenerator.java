@@ -314,4 +314,9 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 			}
 		}
 	}
+
+	@Override
+	public int getSeaLevel() {
+		return SimplexTerrain.CONFIG.seaLevel;
+	}
 }

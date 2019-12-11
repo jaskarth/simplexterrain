@@ -48,7 +48,7 @@ public class SimplexBiomeSource extends BiomeSource {
 	}
 
 	public Biome sampleBiomeWithMathTM(int x, int z, int height) {
-		if (height < 30) {
+		if (height < SimplexTerrain.CONFIG.seaLevel/2) {
 			if (oceanTemperatureLayer.sample(x, z, false)*0.005 > 2.5)
 				return Biomes.DEEP_WARM_OCEAN;
 			else if (oceanTemperatureLayer.sample(x, z, false)*0.005 > 1.0)
@@ -60,7 +60,7 @@ public class SimplexBiomeSource extends BiomeSource {
 
 			else return Biomes.DEEP_OCEAN;
 		}
-		if (height < 61) {
+		if (height < SimplexTerrain.CONFIG.seaLevel-2) {
 			if (oceanTemperatureLayer.sample(x, z, false)*0.005 > 2.5)
 				return Biomes.WARM_OCEAN;
 			else if (oceanTemperatureLayer.sample(x, z, false)*0.005 > 1.0)
