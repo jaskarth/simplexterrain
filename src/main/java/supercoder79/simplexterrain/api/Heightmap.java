@@ -15,8 +15,8 @@ public interface Heightmap {
      * When iterating over a chunk to get all of the height values, it is almost always preferable to use
      * getHeightInChunk() instead.
      *
-     * @param x
-     * @param z
+     * @param x x value (block position)
+     * @param z z value (block position)
      * @return The height value of the heightmap at this x/z coordinate.
      */
     int getHeight(int x, int z);
