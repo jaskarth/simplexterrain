@@ -309,8 +309,8 @@ public class SimplexTerrain implements ModInitializer {
 
 	private static void addVanillaLowlands() {
 		final double swampWeight = 1.3;
-		final double desertWeight = 1.3;
-		final double jungleWeight = 1.5;
+		final double desertWeight = 1.6;
+		final double jungleWeight = 1.7;
 		final double savannahWeight = 1.2;
 		final double plainsWeight = 1.0;
 		final double forestWeight = 1.0;
@@ -326,11 +326,14 @@ public class SimplexTerrain implements ModInitializer {
 		SimplexBiomes.addLowlandsBiome(PLAINS, SimplexClimate.TROPICAL, plainsWeight);
 
 		SimplexBiomes.addLowlandsBiome(JUNGLE, SimplexClimate.LUSH_TROPICAL, jungleWeight);
+		SimplexBiomes.addLowlandsBiome(JUNGLE, SimplexClimate.LUSH_TEMPERATE, jungleWeight*0.75);
 		SimplexBiomes.addLowlandsBiome(SWAMP, SimplexClimate.LUSH_TROPICAL, swampWeight / 2);
 
 		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.DESERT), SimplexClimate.DRY_TEMPERATE, desertWeight);
+		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.DESERT), SimplexClimate.DRY_BOREAL, desertWeight*0.75);
 		SimplexBiomes.addLowlandsBiome(PLAINS, SimplexClimate.DRY_TEMPERATE, plainsWeight);
 		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.SAVANNA), SimplexClimate.DRY_TROPICAL, savannahWeight);
+		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.SAVANNA), SimplexClimate.DRY_TEMPERATE, savannahWeight*0.8);
 
 		SimplexBiomes.addLowlandsBiome(SWAMP, SimplexClimate.TEMPERATE, swampWeight);
 		SimplexBiomes.addLowlandsBiome(PLAINS, SimplexClimate.TEMPERATE, plainsWeight);
@@ -358,8 +361,8 @@ public class SimplexTerrain implements ModInitializer {
 		final double savannaPlateauWeight = 1.0;
 		final double birchForestWeight = 0.8;
 		final double darkForestWeight = 1.0;
-		final double forestWeight = 1.5;
-		final double plainsWeight = 0.6;
+		final double forestWeight = 1.0;
+		final double plainsWeight = 0.5;
 		final double swampWeight = 0.4;
 		final double taigaWeight = 0.9;
 		final double snowyTaigaWeight = 1.0;
@@ -370,9 +373,12 @@ public class SimplexTerrain implements ModInitializer {
 
 		SimplexBiomes.addMidlandsBiome(PLAINS, SimplexClimate.TROPICAL, plainsWeight * 1.6);
 		SimplexBiomes.addMidlandsBiome(biomeId(Biomes.SAVANNA_PLATEAU), SimplexClimate.TROPICAL, savannaPlateauWeight);
+		SimplexBiomes.addMidlandsBiome(biomeId(Biomes.SAVANNA_PLATEAU), SimplexClimate.DRY_TROPICAL, savannaPlateauWeight*0.75);
 
 		SimplexBiomes.addMidlandsBiome(JUNGLE, SimplexClimate.LUSH_TROPICAL, jungleWeight);
+		SimplexBiomes.addMidlandsBiome(JUNGLE, SimplexClimate.TROPICAL, jungleWeight*0.8);
 		SimplexBiomes.addMidlandsBiome(biomeId(Biomes.DARK_FOREST), SimplexClimate.LUSH_TROPICAL, darkForestWeight);
+		SimplexBiomes.addMidlandsBiome(biomeId(Biomes.DARK_FOREST), SimplexClimate.TROPICAL, darkForestWeight*0.8);
 
 		SimplexBiomes.addMidlandsBiome(BIRCH_FOREST, SimplexClimate.TEMPERATE, birchForestWeight);
 		SimplexBiomes.addMidlandsBiome(PLAINS, SimplexClimate.TEMPERATE, plainsWeight * 0.5);
