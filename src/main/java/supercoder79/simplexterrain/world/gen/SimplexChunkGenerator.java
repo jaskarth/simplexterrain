@@ -81,24 +81,25 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		return this.getSeaLevel() + 1;
 	}
 
-	@Override
-	public void populateBiomes(Chunk chunk) {
-		if (biomeSource instanceof SimplexBiomeSource) {
-			ChunkPos chunkPos = chunk.getPos();
-			int[] e = getHeightInChunk(chunkPos);
-			Biome[] biomes = new Biome[256];
-
-			for (int x = 0; x < 16; x++) {
-				for (int z = 0; z < 16; z++) {
-					biomes[z * 16 + x] = ((SimplexBiomeSource)(biomeSource)).sampleBiomeWithMathTM(x, z, e[z*16 + x]);
-				}
-			}
-
-			((ProtoChunk) chunk).method_22405(new BiomeArray(biomes));
-		} else {
-			super.populateBiomes(chunk);
-		}
-	}
+	//TODO: Fix this code
+//	@Override
+//	public void populateBiomes(Chunk chunk) {
+//		if (biomeSource instanceof SimplexBiomeSource) {
+//			ChunkPos chunkPos = chunk.getPos();
+//			int[] e = getHeightInChunk(chunkPos);
+//			Biome[] biomes = new Biome[256];
+//
+//			for (int x = 0; x < 16; x++) {
+//				for (int z = 0; z < 16; z++) {
+//					biomes[z * 16 + x] = ((SimplexBiomeSource)(biomeSource)).sampleBiomeWithMathTM(x, z, e[z*16 + x]);
+//				}
+//			}
+//
+//			((ProtoChunk) chunk).method_22405(new BiomeArray(biomes));
+//		} else {
+//			super.populateBiomes(chunk);
+//		}
+//	}
 
 	@Override
 	public void populateNoise(IWorld iWorld, Chunk chunk) {

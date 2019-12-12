@@ -30,6 +30,7 @@ public class Config {
                 }
             } else {
                 configData = new ConfigData();
+                configDir.toFile().mkdirs();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(configDir.toFile()));
                 writer.write(gson.toJson(configData));
 

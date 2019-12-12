@@ -17,7 +17,7 @@ public enum SimplexClimate {
 	LUSH_TROPICAL(0),
 	TROPICAL(1),
 	DRY_TROPICAL(2),
-	//temp between -0.58 and 0.28
+	
 	LUSH_TEMPERATE(3),
 	TEMPERATE(4),
 	DRY_TEMPERATE(5),
