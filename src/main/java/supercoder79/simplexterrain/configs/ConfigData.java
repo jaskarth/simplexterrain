@@ -39,9 +39,9 @@ public class ConfigData {
 	public double scaleAmplitudeLow = 0.09;
 	public double scaleFrequencyExponent = 10;
 
-	public double peaksFrequency = 750;
+	public double peaksFrequency = 750.0;
 	public double peaksSampleOffset = -0.33;
-	public double peaksAmplitude = 280;
+	public double peaksAmplitude = 280.0;
 
 	public double detailNoiseThreshold = 0.0;
 	public double scaleNoiseThreshold  = -0.02;
