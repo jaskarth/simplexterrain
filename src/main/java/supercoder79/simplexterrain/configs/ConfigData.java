@@ -1,5 +1,6 @@
 package supercoder79.simplexterrain.configs;
 
+import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.NoiseType;
 import supercoder79.simplexterrain.world.postprocess.PostProcessors;
 
@@ -8,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ConfigData {
-	public String configVersion = "0.4.0";
+	public String configVersion = SimplexTerrain.VERSION;
 	public boolean doModCompat = true;
 	public boolean addDetailNoise = true;
 

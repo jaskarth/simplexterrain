@@ -1,12 +1,13 @@
 {
   "schemaVersion": 1,
   "id": "simplexterrain",
-  "version": "0.4.0",
+  "version": "0.4.1",
 
   "name": "Simplex Terrain",
-  "description": "Creates worlds with mountainous terrain unlike anything else!",
+  "description": "Creates worlds with terrain unlike anything else!",
   "authors": [
-    "SuperCoder79"
+    "SuperCoder79",
+    "Valoeghese"
   ],
   "contact": {
     "homepage": "",
