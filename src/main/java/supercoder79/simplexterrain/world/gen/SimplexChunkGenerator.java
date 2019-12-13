@@ -166,6 +166,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		}
 	}
 
+	private double sigmoid(double val) {
+		return 256 / (Math.exp(8/3f - val/48) + 1);
+	}
+
 	@Override
 	public int getHeightOnGround(int x, int z, net.minecraft.world.Heightmap.Type type) {
 		return getHeight(x, z);
@@ -195,7 +199,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		if (SimplexTerrain.CONFIG.addDetailNoise) {
 			detail = sampleDetail(x, z);
 		}
-		return (int)(sample + detail);
+		return (int)(sigmoid((sample + detail)));
 	}
 
 	private double sampleNoise(int x, int z) {
