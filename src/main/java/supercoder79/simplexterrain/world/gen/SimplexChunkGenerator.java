@@ -210,6 +210,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	}
 
 	private static double modifyPeaksNoise(double sample) {
+		if (SimplexTerrain.CONFIG.addPeaksNoise) return 0;
 		sample += SimplexTerrain.CONFIG.peaksSampleOffset;
 		if (sample < 0) {
 			return 0;

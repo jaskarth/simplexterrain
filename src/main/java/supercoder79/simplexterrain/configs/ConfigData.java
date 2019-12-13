@@ -12,6 +12,7 @@ public class ConfigData {
 	public String configVersion = SimplexTerrain.VERSION;
 	public boolean doModCompat = true;
 	public boolean addDetailNoise = true;
+	public boolean addPeaksNoise = true;
 
 	public boolean sacrificeAccuracyForSpeed = true;
 	public boolean reloadConfigCommand = false;
