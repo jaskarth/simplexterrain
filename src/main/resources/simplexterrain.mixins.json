@@ -4,12 +4,15 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "AccessorLevelGeneratorType",
-    "MixinLevelGeneratorType",
     "MixinOverworldDimension",
     "optichunk.MixinPalettedContainer",
     "optichunk.MixinChunkSection"
   ],
   "client": [
+    "MixinLevelGeneratorTypeClient"
+  ],
+  "server": [
+    "MixinLevelGeneratorTypeServer"
   ],
   "injectors": {
     "defaultRequire": 1
