@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LevelGeneratorType.class)
-public class MixinLevelGeneratorType {
+public class MixinLevelGeneratorTypeClient {
 	@Shadow @Final private String name;
 
 	@Inject(at = @At("HEAD"), method = "getTypeFromName", cancellable = true)
