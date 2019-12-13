@@ -72,7 +72,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	private static final Collection<LongFunction<TerrainPostProcessor>> postProcessorFactories = new ArrayList<>();
 
-	public static void addTerrainPostProcessor(LongFunction<TerrainPostProcessor> factory) {
+	public static void  addTerrainPostProcessor(LongFunction<TerrainPostProcessor> factory) {
 		postProcessorFactories.add(factory);
 	}
 

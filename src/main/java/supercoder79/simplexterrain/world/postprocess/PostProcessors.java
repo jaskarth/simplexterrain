@@ -8,7 +8,8 @@ import java.util.function.LongFunction;
 
 public enum PostProcessors {
 	RIVERS(RiverPostProcessor::new),
-	SIMPLEX_CAVES(CavePostProcessor::new);
+	SIMPLEX_CAVES(CavePostProcessor::new),
+	EROSION(ErosionPostProcessor::new);
 
 	public LongFunction<TerrainPostProcessor> factory;
 
