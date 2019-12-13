@@ -58,7 +58,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		scaleNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow);
 		peaksNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.peaksOctaveAmount, SimplexTerrain.CONFIG.peaksFrequency, 1.0, 1.0);
 
-
 		if (biomeSource instanceof SimplexBiomeSource) {
 			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
 		}
