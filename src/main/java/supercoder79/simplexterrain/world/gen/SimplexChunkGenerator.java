@@ -1,10 +1,5 @@
 package supercoder79.simplexterrain.world.gen;
 
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.function.LongFunction;
-import java.util.stream.Stream;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
@@ -18,20 +13,21 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
-import org.apache.commons.lang3.ArrayUtils;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
+
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.LongFunction;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {

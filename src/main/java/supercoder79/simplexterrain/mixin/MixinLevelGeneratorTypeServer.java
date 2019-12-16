@@ -1,7 +1,5 @@
 package supercoder79.simplexterrain.mixin;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.world.level.LevelGeneratorType;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

@@ -5,7 +5,6 @@ import supercoder79.simplexterrain.api.noise.NoiseType;
 import supercoder79.simplexterrain.world.postprocess.PostProcessors;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ConfigData {

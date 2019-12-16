@@ -1,10 +1,8 @@
 package supercoder79.simplexterrain.init;
 
 import supercoder79.simplexterrain.SimplexTerrain;
-import supercoder79.simplexterrain.world.postprocess.ErosionPostProcessor;
-import supercoder79.simplexterrain.world.postprocess.PostProcessors;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
-import supercoder79.simplexterrain.world.postprocess.StrataPostProcessor;
+import supercoder79.simplexterrain.world.postprocess.PostProcessors;
 
 public class SimplexPostProcessors {
 	public static void init() {

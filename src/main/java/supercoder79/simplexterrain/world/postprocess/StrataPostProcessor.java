@@ -5,7 +5,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
-import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 

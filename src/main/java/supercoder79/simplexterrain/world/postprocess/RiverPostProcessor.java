@@ -1,10 +1,7 @@
 package supercoder79.simplexterrain.world.postprocess;
 
-import java.util.Random;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.SandBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
@@ -14,6 +11,8 @@ import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
+
+import java.util.Random;
 
 public final class RiverPostProcessor implements TerrainPostProcessor {
 	private static final double RIVER_SCALE = 980;

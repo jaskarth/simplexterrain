@@ -5,7 +5,10 @@ import com.google.gson.GsonBuilder;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.NoiseType;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
