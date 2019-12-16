@@ -16,6 +16,7 @@ import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -71,13 +72,22 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	private static final Collection<LongFunction<TerrainPostProcessor>> postProcessorFactories = new ArrayList<>();
 
-	public static void addTerrainPostProcessor(LongFunction<TerrainPostProcessor> factory) {
+	public static void  addTerrainPostProcessor(LongFunction<TerrainPostProcessor> factory) {
 		postProcessorFactories.add(factory);
 	}
 
 	@Override
 	public int getSpawnHeight() {
 		return this.getSeaLevel() + 1;
+	}
+
+	public void populateEntities(ChunkRegion region) {
+		int i = region.getCenterChunkX();
+		int j = region.getCenterChunkZ();
+		Biome biome = region.getBiome((new ChunkPos(i, j)).getCenterBlockPos());
+		ChunkRandom chunkRandom = new ChunkRandom();
+		chunkRandom.setSeed(region.getSeed(), i << 4, j << 4);
+		SpawnHelper.populateEntities(region, biome, i, j, chunkRandom);
 	}
 
 	//TODO: Fix this code
