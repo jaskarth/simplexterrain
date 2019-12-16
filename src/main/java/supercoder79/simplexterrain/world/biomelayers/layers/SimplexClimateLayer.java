@@ -2,6 +2,7 @@ package supercoder79.simplexterrain.world.biomelayers.layers;
 
 import net.minecraft.world.biome.layer.type.InitLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
+import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
@@ -19,8 +20,8 @@ public class SimplexClimateLayer implements InitLayer {
 	
 	@Override
 	public int sample(LayerRandomnessSource rand, int x, int z) {
-		double temperature = temperatureNoise.sample(transformTemperatureXZ(x), transformTemperatureXZ(z));
-		double humidity = humidityNoise.sample(transformHumidityXZ(x), transformHumidityXZ(z));
+		double temperature = temperatureNoise.sample(transformTemperatureXZ(x), transformTemperatureXZ(z)) + SimplexTerrain.CONFIG.temperatureOffset;
+		double humidity = humidityNoise.sample(transformHumidityXZ(x), transformHumidityXZ(z)) + SimplexTerrain.CONFIG.humidityOffset;
 
 		return SimplexClimate.fromTemperatureHumidity(temperature, humidity).id;
 	}

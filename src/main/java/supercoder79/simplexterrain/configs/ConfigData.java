@@ -55,5 +55,8 @@ public class ConfigData {
 
 	public int biomeScaleAmount = 7;
 
+	public double temperatureOffset = 0.0;
+	public double humidityOffset = 0.0;
+
 	public int seaLevel = 63;
 }
