@@ -27,7 +27,7 @@ public abstract class Noise {
 
 	/**
 	 * A bit hack that computes a rough estimation of a square root for the given number
-	 * Don't use this in places that need accurace-- You'll regret it!
+	 * Don't use this in places that need accuracy-- You'll regret it!
 	 *
 	 * @param d the input for the fastSqrt algorithm
 	 * @return a **rough** approximation of square root

@@ -7,7 +7,7 @@ import supercoder79.simplexterrain.world.postprocess.PostProcessors;
 public class SimplexPostProcessors {
 	public static void init() {
 		for (PostProcessors postProcess : SimplexTerrain.CONFIG.postProcessors) {
-			SimplexChunkGenerator.addTerrainPostProcessor(postProcess.factory);
+			SimplexChunkGenerator.addTerrainPostProcessor(postProcess.postProcessor);
 		}
 	}
 }

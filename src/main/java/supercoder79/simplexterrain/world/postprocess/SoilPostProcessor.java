@@ -16,13 +16,19 @@ public class SoilPostProcessor implements TerrainPostProcessor {
 	private OctaveNoiseSampler coarseDirtSampler;
 	private OctaveNoiseSampler podzolSampler;
 
-	public SoilPostProcessor(long seed) {
+	@Override
+	public void init(long seed) {
 		coarseDirtSampler = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed + 42), 4, Math.pow(2, 8), 6, 8);
 		podzolSampler = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed - 42), 4, Math.pow(2, 8), 6, 8);
 	}
 
 	@Override
-	public void postProcess(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
+	public void setup() {
+		
+	}
+
+	@Override
+	public void process(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
 		int[] height = heightmap.getHeightInChunk(new ChunkPos(chunkX, chunkZ));
 
 		BlockPos.Mutable mutable = new BlockPos.Mutable();

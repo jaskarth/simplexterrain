@@ -13,7 +13,8 @@ import java.util.Random;
 public class StrataPostProcessor implements TerrainPostProcessor {
 	private static final BlockState[] states = new BlockState[32];
 
-	public StrataPostProcessor(long seed) {
+	@Override
+	public void init(long seed) {
 		for (int i = 0; i < 4; i++) {
 			states[i*8] = Blocks.STONE.getDefaultState();
 			states[i*8 + 1] = Blocks.ANDESITE.getDefaultState();
@@ -28,7 +29,12 @@ public class StrataPostProcessor implements TerrainPostProcessor {
 	}
 
 	@Override
-	public void postProcess(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
+	public void setup() {
+
+	}
+
+	@Override
+	public void process(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
 		int[] heights = heightmap.getHeightInChunk(new ChunkPos(chunkX, chunkZ));
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int x = 0; x < 16; x++) {

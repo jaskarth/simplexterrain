@@ -16,14 +16,20 @@ public class CavePostProcessor implements TerrainPostProcessor {
 	private OctaveNoiseSampler caveEnabledNoise;
 	private OctaveNoiseSampler caveHeightNoise;
 
-	public CavePostProcessor(long seed) {
+	@Override
+	public void init(long seed) {
 		caveNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed), 6, 2048, 14, 14);
 		caveHeightNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed), 5, Math.pow(2, 5), 10, 10);
 		caveEnabledNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed+20), 6, 1024, 1, 1);
 	}
 
 	@Override
-	public void postProcess(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
+	public void setup() {
+
+	}
+
+	@Override
+	public void process(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int x = 0; x < 16; x++) {
 			mutable.setX((chunkX*16)+x);

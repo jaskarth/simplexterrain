@@ -2,19 +2,19 @@ package supercoder79.simplexterrain.world.postprocess;
 
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 
+import java.util.function.Function;
 import java.util.function.LongFunction;
 
 public enum PostProcessors {
-	RIVERS(RiverPostProcessor::new),
-	SIMPLEX_CAVES(CavePostProcessor::new),
-	EROSION(ErosionPostProcessor::new),
-	STRATA(StrataPostProcessor::new),
-	SOIL(SoilPostProcessor::new);
+	RIVERS(new RiverPostProcessor()),
+	SIMPLEX_CAVES(new CavePostProcessor()),
+	EROSION(new ErosionPostProcessor()),
+	STRATA(new StrataPostProcessor()),
+	SOIL(new SoilPostProcessor());
 
-	public LongFunction<TerrainPostProcessor> factory;
+	public TerrainPostProcessor postProcessor;
 
-	PostProcessors(LongFunction<TerrainPostProcessor> factory) {
-
-		this.factory = factory;
+	PostProcessors(TerrainPostProcessor postProcessor) {
+		this.postProcessor = postProcessor;
 	}
 }

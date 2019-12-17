@@ -16,18 +16,24 @@ import java.util.Random;
 
 public final class RiverPostProcessor implements TerrainPostProcessor {
 	private static final double RIVER_SCALE = 980;
-	private final OpenSimplexNoise noiseSampler;
-	private final OctaveNoiseSampler sandNoise;
+	private OpenSimplexNoise noiseSampler;
+	private OctaveNoiseSampler sandNoise;
 	private ChunkRandom random;
 
-	public RiverPostProcessor(long seed) {
+	@Override
+	public void init(long seed) {
 		random = new ChunkRandom(seed);
 		noiseSampler = new OpenSimplexNoise(seed - 8);
 		sandNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new Random(seed), 4, Math.pow(2, 12), 2, 2);
 	}
 
 	@Override
-	public void postProcess(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
+	public void setup() {
+
+	}
+
+	@Override
+	public void process(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
 		BlockPos.Mutable pos = new BlockPos.Mutable();
 		int startX = (chunkX << 4);
 		int startZ = (chunkZ << 4);

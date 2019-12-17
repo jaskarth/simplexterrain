@@ -27,7 +27,6 @@ import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.LongFunction;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
@@ -39,7 +38,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	private final ChunkRandom random;
 	private final NoiseSampler surfaceDepthNoise;
-	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
+//	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
 
 	private HashMap<ChunkPos, int[]> noiseCache = new HashMap<>();
 
@@ -61,15 +60,13 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		this.surfaceDepthNoise = new OctavePerlinNoiseSampler(this.random, 4, 0);
 
-		List<TerrainPostProcessor> postProcessors = new ArrayList<>();
-		postProcessorFactories.forEach(factory -> postProcessors.add(factory.apply(this.seed)));
-		terrainPostProcessors = postProcessors;
+		postProcessors.forEach(factory -> factory.init(this.seed));
 	}
 
-	private static final Collection<LongFunction<TerrainPostProcessor>> postProcessorFactories = new ArrayList<>();
+	private static final Collection<TerrainPostProcessor> postProcessors = new ArrayList<>();
 
-	public static void  addTerrainPostProcessor(LongFunction<TerrainPostProcessor> factory) {
-		postProcessorFactories.add(factory);
+	public static void  addTerrainPostProcessor(TerrainPostProcessor factory) {
+		postProcessors.add(factory);
 	}
 
 	@Override
@@ -300,7 +297,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		int chunkZ = region.getCenterChunkZ();
 		ChunkRandom rand = new ChunkRandom();
 		rand.setSeed(chunkX, chunkZ);
-		this.terrainPostProcessors.forEach(postProcessor -> postProcessor.postProcess(region, rand, chunkX, chunkZ, this));
+		postProcessors.forEach(postProcessor -> postProcessor.process(region, rand, chunkX, chunkZ, this));
 
 		int i = region.getCenterChunkX();
 		int j = region.getCenterChunkZ();
