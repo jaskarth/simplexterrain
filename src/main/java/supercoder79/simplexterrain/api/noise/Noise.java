@@ -21,8 +21,34 @@ public abstract class Noise {
 
 	//Helper noise functions =======================
 
-	protected static double fastSqrt(double d) {
-		return Double.longBitsToDouble(((Double.doubleToLongBits(d)-(1l<<52))>>1 ) + (1l<<61));
+	private static final int CHAR_BIT = 8;
+	private static final int SIZE_INT = 8;
+
+
+	/**
+	 * A bit hack that computes a rough estimation of a square root for the given number
+	 * Don't use this in places that need accurace-- You'll regret it!
+	 *
+	 * @param d the input for the fastSqrt algorithm
+	 * @return a **rough** approximation of square root
+	 */
+	public static double fastSqrt(double d) {
+		return Double.longBitsToDouble(((Double.doubleToLongBits(d) - (1L << 52)) >> 1 ) + (1L << 61));
+	}
+
+	/**
+	 * A fast implementation of Math.abs() that avoids branching
+	 * @param n the number to get the absolute value of
+	 * @return the absolute value
+	 */
+	public static int fastAbs(int n) {
+		int mask = n >> (SIZE_INT * CHAR_BIT - 1);
+		return ((n + mask) ^ mask);
+	}
+
+	public static long fastAbs(long n) {
+		long mask = n >> (SIZE_INT * CHAR_BIT - 1);
+		return ((n + mask) ^ mask);
 	}
 
 	protected static int factorial(int n) {

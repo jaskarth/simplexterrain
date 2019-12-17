@@ -13,14 +13,13 @@ public class ConfigData {
 	public boolean addDetailNoise = true;
 	public boolean addPeaksNoise = true;
 
-	public boolean sacrificeAccuracyForSpeed = true;
 	public boolean reloadConfigCommand = false;
 	public boolean optimizeChunkGenerationInvasively = true;
 	public boolean threadedNoiseGeneration = true;
 
 	public NoiseType noiseGenerator = NoiseType.SIMPLEX;
 
-	public List<PostProcessors> postProcessors = new ArrayList<>();//TODO: replace default post processors
+	public List<PostProcessors> postProcessors = new ArrayList<>(); //TODO: replace default post processors
 
     public int baseHeight = 100;
 

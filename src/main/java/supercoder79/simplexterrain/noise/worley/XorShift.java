@@ -1,6 +1,7 @@
 package supercoder79.simplexterrain.noise.worley;
 
 import supercoder79.simplexterrain.SimplexTerrain;
+import supercoder79.simplexterrain.api.noise.Noise;
 
 import java.util.Objects;
 import java.util.Random;
@@ -36,10 +37,10 @@ public  class XorShift {
 	 *
 	 */
 	public final class Instance {
-		private long x, y, z;
+		private long x, z;
 
 		private Instance() {
-			setSeed(0, 0, 0);
+			setSeed(0,  0);
 		}
 
 		/**
@@ -61,8 +62,7 @@ public  class XorShift {
 		public long nextLong() {
 			long t;
 			t = (x ^ (x << 13));
-			x = y;
-			y = z;
+			x = z;
 			z = (z ^ (z >>> 3)) ^ (t ^ t >>> 19);
 			return z;
 		}
@@ -76,24 +76,22 @@ public  class XorShift {
 		 *
 		 * @param x
 		 *            the X component.
-		 * @param y
-		 *            the Y component.
 		 * @param z
 		 *            the Z component.
 		 */
-		public void setSeed(long x, long y, long z) {
-			this.x = seeds[(int) (Math.abs(x) % SEED_TABLE_SPACE)];
-			this.y = seeds[(int) (Math.abs(y) % SEED_TABLE_SPACE)
-					+ SEED_TABLE_SPACE];
-			this.z = seeds[(int) (Math.abs(z) % SEED_TABLE_SPACE)
+		public void setSeed(long x, long z) {
+			this.x = seeds[(int) (Noise.fastAbs(x) % SEED_TABLE_SPACE)];
+//			this.y = seeds[(int) (Noise.fastAbs(y) % SEED_TABLE_SPACE)
+//					+ SEED_TABLE_SPACE];
+			this.z = seeds[(int) (Noise.fastAbs(z) % SEED_TABLE_SPACE)
 					+ SEED_TABLE_SPACE + SEED_TABLE_SPACE];
 
-			if (!SimplexTerrain.CONFIG.sacrificeAccuracyForSpeed) {
-				// decreases spherical artifacts, but obviously is slow
-				// TODO replace by fixing underlying issue
-				for (int i = 0; i < 5; i++)
-					nextLong();
-			}
+//			if (!SimplexTerrain.CONFIG.sacrificeAccuracyForSpeed) {
+//				// decreases spherical artifacts, but obviously is slow
+//				// TODO replace by fixing underlying issue
+//				for (int i = 0; i < 5; i++)
+//					nextLong();
+//			}
 		}
 	}
 
