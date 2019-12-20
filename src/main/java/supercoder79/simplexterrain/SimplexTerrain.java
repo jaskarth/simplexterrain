@@ -12,10 +12,10 @@ import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.ConfigData;
 import supercoder79.simplexterrain.init.ReloadConfigCommand;
-import supercoder79.simplexterrain.init.SimplexPostProcessors;
 import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
+import supercoder79.simplexterrain.world.noisemodifiers.PeaksNoiseModifier;
 import supercoder79.simplexterrain.world.postprocess.PostProcessors;
 
 public class SimplexTerrain implements ModInitializer {
@@ -60,11 +60,16 @@ public class SimplexTerrain implements ModInitializer {
 			ReloadConfigCommand.init();
 		}
 
-		for (PostProcessors postProcess : SimplexTerrain.CONFIG.postProcessors) {
-			postProcess.postProcessor.setup();
-		}
-		
-		SimplexPostProcessors.init();
+		//Setup (reading from configs and stuff like that)
+		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> postProcessors.postProcessor.setup());
+
+		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> noiseModifiers.noiseModifier.setup());
+
+		//Addition to the chunk generator
+		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> SimplexChunkGenerator.addTerrainPostProcessor(postProcessors.postProcessor));
+
+		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier));
+
 
 		WORLDGEN_TYPE = Registry.register(Registry.CHUNK_GENERATOR_TYPE, new Identifier("simplexterrain", "simplex"), new WorldGeneratorType(false, OverworldChunkGeneratorConfig::new));
 	}

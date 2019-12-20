@@ -2,9 +2,11 @@ package supercoder79.simplexterrain.configs;
 
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.NoiseType;
+import supercoder79.simplexterrain.world.noisemodifiers.NoiseModifiers;
 import supercoder79.simplexterrain.world.postprocess.PostProcessors;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ConfigData {
@@ -21,7 +23,9 @@ public class ConfigData {
 
 	public List<PostProcessors> postProcessors = new ArrayList<>(); //TODO: replace default post processors
 
-    public int baseHeight = 100;
+	public List<NoiseModifiers> noiseModifiers = new ArrayList<>(Collections.singletonList(NoiseModifiers.PEAKS));
+
+	public int baseHeight = 100;
 
 	public int baseOctaveAmount = 11;
 	public int detailOctaveAmount = 2;

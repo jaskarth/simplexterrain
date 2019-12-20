@@ -24,7 +24,7 @@ public class SoilPostProcessor implements TerrainPostProcessor {
 
 	@Override
 	public void setup() {
-		
+
 	}
 
 	@Override
