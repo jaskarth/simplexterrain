@@ -13,7 +13,6 @@ public class ConfigData {
 	public String configVersion = SimplexTerrain.VERSION;
 	public boolean doModCompat = true;
 	public boolean addDetailNoise = true;
-	public boolean addPeaksNoise = true;
 
 	public boolean reloadConfigCommand = false;
 	public boolean optimizeChunkGenerationInvasively = true;
@@ -50,7 +49,7 @@ public class ConfigData {
 	public double detailNoiseThreshold = 0.0;
 	public double scaleNoiseThreshold  = -0.02;
 
-	public int lowlandStartHeight = 68;
+	public int lowlandStartHeight = 66;
 	public int midlandStartHeight = 90;
 	public int highlandStartHeight = 140;
 	public int toplandStartHeight = 190;
