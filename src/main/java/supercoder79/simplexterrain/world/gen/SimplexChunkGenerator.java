@@ -31,12 +31,14 @@ import java.util.concurrent.CompletableFuture;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
+	private static final ChunkRandom reuseableRandom = new ChunkRandom();
 
 	private final OctaveNoiseSampler heightNoise;
 	private final OctaveNoiseSampler detailNoise;
 	private final OctaveNoiseSampler scaleNoise;
 
 	private final ChunkRandom random;
+
 	private final NoiseSampler surfaceDepthNoise;
 	//	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
 
@@ -60,8 +62,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		this.surfaceDepthNoise = new OctavePerlinNoiseSampler(this.random, 4, 0);
 
 		postProcessors.forEach(postProcessor -> postProcessor.init(this.seed));
-
-		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(this.seed));
+		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(this.seed, reuseableRandom));
 	}
 
 	private static final Collection<TerrainPostProcessor> postProcessors = new ArrayList<>();
