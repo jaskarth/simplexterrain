@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.world.noisemodifiers;
+package supercoder79.simplexterrain.world.noisemodifier;
 
 import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.SimplexTerrain;

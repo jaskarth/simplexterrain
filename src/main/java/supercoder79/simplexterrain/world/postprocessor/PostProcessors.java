@@ -1,9 +1,6 @@
-package supercoder79.simplexterrain.world.postprocess;
+package supercoder79.simplexterrain.world.postprocessor;
 
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
-
-import java.util.function.Function;
-import java.util.function.LongFunction;
 
 public enum PostProcessors {
 	RIVERS(new RiverPostProcessor()),
@@ -18,3 +15,4 @@ public enum PostProcessors {
 		this.postProcessor = postProcessor;
 	}
 }
+	

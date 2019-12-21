@@ -1,13 +1,13 @@
 package supercoder79.simplexterrain.configs;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.NoiseType;
-import supercoder79.simplexterrain.world.noisemodifiers.NoiseModifiers;
-import supercoder79.simplexterrain.world.postprocess.PostProcessors;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import supercoder79.simplexterrain.world.noisemodifier.NoiseModifiers;
+import supercoder79.simplexterrain.world.postprocessor.PostProcessors;
 
 public class ConfigData {
 	public String configVersion = SimplexTerrain.VERSION;
@@ -23,7 +23,7 @@ public class ConfigData {
 
 	public List<PostProcessors> postProcessors = new ArrayList<>(); //TODO: replace default post processors
 
-	public List<NoiseModifiers> noiseModifiers = new ArrayList<>(Collections.singletonList(NoiseModifiers.PEAKS));
+	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.PEAKS, NoiseModifiers.MESA);
 
 	public int baseHeight = 100;
 
