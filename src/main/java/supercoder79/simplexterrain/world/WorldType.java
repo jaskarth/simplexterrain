@@ -24,6 +24,20 @@ public class WorldType<T extends ChunkGenerator<?>> {
 	public WorldType(String name, WorldTypeChunkGeneratorFactory<T> chunkGenSupplier) {
 		this.generatorType = AccessorLevelGeneratorType.create(FabricLoader.getInstance().isModLoaded("cwt") ? 10 : 9, name);
 		generatorType.setCustomizable(false);
+
+		if(SimplexTerrain.CONFIG.simplexIsDefault) {
+			LevelGeneratorType.TYPES[FabricLoader.getInstance().isModLoaded("cwt") ? 10 : 9] = null;
+			LevelGeneratorType[] temp = new LevelGeneratorType[16];
+			for (int i = 0; i < LevelGeneratorType.TYPES.length; i++) {
+				if (i == LevelGeneratorType.TYPES.length - 1) break;
+				temp[i + 1] = LevelGeneratorType.TYPES[i];
+			}
+			temp[0] = generatorType;
+			for (int i = 0; i < temp.length; i++) {
+				LevelGeneratorType.TYPES[i] = temp[i];
+			}
+		}
+
 		this.chunkGenSupplier = chunkGenSupplier;
 
 		if (this.generatorType == null) {
