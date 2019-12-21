@@ -130,11 +130,11 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 					double height = requestedVals[(x*16) + z];
 					if (height >= y) {
 						chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
-					} else if (y < 63) {
+					} else if (y < getSeaLevel()) {
 						chunk.setBlockState(posMutable, Blocks.WATER.getDefaultState(), false);
 					}
 					//TODO: see if this actually improves performance
-					if (y > height && y > 63) break;
+					if (y > height && y > getSeaLevel()) break;
 				}
 			}
 		}
