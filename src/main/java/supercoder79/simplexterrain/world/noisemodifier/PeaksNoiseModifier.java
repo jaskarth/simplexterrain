@@ -1,22 +1,24 @@
 package supercoder79.simplexterrain.world.noisemodifier;
 
-import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
-public class PeaksNoiseModifier implements NoiseModifier {
+public class PeaksNoiseModifier extends NoiseModifier {
+	public PeaksNoiseModifier() {
+		super(0L);
+	}
+
 	private OctaveNoiseSampler peaksNoise;
 
 	@Override
 	public void init(long seed) {
-		peaksNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed), SimplexTerrain.CONFIG.peaksOctaveAmount, SimplexTerrain.CONFIG.peaksFrequency, 1.0, 1.0);
+		this.peaksNoise = this.createNoiseSampler(OpenSimplexNoise.class, SimplexTerrain.CONFIG.peaksOctaveAmount, SimplexTerrain.CONFIG.peaksFrequency);
 	}
 
 	@Override
 	public void setup() {
-
 	}
 
 	@Override
