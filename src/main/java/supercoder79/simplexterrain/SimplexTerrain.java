@@ -15,8 +15,6 @@ import supercoder79.simplexterrain.init.ReloadConfigCommand;
 import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
-import supercoder79.simplexterrain.world.noisemodifiers.FjordNoiseModifier;
-import supercoder79.simplexterrain.world.noisemodifiers.SandbarNoiseModifier;
 
 public class SimplexTerrain implements ModInitializer {
 	public static final String VERSION = "0.5.0";
@@ -345,7 +343,7 @@ public class SimplexTerrain implements ModInitializer {
 		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.DESERT), SimplexClimate.DRY_TROPICAL, mesaWeight*0.75);
 
 		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.BADLANDS), SimplexClimate.DRY_TEMPERATE, desertWeight);
-		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.BADLANDS), SimplexClimate.DRY_BOREAL, desertWeight*0.75);
+		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.BADLANDS), SimplexClimate.DRY_TROPICAL, desertWeight*0.75);
 
 		SimplexBiomes.addLowlandsBiome(PLAINS, SimplexClimate.DRY_TEMPERATE, plainsWeight);
 		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.SAVANNA), SimplexClimate.DRY_TROPICAL, savannahWeight);
@@ -427,21 +425,26 @@ public class SimplexTerrain implements ModInitializer {
 
 	private static void addVanillaHighlands() {
 		final double plainsWeight = 1.0;
-		final double jungleWeight = 0.5;
-		final double savannaPlateauMWeight = 0.4;
+		final double jungleWeight = 0.6;
+		final double savannaPlateauMWeight = 0.5;
 		final double mountainEdgeWeight = 1.0;
 		final double woodedMountainsWeight = 1.0;
 		final double taigaWeight = 0.8;
 		final double snowyTaigaWeight = 0.6;
 		final double iceSpikesWeight = 0.3;
+		final double mesaWeight = 0.5;
+		final double desertWeight = 0.4;
 		
 		SimplexBiomes.addHighlandsBiome(PLAINS, SimplexClimate.DRY_TROPICAL, plainsWeight);
 		SimplexBiomes.addHighlandsBiome(biomeId(Biomes.SHATTERED_SAVANNA_PLATEAU), SimplexClimate.DRY_TROPICAL, savannaPlateauMWeight);
+		SimplexBiomes.addHighlandsBiome(biomeId(Biomes.DESERT), SimplexClimate.DRY_TROPICAL, desertWeight);
 
 		SimplexBiomes.addHighlandsBiome(PLAINS, SimplexClimate.TROPICAL, plainsWeight);
 
 		SimplexBiomes.addHighlandsBiome(JUNGLE, SimplexClimate.LUSH_TROPICAL, jungleWeight);
 		SimplexBiomes.addHighlandsBiome(PLAINS, SimplexClimate.LUSH_TROPICAL, plainsWeight);
+
+		SimplexBiomes.addMidlandsBiome(biomeId(Biomes.BADLANDS), SimplexClimate.DRY_TROPICAL, mesaWeight*0.75);
 
 		SimplexBiomes.addHighlandsBiome(WOODED_MOUNTAINS, SimplexClimate.DRY_TEMPERATE, woodedMountainsWeight);
 		SimplexBiomes.addHighlandsBiome(MOUNTAIN_EDGE, SimplexClimate.DRY_TEMPERATE, mountainEdgeWeight);
@@ -473,13 +476,17 @@ public class SimplexTerrain implements ModInitializer {
 		final double forestWeight = 1.0;
 		final double forestedMountainWeight = 1.0;
 		final double iceSpikesWeight = 0.3;
+		final double mesaWeight = 0.4;
+		final double jungleWeight = 0.45;
 		
 		SimplexBiomes.addMountainPeaksBiome(PLAINS, SimplexClimate.DRY_TROPICAL, plainsWeight);
 
 		SimplexBiomes.addMountainPeaksBiome(PLAINS, SimplexClimate.TROPICAL, plainsWeight);
+		SimplexBiomes.addHighlandsBiome(JUNGLE, SimplexClimate.LUSH_TROPICAL, jungleWeight);
 		SimplexBiomes.addMountainPeaksBiome(GRAVELLY_MOUNTAINS, SimplexClimate.TROPICAL, gravellyMountainsWeight);
 
 		SimplexBiomes.addMountainPeaksBiome(PLAINS, SimplexClimate.LUSH_TROPICAL, forestWeight);
+		SimplexBiomes.addMidlandsBiome(biomeId(Biomes.BADLANDS), SimplexClimate.DRY_TROPICAL, mesaWeight*0.75);
 		SimplexBiomes.addMountainPeaksBiome(GRAVELLY_MOUNTAINS, SimplexClimate.TROPICAL, gravellyMountainsWeight * 0.4);
 
 		SimplexBiomes.addMountainPeaksBiome(GRAVELLY_MOUNTAINS, SimplexClimate.DRY_TEMPERATE, gravellyMountainsWeight);

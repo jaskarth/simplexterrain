@@ -36,7 +36,6 @@ public class FjordNoiseModifier extends NoiseModifier {
 
 		if (currentNoiseValue > (SimplexTerrain.CONFIG.seaLevel+3) - SimplexTerrain.CONFIG.baseHeight) // don't make the fjord cursed
 		if (dist <= 0.04) {
-			System.out.println("X: " + x + " Z: " + z);
 			currentNoiseValue = -60 + ((dist*500) + 30);
 		}
 		return currentNoiseValue;
