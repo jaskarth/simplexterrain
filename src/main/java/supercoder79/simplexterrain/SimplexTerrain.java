@@ -15,6 +15,7 @@ import supercoder79.simplexterrain.init.ReloadConfigCommand;
 import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
+import supercoder79.simplexterrain.world.noisemodifiers.FjordNoiseModifier;
 import supercoder79.simplexterrain.world.noisemodifiers.SandbarNoiseModifier;
 
 public class SimplexTerrain implements ModInitializer {
@@ -68,6 +69,8 @@ public class SimplexTerrain implements ModInitializer {
 		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> SimplexChunkGenerator.addTerrainPostProcessor(postProcessors.postProcessor));
 
 		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier));
+
+		SimplexChunkGenerator.addNoiseModifier(new FjordNoiseModifier());
 
 
 		WORLDGEN_TYPE = Registry.register(Registry.CHUNK_GENERATOR_TYPE, new Identifier("simplexterrain", "simplex"), new WorldGeneratorType(false, OverworldChunkGeneratorConfig::new));

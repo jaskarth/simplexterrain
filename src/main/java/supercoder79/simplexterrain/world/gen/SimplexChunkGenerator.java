@@ -179,6 +179,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		return 256 / (Math.exp(8/3f - val/48) + 1);
 	}
 
+	private static double fade(double value) {
+		return value * value * (3 - (value * 2));
+	}
+
 	@Override
 	public int getHeightOnGround(int x, int z, net.minecraft.world.Heightmap.Type type) {
 		return getHeight(x, z);
@@ -193,6 +197,9 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		double xProgress = (double) (x - subX) / 4.0;
 		double zProgress = (double) (z - subZ) / 4.0;
+
+		xProgress = fade(xProgress);
+		zProgress = fade(zProgress);
 
 		final double[] samples = new double[4];
 		samples[0] = sampleNoise(subX, subZ);
