@@ -38,7 +38,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	private final ChunkRandom random;
 	private final NoiseSampler surfaceDepthNoise;
-//	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
+	//	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
 
 	private HashMap<ChunkPos, int[]> noiseCache = new HashMap<>();
 
@@ -91,24 +91,24 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	}
 
 	//TODO: Fix this code
-//	@Override
-//	public void populateBiomes(Chunk chunk) {
-//		if (biomeSource instanceof SimplexBiomeSource) {
-//			ChunkPos chunkPos = chunk.getPos();
-//			int[] e = getHeightInChunk(chunkPos);
-//			Biome[] biomes = new Biome[256];
-//
-//			for (int x = 0; x < 16; x++) {
-//				for (int z = 0; z < 16; z++) {
-//					biomes[z * 16 + x] = ((SimplexBiomeSource)(biomeSource)).sampleBiomeWithMathTM(x, z, e[z*16 + x]);
-//				}
-//			}
-//
-//			((ProtoChunk) chunk).method_22405(new BiomeArray(biomes));
-//		} else {
-//			super.populateBiomes(chunk);
-//		}
-//	}
+	//	@Override
+	//	public void populateBiomes(Chunk chunk) {
+	//		if (biomeSource instanceof SimplexBiomeSource) {
+	//			ChunkPos chunkPos = chunk.getPos();
+	//			int[] e = getHeightInChunk(chunkPos);
+	//			Biome[] biomes = new Biome[256];
+	//
+	//			for (int x = 0; x < 16; x++) {
+	//				for (int z = 0; z < 16; z++) {
+	//					biomes[z * 16 + x] = ((SimplexBiomeSource)(biomeSource)).sampleBiomeWithMathTM(x, z, e[z*16 + x]);
+	//				}
+	//			}
+	//
+	//			((ProtoChunk) chunk).method_22405(new BiomeArray(biomes));
+	//		} else {
+	//			super.populateBiomes(chunk);
+	//		}
+	//	}
 
 	@Override
 	public void populateNoise(IWorld iWorld, Chunk chunk) {
@@ -194,7 +194,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		double xProgress = (double) (x - subX) / 4.0;
 		double zProgress = (double) (z - subZ) / 4.0;
 
-		final double[] samples = new double[4];
+		xProgress = fade(xProgress);
+		zProgress = fade(zProgress);
+
+				final double[] samples = new double[4];
 		samples[0] = sampleNoise(subX, subZ);
 		samples[1] = sampleNoise(subXUpper, subZ);
 		samples[2] = sampleNoise(subX, subZUpper);
@@ -209,6 +212,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 			detail = sampleDetail(x, z);
 		}
 		return (int)(sigmoid((sample + detail)));
+	}
+
+	private static double fade(double value) {
+		return value * value * (3 - (value * 2));
 	}
 
 	private double sampleNoise(int x, int z) {

@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.world.postprocess;
+package supercoder79.simplexterrain.world.postprocessor;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -29,7 +29,6 @@ public final class RiverPostProcessor implements TerrainPostProcessor {
 
 	@Override
 	public void setup() {
-
 	}
 
 	@Override

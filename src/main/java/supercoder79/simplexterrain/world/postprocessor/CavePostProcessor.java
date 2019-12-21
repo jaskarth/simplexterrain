@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.world.postprocess;
+package supercoder79.simplexterrain.world.postprocessor;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -20,7 +20,7 @@ public class CavePostProcessor implements TerrainPostProcessor {
 	public void init(long seed) {
 		caveNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed), 6, 2048, 14, 14);
 		caveHeightNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed), 5, Math.pow(2, 5), 10, 10);
-		caveEnabledNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed+20), 6, 1024, 1, 1);
+		caveEnabledNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed + 20), 6, 1024, 1, 1);
 	}
 
 	@Override
