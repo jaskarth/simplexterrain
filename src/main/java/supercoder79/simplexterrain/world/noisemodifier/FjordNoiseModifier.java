@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.world.noisemodifiers;
+package supercoder79.simplexterrain.world.noisemodifier;
 
 import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.SimplexTerrain;
@@ -7,10 +7,14 @@ import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
-public class FjordNoiseModifier implements NoiseModifier {
+public class FjordNoiseModifier extends NoiseModifier {
 	private ChunkRandom random = new ChunkRandom(0);
 	private OctaveNoiseSampler stackNoise;
 	private OpenSimplexNoise noiseSampler;
+
+	protected FjordNoiseModifier() {
+		super(2L);
+	}
 
 	@Override
 	public void init(long seed) {
@@ -35,10 +39,6 @@ public class FjordNoiseModifier implements NoiseModifier {
 			System.out.println("X: " + x + " Z: " + z);
 			currentNoiseValue = -60 + ((dist*500) + 30);
 		}
-
-//		if (noise > 0.12 && noise < 0.14) {
-//			currentNoiseValue = -36;
-//		}
 		return currentNoiseValue;
 	}
 }

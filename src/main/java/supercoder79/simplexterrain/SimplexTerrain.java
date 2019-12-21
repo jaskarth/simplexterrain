@@ -70,8 +70,6 @@ public class SimplexTerrain implements ModInitializer {
 
 		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier));
 
-		SimplexChunkGenerator.addNoiseModifier(new FjordNoiseModifier());
-
 
 		WORLDGEN_TYPE = Registry.register(Registry.CHUNK_GENERATOR_TYPE, new Identifier("simplexterrain", "simplex"), new WorldGeneratorType(false, OverworldChunkGeneratorConfig::new));
 	}
