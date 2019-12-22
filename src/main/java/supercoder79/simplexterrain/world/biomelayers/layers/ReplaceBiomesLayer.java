@@ -22,7 +22,6 @@ public enum ReplaceBiomesLayer implements IdentitySamplingLayer {
         for (Map.Entry<Biome, Pair<Biome, Integer>> entry : entries) {
             if (i == Registry.BIOME.getRawId(entry.getKey())) {
                 if (layerRandomnessSource.nextInt(entry.getValue().getRight()) == 0) {
-                    System.out.println("Replaced" + entry.getKey() + " with " + entry.getValue().getLeft());
                     return Registry.BIOME.getRawId(entry.getKey());
                 }
             }

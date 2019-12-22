@@ -7,7 +7,8 @@ public enum NoiseModifiers {
 	MESA(new MesaNoiseModifier()),
 	DOMES(new DomeNoiseModifier()),
 	SANDBARS(new SandbarNoiseModifier()),
-	FJORDS(new FjordNoiseModifier());
+	FJORDS(new FjordNoiseModifier()),
+	VENTS(new VentsNoiseModifier());
 
 	public NoiseModifier noiseModifier;
 
