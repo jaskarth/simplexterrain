@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Config {
-	public static ConfigData init() {
+	public static void init() {
 		ConfigData configData = null;
 		try {
 			GsonBuilder builder = new GsonBuilder();
@@ -51,10 +51,10 @@ public class Config {
 			SimplexTerrain.climateLayer.initialiseNoise();
 		}
 
+		SimplexTerrain.CONFIG = configData;
+
 		// Setup (reading from configs and stuff like that)
 		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> postProcessors.postProcessor.setup());
 		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> noiseModifiers.noiseModifier.setup());
-
-		return configData;
 	}
 }

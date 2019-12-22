@@ -9,9 +9,9 @@ import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
+import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.ConfigData;
-import supercoder79.simplexterrain.init.ReloadConfigCommand;
 import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
@@ -52,7 +52,7 @@ public class SimplexTerrain implements ModInitializer {
 		WOODED_MOUNTAINS = biomeId(Biomes.WOODED_MOUNTAINS);
 		GRAVELLY_MOUNTAINS = biomeId(Biomes.GRAVELLY_MOUNTAINS);
 
-		CONFIG = Config.init();
+		Config.init();
 
 		loadMeOnClientPls = WorldType.SIMPLEX;
 		addDefaultBiomes();
