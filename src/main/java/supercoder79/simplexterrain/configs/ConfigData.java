@@ -23,7 +23,7 @@ public class ConfigData {
 
 	public List<PostProcessors> postProcessors = new ArrayList<>(); //TODO: replace default post processors
 
-	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.PEAKS, NoiseModifiers.MESA);
+	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.PEAKS, NoiseModifiers.MESA, NoiseModifiers.DOMES);
 
 	public int baseHeight = 100;
 
@@ -55,7 +55,7 @@ public class ConfigData {
 	public int highlandStartHeight = 140;
 	public int toplandStartHeight = 190;
 
-	public int biomeScaleAmount = 5;
+	public int biomeScaleAmount = 8;
 
 	public double temperatureOffset = 0.0;
 	public double humidityOffset = 0.0;

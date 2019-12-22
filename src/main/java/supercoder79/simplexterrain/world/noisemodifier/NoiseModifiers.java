@@ -5,8 +5,10 @@ import supercoder79.simplexterrain.api.noise.NoiseModifier;
 public enum NoiseModifiers {
 	PEAKS(new PeaksNoiseModifier()),
 	MESA(new MesaNoiseModifier()),
+	DOMES(new DomeNoiseModifier()),
 	SANDBARS(new SandbarNoiseModifier()),
-	FJORDS(new FjordNoiseModifier());
+	FJORDS(new FjordNoiseModifier()),
+	VENTS(new VentsNoiseModifier());
 
 	public NoiseModifier noiseModifier;
 

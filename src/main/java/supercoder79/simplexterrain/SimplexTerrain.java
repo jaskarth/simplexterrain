@@ -56,6 +56,12 @@ public class SimplexTerrain implements ModInitializer {
 
 		loadMeOnClientPls = WorldType.SIMPLEX;
 		addDefaultBiomes();
+		SimplexBiomes.addReplacementBiome(FOREST, biomeId(Biomes.FLOWER_FOREST), 15);
+		SimplexBiomes.addReplacementBiome(BIRCH_FOREST, biomeId(Biomes.TALL_BIRCH_FOREST), 6);
+		SimplexBiomes.addReplacementBiome(PLAINS, biomeId(Biomes.SUNFLOWER_PLAINS), 50);
+		SimplexBiomes.addReplacementBiome(JUNGLE, biomeId(Biomes.BAMBOO_JUNGLE), 8);
+		SimplexBiomes.addReplacementBiome(biomeId(Biomes.BADLANDS), biomeId(Biomes.BADLANDS_PLATEAU), 6);
+		SimplexBiomes.addReplacementBiome(biomeId(Biomes.BADLANDS), biomeId(Biomes.WOODED_BADLANDS_PLATEAU), 10);
 
 		if (CONFIG.reloadConfigCommand) {
 			ReloadConfigCommand.init();

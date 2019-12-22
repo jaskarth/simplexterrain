@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.Formatting;
+import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.configs.Config;
 
 public class ReloadConfigCommand {
@@ -14,7 +16,7 @@ public class ReloadConfigCommand {
 			LiteralArgumentBuilder<ServerCommandSource> lab = CommandManager.literal("reloadterrainconfig").requires(executor -> executor.hasPermissionLevel(2)).executes(cmd -> {
 				ServerCommandSource source = cmd.getSource();
 				Config.init();
-				source.sendFeedback(new LiteralText("§2§lReloaded Configs!"), true);
+				source.sendFeedback(new LiteralText(Formatting.DARK_GREEN.toString() + Formatting.BOLD.toString() + "Reloaded Configs!"), true);
 				return 1;
 			});
 			dispatcher.register(lab);
