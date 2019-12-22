@@ -6,7 +6,6 @@ import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 public class FjordNoiseModifier extends NoiseModifier {
-	private OctaveNoiseSampler stackNoise;
 	private OpenSimplexNoise noiseSampler;
 
 	protected FjordNoiseModifier() {
@@ -16,7 +15,6 @@ public class FjordNoiseModifier extends NoiseModifier {
 	@Override
 	public void init(long seed) {
 		noiseSampler = new OpenSimplexNoise(seed - 30);
-		stackNoise = this.createNoiseSampler(OpenSimplexNoise.class, 4, 250, 45, 32);
 	}
 
 	@Override
