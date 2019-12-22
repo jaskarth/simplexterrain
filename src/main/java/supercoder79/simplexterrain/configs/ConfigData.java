@@ -23,7 +23,7 @@ public class ConfigData {
 
 	public List<PostProcessors> postProcessors = new ArrayList<>(); //TODO: replace default post processors
 
-	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.PEAKS, NoiseModifiers.MESA);
+	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.PEAKS, NoiseModifiers.MESA, NoiseModifiers.DOMES);
 
 	public int baseHeight = 100;
 
