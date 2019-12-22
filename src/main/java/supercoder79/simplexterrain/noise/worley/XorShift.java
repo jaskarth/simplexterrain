@@ -1,6 +1,5 @@
 package supercoder79.simplexterrain.noise.worley;
 
-import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.Noise;
 
 import java.util.Objects;
