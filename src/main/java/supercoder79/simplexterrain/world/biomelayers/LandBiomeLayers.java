@@ -61,10 +61,10 @@ public class LandBiomeLayers {
 		LayerFactory<T> shoreSampler = ClimateTransformerLayer.SHORES.create(contextProvider.apply(0), climateLayer);
 		shoreSampler = repeat(1000L, ScaleLayer.NORMAL, shoreSampler, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
 		
-		LayerFactory<T> oceanSampler = ClimateTransformerLayer.SHORES.create(contextProvider.apply(0), climateLayer);
+		LayerFactory<T> oceanSampler = ClimateTransformerLayer.OCEAN.create(contextProvider.apply(0), climateLayer);
 		oceanSampler = repeat(1000L, ScaleLayer.NORMAL, oceanSampler, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
-		
-		LayerFactory<T> deepOceanSampler = ClimateTransformerLayer.SHORES.create(contextProvider.apply(0), climateLayer);
+
+		LayerFactory<T> deepOceanSampler = ClimateTransformerLayer.DEEP_OCEAN.create(contextProvider.apply(0), climateLayer);
 		deepOceanSampler = repeat(1000L, ScaleLayer.NORMAL, deepOceanSampler, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
 
 		return new LayerFactory[]{lowlandsBiomeLayer, midlandsBiomeLayer, highlandsBiomeLayer, mountainPeaksBiomePassLayer, shoreSampler, oceanSampler, deepOceanSampler};
