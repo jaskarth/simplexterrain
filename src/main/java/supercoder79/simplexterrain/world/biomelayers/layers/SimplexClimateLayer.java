@@ -14,25 +14,18 @@ public class SimplexClimateLayer implements InitLayer {
 	private final OctaveNoiseSampler humidityNoise;
 
 	public SimplexClimateLayer(long worldSeed) {
-		temperatureNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new Random(worldSeed - 5), 4, 8, 1.5, 1.5);
-		humidityNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new Random(worldSeed + 5), 4, 8, 1.5, 1.5);
+		Random rand = new Random(worldSeed);
+		temperatureNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, rand, 1, 7, 1.5, 1.5);
+		humidityNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, rand, 2, 5, 1.5, 1.5);
 	}
-	
+
 	@Override
 	public int sample(LayerRandomnessSource rand, int x, int z) {
-		double temperature = temperatureNoise.sample(transformTemperatureXZ(x), transformTemperatureXZ(z)) + SimplexTerrain.CONFIG.temperatureOffset;
-		double humidity = humidityNoise.sample(transformHumidityXZ(x), transformHumidityXZ(z)) + SimplexTerrain.CONFIG.humidityOffset;
+		double temperature = temperatureNoise.sample(x, z) + SimplexTerrain.CONFIG.temperatureOffset;
+		double humidity = humidityNoise.sample(x, z) + SimplexTerrain.CONFIG.humidityOffset;
 
 		return SimplexClimate.fromTemperatureHumidity(temperature, humidity).id;
 	}
-	
-	private double transformTemperatureXZ(double value) {
-		return value / 9D;
-	}
-	
-	private double transformHumidityXZ(double value) {
-		return value / 6D;
-	}
-	
+
 	public static final SimplexClimate[] REVERSE_ID_MAP = new SimplexClimate[10];
 }
