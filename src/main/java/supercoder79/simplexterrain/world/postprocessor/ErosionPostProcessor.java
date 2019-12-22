@@ -28,7 +28,7 @@ public class ErosionPostProcessor implements TerrainPostProcessor {
 
 	@Override
 	public void process(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
-		int[] heights = heightmap.getHeightInChunk(new ChunkPos(chunkX, chunkZ));
+		int[] heights = heightmap.getHeightsInChunk(new ChunkPos(chunkX, chunkZ));
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int x = 0; x < 16; x++) {
 			mutable.setX(chunkX*16 + x);

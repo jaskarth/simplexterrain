@@ -1,25 +1,26 @@
 package supercoder79.simplexterrain.world.gen;
 
+import java.util.Set;
+
 import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
-import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
-import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.world.biomelayers.LandBiomeLayers;
-
-import java.util.Set;
 
 public class SimplexBiomeSource extends BiomeSource {
 	private final BiomeLayerSampler lowlandsSampler;
 	private final BiomeLayerSampler midlandsSampler;
 	private final BiomeLayerSampler highlandsSampler;
 	private final BiomeLayerSampler toplandsSampler;
-	private OctaveNoiseSampler oceanTemperatureLayer; //this is actually a rough copy of the temperature sampler from the climate layer
+	private final BiomeLayerSampler beachSampler;
+	private final BiomeLayerSampler oceanSampler;
+	private final BiomeLayerSampler deepOceanSampler;
+
 	private static final Set<Biome> biomes = ImmutableSet.of(Biomes.OCEAN, Biomes.PLAINS, Biomes.DESERT, Biomes.MOUNTAINS, Biomes.FOREST, Biomes.TAIGA, Biomes.SWAMP, Biomes.RIVER, Biomes.FROZEN_OCEAN, Biomes.FROZEN_RIVER, Biomes.SNOWY_TUNDRA, Biomes.SNOWY_MOUNTAINS, Biomes.MUSHROOM_FIELDS, Biomes.MUSHROOM_FIELD_SHORE, Biomes.BEACH, Biomes.DESERT_HILLS, Biomes.WOODED_HILLS, Biomes.TAIGA_HILLS, Biomes.MOUNTAIN_EDGE, Biomes.JUNGLE, Biomes.JUNGLE_HILLS, Biomes.JUNGLE_EDGE, Biomes.DEEP_OCEAN, Biomes.STONE_SHORE, Biomes.SNOWY_BEACH, Biomes.BIRCH_FOREST, Biomes.BIRCH_FOREST_HILLS, Biomes.DARK_FOREST, Biomes.SNOWY_TAIGA, Biomes.SNOWY_TAIGA_HILLS, Biomes.GIANT_TREE_TAIGA, Biomes.GIANT_TREE_TAIGA_HILLS, Biomes.WOODED_MOUNTAINS, Biomes.SAVANNA, Biomes.SAVANNA_PLATEAU, Biomes.BADLANDS, Biomes.WOODED_BADLANDS_PLATEAU, Biomes.BADLANDS_PLATEAU, Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN, Biomes.COLD_OCEAN, Biomes.DEEP_WARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN, Biomes.DEEP_COLD_OCEAN, Biomes.DEEP_FROZEN_OCEAN, Biomes.SUNFLOWER_PLAINS, Biomes.DESERT_LAKES, Biomes.GRAVELLY_MOUNTAINS, Biomes.FLOWER_FOREST, Biomes.TAIGA_MOUNTAINS, Biomes.SWAMP_HILLS, Biomes.ICE_SPIKES, Biomes.MODIFIED_JUNGLE, Biomes.MODIFIED_JUNGLE_EDGE, Biomes.TALL_BIRCH_FOREST, Biomes.TALL_BIRCH_HILLS, Biomes.DARK_FOREST_HILLS, Biomes.SNOWY_TAIGA_MOUNTAINS, Biomes.GIANT_SPRUCE_TAIGA, Biomes.GIANT_SPRUCE_TAIGA_HILLS, Biomes.MODIFIED_GRAVELLY_MOUNTAINS, Biomes.SHATTERED_SAVANNA, Biomes.SHATTERED_SAVANNA_PLATEAU, Biomes.ERODED_BADLANDS, Biomes.MODIFIED_WOODED_BADLANDS_PLATEAU, Biomes.MODIFIED_BADLANDS_PLATEAU);
 
 	private Heightmap heightmap = Heightmap.NONE;
@@ -27,12 +28,16 @@ public class SimplexBiomeSource extends BiomeSource {
 	public SimplexBiomeSource(SimplexBiomeSourceConfig config) {
 		super(biomes);
 		long seed = config.getSeed();
+
 		BiomeLayerSampler[] biomeLayerSamplers = LandBiomeLayers.build(seed, config.getGeneratorType());
+
 		this.lowlandsSampler = biomeLayerSamplers[0];
 		this.midlandsSampler = biomeLayerSamplers[1];
 		this.highlandsSampler = biomeLayerSamplers[2];
 		this.toplandsSampler = biomeLayerSamplers[3];
-		this.oceanTemperatureLayer = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed - 5), 1, 1000, 1, 1);
+		this.beachSampler = biomeLayerSamplers[4];
+		this.oceanSampler = biomeLayerSamplers[5];
+		this.deepOceanSampler = biomeLayerSamplers[6];
 	}
 
 	public void setHeightmap(Heightmap heightmap) {
@@ -41,40 +46,17 @@ public class SimplexBiomeSource extends BiomeSource {
 
 	@Override
 	public Biome getBiomeForNoiseGen(int x, int j, int z) {
-		return sampleBiomeWithMathTM((x << 2), (z << 2), heightmap.getHeight((x << 2), (z << 2)));
+		return sampleBiomeWithMathTM(x, z, heightmap.getHeight((x << 2), (z << 2)));
 	}
 
 	public Biome sampleBiomeWithMathTM(int x, int z, int height) {
-		if (height < SimplexTerrain.CONFIG.seaLevel/2) {
-			double oceanTemperatureSample = oceanTemperatureLayer.sample(x, z);
-			if (oceanTemperatureSample > 0.6)
-				return Biomes.DEEP_WARM_OCEAN;
-			else if (oceanTemperatureSample > 0.3)
-				return Biomes.DEEP_LUKEWARM_OCEAN;
-			else if (oceanTemperatureSample < -0.3)
-				return Biomes.DEEP_FROZEN_OCEAN;
-			else if (oceanTemperatureSample < -0.6)
-				return Biomes.DEEP_COLD_OCEAN;
-
-			else return Biomes.DEEP_OCEAN;
-		}
-		if (height < SimplexTerrain.CONFIG.seaLevel-2) {
-			double oceanTemperatureSample = oceanTemperatureLayer.sample(x, z);
-			if (oceanTemperatureSample > 0.6)
-				return Biomes.WARM_OCEAN;
-			else if (oceanTemperatureSample > 0.3)
-				return Biomes.LUKEWARM_OCEAN;
-			else if (oceanTemperatureSample < -0.6)
-				return Biomes.FROZEN_OCEAN;
-			else if (oceanTemperatureSample < -0.3)
-				return Biomes.COLD_OCEAN;
-
-			else return Biomes.OCEAN;
-		}
-		if (height < SimplexTerrain.CONFIG.lowlandStartHeight) return Biomes.BEACH;
-		if (height < SimplexTerrain.CONFIG.midlandStartHeight)  return lowlandsSampler.sample(x, z);
-		if (height < SimplexTerrain.CONFIG.highlandStartHeight) return midlandsSampler.sample(x, z);
-		if (height < SimplexTerrain.CONFIG.toplandStartHeight) return highlandsSampler.sample(x, z);
-		return toplandsSampler.sample(x, z);
+		if (height < SimplexTerrain.CONFIG.seaLevel / 2) return this.deepOceanSampler.sample(x, z);
+		if (height < SimplexTerrain.CONFIG.seaLevel - 9) return this.oceanSampler.sample(x, z);
+		if (height < SimplexTerrain.CONFIG.seaLevel - 4) return Biomes.OCEAN;
+		if (height < SimplexTerrain.CONFIG.lowlandStartHeight) return this.beachSampler.sample(x, z);
+		if (height < SimplexTerrain.CONFIG.midlandStartHeight)  return this.lowlandsSampler.sample(x, z);
+		if (height < SimplexTerrain.CONFIG.highlandStartHeight) return this.midlandsSampler.sample(x, z);
+		if (height < SimplexTerrain.CONFIG.toplandStartHeight) return this.highlandsSampler.sample(x, z);
+		return this.toplandsSampler.sample(x, z);
 	}
 }

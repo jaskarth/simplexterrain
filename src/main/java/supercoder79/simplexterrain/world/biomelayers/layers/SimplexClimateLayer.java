@@ -10,29 +10,31 @@ import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import java.util.Random;
 
 public class SimplexClimateLayer implements InitLayer {
-	private final OctaveNoiseSampler temperatureNoise;
-	private final OctaveNoiseSampler humidityNoise;
+	private OctaveNoiseSampler temperatureNoise;
+	private OctaveNoiseSampler humidityNoise;
+
+	private final long worldSeed;
+
+	private static final Random RAND = new Random();
 
 	public SimplexClimateLayer(long worldSeed) {
-		temperatureNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new Random(worldSeed - 5), 4, 8, 1.5, 1.5);
-		humidityNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new Random(worldSeed + 5), 4, 8, 1.5, 1.5);
+		this.worldSeed = worldSeed;
+		this.initialiseNoise();
 	}
 	
+	public void initialiseNoise() {
+		RAND.setSeed(worldSeed);
+		temperatureNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, RAND, SimplexTerrain.CONFIG.temperatureOctaveAmount, SimplexTerrain.CONFIG.temperatureFrequency, SimplexTerrain.CONFIG.temperatureAmplitude, SimplexTerrain.CONFIG.temperatureAmplitude);
+		humidityNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, RAND, SimplexTerrain.CONFIG.humidityOctaveAmount, SimplexTerrain.CONFIG.humidityFrequency, SimplexTerrain.CONFIG.humidityAmplitude, SimplexTerrain.CONFIG.humidityAmplitude);
+	}
+
 	@Override
 	public int sample(LayerRandomnessSource rand, int x, int z) {
-		double temperature = temperatureNoise.sample(transformTemperatureXZ(x), transformTemperatureXZ(z)) + SimplexTerrain.CONFIG.temperatureOffset;
-		double humidity = humidityNoise.sample(transformHumidityXZ(x), transformHumidityXZ(z)) + SimplexTerrain.CONFIG.humidityOffset;
+		double temperature = temperatureNoise.sample(x, z) + SimplexTerrain.CONFIG.temperatureOffset;
+		double humidity = humidityNoise.sample(x, z) + SimplexTerrain.CONFIG.humidityOffset;
 
 		return SimplexClimate.fromTemperatureHumidity(temperature, humidity).id;
 	}
-	
-	private double transformTemperatureXZ(double value) {
-		return value / 9D;
-	}
-	
-	private double transformHumidityXZ(double value) {
-		return value / 6D;
-	}
-	
+
 	public static final SimplexClimate[] REVERSE_ID_MAP = new SimplexClimate[10];
 }

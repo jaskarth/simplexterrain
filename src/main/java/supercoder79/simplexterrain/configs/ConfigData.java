@@ -61,4 +61,11 @@ public class ConfigData {
 	public double humidityOffset = 0.0;
 
 	public int seaLevel = 63;
+	
+	public int temperatureOctaveAmount = 1;
+	public int humidityOctaveAmount = 2;
+	public double temperatureFrequency = 15.0;
+	public double humidityFrequency = 11.0;
+	public double temperatureAmplitude = 1.2;
+	public double humidityAmplitude = 1.2;
 }

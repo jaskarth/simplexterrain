@@ -22,7 +22,6 @@ public class LandBiomeLayers {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T>[] stackFactories(LevelGeneratorType levelGeneratorType, long worldSeed, LongFunction<C> contextProvider) {
 		LayerFactory<T> climateLayer = new SimplexClimateLayer(worldSeed).create(contextProvider.apply(1L));
 
@@ -61,12 +60,21 @@ public class LandBiomeLayers {
 		mountainPeaksBiomePassLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25), mountainPeaksBiomePassLayer);
 
 //		mountainPeaksBiomePassLayer = PutBiomesOutOfTheirMiseryLayer.INSTANCE.create(contextProvider.apply(1), mountainPeaksBiomePassLayer);
+		
+		LayerFactory<T> shoreSampler = ClimateTransformerLayer.SHORES.create(contextProvider.apply(0), climateLayer);
+		shoreSampler = repeat(1000L, ScaleLayer.NORMAL, shoreSampler, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
+		
+		LayerFactory<T> oceanSampler = ClimateTransformerLayer.OCEAN.create(contextProvider.apply(0), climateLayer);
+		oceanSampler = repeat(1000L, ScaleLayer.NORMAL, oceanSampler, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
 
-		return new LayerFactory[]{lowlandsBiomeLayer, midlandsBiomeLayer, highlandsBiomeLayer, mountainPeaksBiomePassLayer};
+		LayerFactory<T> deepOceanSampler = ClimateTransformerLayer.DEEP_OCEAN.create(contextProvider.apply(0), climateLayer);
+		deepOceanSampler = repeat(1000L, ScaleLayer.NORMAL, deepOceanSampler, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
+
+		return new LayerFactory[]{lowlandsBiomeLayer, midlandsBiomeLayer, highlandsBiomeLayer, mountainPeaksBiomePassLayer, shoreSampler, oceanSampler, deepOceanSampler};
 	}
 
 	public static BiomeLayerSampler[] build(long l, LevelGeneratorType levelGeneratorType) {
-		LayerFactory<CachingLayerSampler>[] layerFactory = stackFactories(levelGeneratorType, l, (m) -> new CachingLayerContext(25, l, m));
-		return new BiomeLayerSampler[]{new BiomeLayerSampler(layerFactory[0]), new BiomeLayerSampler(layerFactory[1]), new BiomeLayerSampler(layerFactory[2]), new BiomeLayerSampler(layerFactory[3])};
+		LayerFactory<CachingLayerSampler>[] arr = stackFactories(levelGeneratorType, l, (salt) -> new CachingLayerContext(25, l, salt));
+		return new BiomeLayerSampler[]{new BiomeLayerSampler(arr[0]), new BiomeLayerSampler(arr[1]), new BiomeLayerSampler(arr[2]), new BiomeLayerSampler(arr[3]), new BiomeLayerSampler(arr[4]), new BiomeLayerSampler(arr[5]), new BiomeLayerSampler(arr[6])};
 	}
 }

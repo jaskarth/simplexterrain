@@ -9,10 +9,11 @@ import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
+import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.ConfigData;
-import supercoder79.simplexterrain.init.ReloadConfigCommand;
 import supercoder79.simplexterrain.world.WorldType;
+import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
 
@@ -36,6 +37,8 @@ public class SimplexTerrain implements ModInitializer {
 	private static Identifier WOODED_MOUNTAINS;
 	private static Identifier GRAVELLY_MOUNTAINS;
 
+	public static SimplexClimateLayer climateLayer;
+
 	@Override
 	public void onInitialize() {
 		SWAMP = biomeId(Biomes.SWAMP);
@@ -49,7 +52,7 @@ public class SimplexTerrain implements ModInitializer {
 		WOODED_MOUNTAINS = biomeId(Biomes.WOODED_MOUNTAINS);
 		GRAVELLY_MOUNTAINS = biomeId(Biomes.GRAVELLY_MOUNTAINS);
 
-		CONFIG = Config.init();
+		Config.init();
 
 		loadMeOnClientPls = WorldType.SIMPLEX;
 		addDefaultBiomes();
@@ -64,16 +67,9 @@ public class SimplexTerrain implements ModInitializer {
 			ReloadConfigCommand.init();
 		}
 
-		//Setup (reading from configs and stuff like that)
-		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> postProcessors.postProcessor.setup());
-
-		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> noiseModifiers.noiseModifier.setup());
-
 		//Addition to the chunk generator
 		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> SimplexChunkGenerator.addTerrainPostProcessor(postProcessors.postProcessor));
-
 		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier));
-
 
 		WORLDGEN_TYPE = Registry.register(Registry.CHUNK_GENERATOR_TYPE, new Identifier("simplexterrain", "simplex"), new WorldGeneratorType(false, OverworldChunkGeneratorConfig::new));
 	}
@@ -82,7 +78,6 @@ public class SimplexTerrain implements ModInitializer {
 		//holy shit this code is still cursed
 
 		if (CONFIG.doModCompat) {
-
 			// Mod Compat
 			if (FabricLoader.getInstance().isModLoaded("winterbiomemod")) {
 				addWinterBiomes();
@@ -440,7 +435,7 @@ public class SimplexTerrain implements ModInitializer {
 		final double iceSpikesWeight = 0.3;
 		final double mesaWeight = 0.5;
 		final double desertWeight = 0.4;
-		
+
 		SimplexBiomes.addHighlandsBiome(PLAINS, SimplexClimate.DRY_TROPICAL, plainsWeight);
 		SimplexBiomes.addHighlandsBiome(biomeId(Biomes.SHATTERED_SAVANNA_PLATEAU), SimplexClimate.DRY_TROPICAL, savannaPlateauMWeight);
 		SimplexBiomes.addHighlandsBiome(biomeId(Biomes.DESERT), SimplexClimate.DRY_TROPICAL, desertWeight);
@@ -474,7 +469,7 @@ public class SimplexTerrain implements ModInitializer {
 		SimplexBiomes.addHighlandsBiome(biomeId(Biomes.SNOWY_TAIGA), SimplexClimate.SNOWY, snowyTaigaWeight);
 		SimplexBiomes.addHighlandsBiome(biomeId(Biomes.ICE_SPIKES), SimplexClimate.SNOWY, iceSpikesWeight);
 	}
-	
+
 	private static void addVanillaMountainPeaks() {
 		final double gravellyMountainsWeight = 0.6;
 		final double mountainsWeight = 1.0;
@@ -484,7 +479,7 @@ public class SimplexTerrain implements ModInitializer {
 		final double iceSpikesWeight = 0.3;
 		final double mesaWeight = 0.4;
 		final double jungleWeight = 0.45;
-		
+
 		SimplexBiomes.addMountainPeaksBiome(PLAINS, SimplexClimate.DRY_TROPICAL, plainsWeight);
 
 		SimplexBiomes.addMountainPeaksBiome(PLAINS, SimplexClimate.TROPICAL, plainsWeight);

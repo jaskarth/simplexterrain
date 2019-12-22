@@ -13,27 +13,32 @@ public enum SimplexClimate {
 	//dry: humidity < -0.3
 	//normal: between -0.3 and 0.3
 
-	//temp above 0.28
-	LUSH_TROPICAL(0),
-	TROPICAL(1),
-	DRY_TROPICAL(2),
+	// temp above 0.28
+	LUSH_TROPICAL(0, OceanSet.TROPICAL),
+	TROPICAL(1, OceanSet.TROPICAL),
+	DRY_TROPICAL(2, OceanSet.TROPICAL),
 
-	LUSH_TEMPERATE(3),
-	TEMPERATE(4),
-	DRY_TEMPERATE(5),
-	//temp between -0.58 and -0.28
-	LUSH_BOREAL(6),
-	BOREAL(7),
-	DRY_BOREAL(8),
+	// temp between -0.28 and 0.28
+	LUSH_TEMPERATE(3, OceanSet.TEMPERATE),
+	TEMPERATE(4, OceanSet.TEMPERATE),
+	DRY_TEMPERATE(5, OceanSet.TEMPERATE),
+
+	// temp between -0.58 and -0.28
+	LUSH_BOREAL(6, OceanSet.COLD),
+	BOREAL(7, OceanSet.COLD),
+	DRY_BOREAL(8, OceanSet.COLD),
 	// temp less than -0.58
-	SNOWY(9);
+	SNOWY(9, OceanSet.FROZEN);
 
-	SimplexClimate(int id) {
+	SimplexClimate(int id, OceanSet oceanSet) {
 		this.id = id;
+		this.oceanSet = oceanSet;
+
 		SimplexClimateLayer.REVERSE_ID_MAP[id] = this;
 	}
 
 	public final int id;
+	public final OceanSet oceanSet;
 
 	public static SimplexClimate fromTemperatureHumidity(double temp, double humidity) {
 		if (temp < -0.58) {
