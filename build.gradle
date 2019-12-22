@@ -23,7 +23,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
-	modCompile "com.terraformersmc:terraform:1.2.0+custom"
+//	modCompile "com.terraformersmc:terraform:1.2.0+custom"
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
