@@ -1,13 +1,13 @@
 package supercoder79.simplexterrain.configs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.NoiseType;
 import supercoder79.simplexterrain.world.noisemodifier.NoiseModifiers;
 import supercoder79.simplexterrain.world.postprocessor.PostProcessors;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ConfigData {
 	public String configVersion = SimplexTerrain.VERSION;
