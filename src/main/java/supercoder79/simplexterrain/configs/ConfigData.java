@@ -55,7 +55,7 @@ public class ConfigData {
 	public int highlandStartHeight = 140;
 	public int toplandStartHeight = 190;
 
-	public int biomeScaleAmount = 7;
+	public int biomeScaleAmount = 8;
 
 	public double temperatureOffset = 0.0;
 	public double humidityOffset = 0.0;

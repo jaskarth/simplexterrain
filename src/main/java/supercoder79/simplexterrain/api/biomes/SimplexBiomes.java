@@ -27,4 +27,8 @@ public final class SimplexBiomes {
 	public static void addMountainPeaksBiome(Identifier biome, SimplexClimate climate, double weight) {
 		SimplexBiomesImpl.addToMountainPeaks(biome, climate, weight);
 	}
+
+	public static void addReplacementBiome(Identifier biomeToReplace, Identifier replacement, int chance) {
+		SimplexBiomesImpl.addReplacementBiome(biomeToReplace, replacement, chance);
+	}
 }
