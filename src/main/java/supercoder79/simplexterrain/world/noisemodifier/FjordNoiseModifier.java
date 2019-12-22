@@ -21,7 +21,6 @@ public class FjordNoiseModifier extends NoiseModifier {
 
 	@Override
 	public void setup() {
-
 	}
 
 	@Override
@@ -30,7 +29,7 @@ public class FjordNoiseModifier extends NoiseModifier {
 
 		double dist = Math.abs(noise - 0.13);
 
-		if (currentNoiseValue > (SimplexTerrain.CONFIG.seaLevel+3) - SimplexTerrain.CONFIG.baseHeight) // don't make the fjord cursed
+		if (currentNoiseValue > (SimplexTerrain.CONFIG.seaLevel + 3) - SimplexTerrain.CONFIG.baseHeight) // don't make the fjord cursed
 		if (dist <= 0.04) {
 			currentNoiseValue = -60 + ((dist*500) + 30);
 		}
