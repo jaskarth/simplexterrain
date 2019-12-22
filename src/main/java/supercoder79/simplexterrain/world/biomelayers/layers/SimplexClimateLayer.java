@@ -15,8 +15,8 @@ public class SimplexClimateLayer implements InitLayer {
 
 	public SimplexClimateLayer(long worldSeed) {
 		Random rand = new Random(worldSeed);
-		temperatureNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, rand, 1, 7, 1.5, 1.5);
-		humidityNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, rand, 2, 5, 1.5, 1.5);
+		temperatureNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, rand, 1, 12, 1.2, 1.2);
+		humidityNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, rand, 2, 8, 1.2, 1.2);
 	}
 
 	@Override
