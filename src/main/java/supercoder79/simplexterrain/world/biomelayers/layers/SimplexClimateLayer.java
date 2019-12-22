@@ -10,13 +10,22 @@ import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import java.util.Random;
 
 public class SimplexClimateLayer implements InitLayer {
-	private final OctaveNoiseSampler temperatureNoise;
-	private final OctaveNoiseSampler humidityNoise;
+	private OctaveNoiseSampler temperatureNoise;
+	private OctaveNoiseSampler humidityNoise;
+
+	private final long worldSeed;
+
+	private static final Random RAND = new Random();
 
 	public SimplexClimateLayer(long worldSeed) {
-		Random rand = new Random(worldSeed);
-		temperatureNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, rand, 1, 12, 1.2, 1.2);
-		humidityNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, rand, 2, 8, 1.2, 1.2);
+		this.worldSeed = worldSeed;
+		this.initialiseNoise();
+	}
+	
+	public void initialiseNoise() {
+		RAND.setSeed(worldSeed);
+		temperatureNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, RAND, SimplexTerrain.CONFIG.temperatureOctaveAmount, SimplexTerrain.CONFIG.temperatureFrequency, SimplexTerrain.CONFIG.temperatureAmplitude, SimplexTerrain.CONFIG.temperatureAmplitude);
+		humidityNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, RAND, SimplexTerrain.CONFIG.humidityOctaveAmount, SimplexTerrain.CONFIG.humidityFrequency, SimplexTerrain.CONFIG.humidityAmplitude, SimplexTerrain.CONFIG.humidityAmplitude);
 	}
 
 	@Override
