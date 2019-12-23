@@ -20,6 +20,8 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.SimplexTerrain;
+import supercoder79.simplexterrain.api.cache.CacheCustomSampler;
+import supercoder79.simplexterrain.api.cache.CacheSampler;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
@@ -36,6 +38,9 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	private final OctaveNoiseSampler heightNoise;
 	private final OctaveNoiseSampler detailNoise;
 	private final OctaveNoiseSampler scaleNoise;
+
+	private final CacheSampler scaleCache;
+	private final CacheCustomSampler heightCache;
 
 	private final ChunkRandom random;
 
@@ -54,6 +59,9 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		heightNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.baseOctaveAmount, SimplexTerrain.CONFIG.baseNoiseFrequencyCoefficient * amplitude, amplitude, amplitude);
 		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
 		scaleNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow);
+
+		scaleCache = new CacheSampler(scaleNoise);
+		heightCache = new CacheCustomSampler(heightNoise);
 
 		if (biomeSource instanceof SimplexBiomeSource) {
 			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
@@ -149,10 +157,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		int[] vals = new int[256];
 
 		if (SimplexTerrain.CONFIG.threadedNoiseGeneration) {
-			CompletableFuture[] futures = new CompletableFuture[2];
-			for (int i = 0; i < 2; i++) {
+			CompletableFuture[] futures = new CompletableFuture[4];
+			for (int i = 0; i < 4; i++) {
 				int finalI = i;
-				futures[i] = CompletableFuture.runAsync(() -> generateNoise(vals, pos, finalI * 8, 8));
+				futures[i] = CompletableFuture.runAsync(() -> generateNoise(vals, pos, finalI * 4, 4));
 			}
 
 			for (int i = 0; i < futures.length; i++) {
@@ -203,6 +211,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		xProgress = fade(xProgress);
 		zProgress = fade(zProgress);
 
+//		System.out.println("Starting sample: " + x + ", " + z);
 		final double[] samples = new double[4];
 		samples[0] = sampleNoise(xLow, zLow);
 		samples[1] = sampleNoise(xUpper, zLow);
@@ -236,9 +245,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	}
 
 	private double sampleNoiseBase(int x, int z) {
+//		System.out.println("sampling: " + x + ", " + z);
 		// These values should use caches for efficiency but that takes effort
-		double amplitudeSample = this.scaleNoise.sample(x, z) + SimplexTerrain.CONFIG.scaleAmplitudeLow; // change range to have a minimum value of 0.0
-		double noise = this.heightNoise.sampleCustom(x, z, SimplexTerrain.CONFIG.baseNoiseSamplingFrequency, amplitudeSample, amplitudeSample, SimplexTerrain.CONFIG.baseOctaveAmount);
+		double amplitudeSample = scaleCache.sample(x, z) + SimplexTerrain.CONFIG.scaleAmplitudeLow; // change range to have a minimum value of 0.0
+		double noise = this.heightCache.sampleCustom(x, z, SimplexTerrain.CONFIG.baseNoiseSamplingFrequency, amplitudeSample, SimplexTerrain.CONFIG.baseOctaveAmount);
 
 		for(NoiseModifier modifier : noiseModifiers) {
 			noise = modifier.modify(x, z, noise, amplitudeSample);
@@ -250,7 +260,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	private double sampleDetail(int x, int z) {
 		double sample = detailNoise.sample(x, z);
 		if (sample < SimplexTerrain.CONFIG.detailNoiseThreshold) {
-			if (scaleNoise.sample(x, z) < SimplexTerrain.CONFIG.scaleNoiseThreshold) {
+			if (scaleCache.sample(x, z) < SimplexTerrain.CONFIG.scaleNoiseThreshold) {
 				sample = 0;
 			}
 		}
