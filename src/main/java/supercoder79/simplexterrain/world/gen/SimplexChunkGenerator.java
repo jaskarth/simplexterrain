@@ -205,8 +205,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		int xUpper = xLow + 4;
 		int zUpper = zLow + 4;
 
-		double xProgress = (double) (x - xLow) / 4.0;
-		double zProgress = (double) (z - zLow) / 4.0;
+		double xProgress = (double) (x - xLow) * 0.25;
+		double zProgress = (double) (z - zLow) * 0.25;
 
 		xProgress = fade(xProgress);
 		zProgress = fade(zProgress);
@@ -237,7 +237,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		noise += sampleNoiseBase(x - 4, z);
 		noise += sampleNoiseBase(x, z + 4);
 		noise += sampleNoiseBase(x, z - 4);
-		noise /= 5.0D;
+		noise *= 0.2;
 
 		noise += SimplexTerrain.CONFIG.baseHeight;
 
