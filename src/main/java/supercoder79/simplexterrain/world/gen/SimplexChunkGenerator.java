@@ -13,8 +13,10 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -33,6 +35,8 @@ import java.util.concurrent.CompletableFuture;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
+	private static final int HORIZONTAL_SECTION_COUNT = (int)Math.round(Math.log(16.0D) / Math.log(2.0D)) - 2;
+
 	private static final ChunkRandom reuseableRandom = new ChunkRandom();
 
 	private final OctaveNoiseSampler heightNoise;
@@ -99,25 +103,26 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		SpawnHelper.populateEntities(region, biome, i, j, chunkRandom);
 	}
 
-	//TODO: Fix this code
-	//	@Override
-	//	public void populateBiomes(Chunk chunk) {
-	//		if (biomeSource instanceof SimplexBiomeSource) {
-	//			ChunkPos chunkPos = chunk.getPos();
-	//			int[] e = getHeightInChunk(chunkPos);
-	//			Biome[] biomes = new Biome[256];
-	//
-	//			for (int x = 0; x < 16; x++) {
-	//				for (int z = 0; z < 16; z++) {
-	//					biomes[z * 16 + x] = ((SimplexBiomeSource)(biomeSource)).sampleBiomeWithMathTM(x, z, e[z*16 + x]);
-	//				}
-	//			}
-	//
-	//			((ProtoChunk) chunk).method_22405(new BiomeArray(biomes));
-	//		} else {
-	//			super.populateBiomes(chunk);
-	//		}
-	//	}
+//	TODO: Fix this code
+
+//	@Override
+//	public void populateBiomes(Chunk chunk) {
+//		if (biomeSource instanceof SimplexBiomeSource) {
+//			ChunkPos chunkPos = chunk.getPos();
+//			int[] e = getHeightsInChunk(chunkPos);
+//			Biome[] biomes = new Biome[1024];
+//
+//			for (int x = 0; x < 16; x++) {
+//				for (int z = 0; z < 16; z++) {
+//					biomes[z*16 + x] = ((SimplexBiomeSource) biomeSource).sampleBiomeWithMathTM(x, z, e[z*16 + x]);
+//				}
+//			}
+//
+//			((ProtoChunk) chunk).method_22405(new BiomeArray(biomes));
+//		} else {
+//			super.populateBiomes(chunk);
+//		}
+//	}
 
 	@Override
 	public void populateNoise(IWorld iWorld, Chunk chunk) {
@@ -157,10 +162,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		int[] vals = new int[256];
 
 		if (SimplexTerrain.CONFIG.threadedNoiseGeneration) {
-			CompletableFuture[] futures = new CompletableFuture[4];
-			for (int i = 0; i < 4; i++) {
+			CompletableFuture[] futures = new CompletableFuture[SimplexTerrain.CONFIG.noiseGenerationThreads];
+			for (int i = 0; i < SimplexTerrain.CONFIG.noiseGenerationThreads; i++) {
 				int finalI = i;
-				futures[i] = CompletableFuture.runAsync(() -> generateNoise(vals, pos, finalI * 4, 4));
+				futures[i] = CompletableFuture.runAsync(() -> generateNoise(vals, pos, finalI * 16 / SimplexTerrain.CONFIG.noiseGenerationThreads, 16 / SimplexTerrain.CONFIG.noiseGenerationThreads));
 			}
 
 			for (int i = 0; i < futures.length; i++) {

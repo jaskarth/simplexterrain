@@ -19,6 +19,8 @@ public class ConfigData {
 	public boolean threadedNoiseGeneration = true;
 	public boolean simplexIsDefault = false;
 
+	public int noiseGenerationThreads = 2;
+
 	public NoiseType noiseGenerator = NoiseType.SIMPLEX;
 
 	public List<PostProcessors> postProcessors = new ArrayList<>(); //TODO: replace default post processors
