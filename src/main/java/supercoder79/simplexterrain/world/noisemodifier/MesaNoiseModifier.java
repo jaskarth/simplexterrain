@@ -1,5 +1,6 @@
 package supercoder79.simplexterrain.world.noisemodifier;
 
+import supercoder79.simplexterrain.api.cache.CacheSampler;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
@@ -10,13 +11,13 @@ public final class MesaNoiseModifier extends NoiseModifier {
 	}
 
 	private static final double noiseCutoff = 0.3;
-	private OctaveNoiseSampler<OpenSimplexNoise> cutoffSampler;
-	private OctaveNoiseSampler<OpenSimplexNoise> terraceSampler;
+	private CacheSampler cutoffSampler;
+	private CacheSampler terraceSampler;
 
 	@Override
 	public void init(long seed) {
-		this.cutoffSampler = this.createNoiseSampler(OpenSimplexNoise.class, 3, 1000);
-		this.terraceSampler = this.createNoiseSampler(OpenSimplexNoise.class, 1, 100);
+		this.cutoffSampler = new CacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, 3, 1000));
+		this.terraceSampler = new CacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, 1, 100));
 	}
 
 	@Override

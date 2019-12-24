@@ -1,6 +1,7 @@
 package supercoder79.simplexterrain.world.noisemodifier;
 
 import supercoder79.simplexterrain.SimplexTerrain;
+import supercoder79.simplexterrain.api.cache.CacheSampler;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
@@ -10,11 +11,11 @@ public class PeaksNoiseModifier extends NoiseModifier {
 		super(0L);
 	}
 
-	private OctaveNoiseSampler peaksNoise;
+	private CacheSampler peaksNoise;
 
 	@Override
 	public void init(long seed) {
-		this.peaksNoise = this.createNoiseSampler(OpenSimplexNoise.class, SimplexTerrain.CONFIG.peaksOctaveAmount, SimplexTerrain.CONFIG.peaksFrequency);
+		this.peaksNoise = new CacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, SimplexTerrain.CONFIG.peaksOctaveAmount, SimplexTerrain.CONFIG.peaksFrequency));
 	}
 
 	@Override

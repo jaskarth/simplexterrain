@@ -116,8 +116,8 @@ public class OpenSimplexNoise extends Noise {
         double ys = y + stretchOffset;
 
         //Floor to get grid coordinates of rhombus (stretched square) super-cell origin.
-        int xsb = fastFloor(xs);
-        int ysb = fastFloor(ys);
+        int xsb = (int) Math.floor(xs);
+        int ysb = (int) Math.floor(ys);
 
         //Skew out to get actual coordinates of rhombus origin. We'll need these later.
         double squishOffset = (xsb + ysb) * SQUISH_CONSTANT_2D;

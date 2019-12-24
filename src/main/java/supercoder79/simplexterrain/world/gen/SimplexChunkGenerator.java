@@ -51,7 +51,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	private final NoiseSampler surfaceDepthNoise;
 	//	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
 
-	private HashMap<ChunkPos, int[]> noiseCache = new HashMap<>();
+	private HashMap<Long, int[]> noiseCache = new HashMap<>();
 
 	public SimplexChunkGenerator(IWorld world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
 		super(world, biomeSource, config);
@@ -156,7 +156,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	@Override
 	public int[] getHeightsInChunk(ChunkPos pos) {
 		//return cached values
-		int[] res = noiseCache.get(pos);
+		int[] res = noiseCache.get(pos.toLong());
 		if (res != null) return res;
 
 		int[] vals = new int[256];
@@ -177,7 +177,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		}
 
 		//cache the values
-		noiseCache.put(pos, vals);
+		noiseCache.put(pos.toLong(), vals);
 
 		return vals;
 	}

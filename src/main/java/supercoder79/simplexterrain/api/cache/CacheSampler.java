@@ -4,6 +4,7 @@ import net.minecraft.util.math.BlockPos;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 
 import java.util.HashMap;
+import java.util.WeakHashMap;
 
 /**
  * Samples from an octave noise sampler using caches. Only useful in circumstances where a single position is sampled multiple times.
@@ -11,7 +12,7 @@ import java.util.HashMap;
  * @author SuperCoder79
  */
 public class CacheSampler {
-	protected HashMap<Long, Double> cache = new HashMap<>();
+	protected WeakHashMap<Long, Double> cache = new WeakHashMap<>();
 	protected final OctaveNoiseSampler sampler;
 
 	public CacheSampler(OctaveNoiseSampler sampler) {

@@ -1,5 +1,6 @@
 package supercoder79.simplexterrain.world.noisemodifier;
 
+import supercoder79.simplexterrain.api.cache.CacheSampler;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
@@ -9,11 +10,11 @@ public class DomeNoiseModifier extends NoiseModifier {
 		super(39L);
 	}
 
-	private OctaveNoiseSampler domeNoise;
+	private CacheSampler domeNoise;
 
 	@Override
 	public void init(long seed) {
-		this.domeNoise = this.createNoiseSampler(OpenSimplexNoise.class, 3, 200);
+		this.domeNoise = new CacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, 3, 200));
 	}
 
 	@Override
