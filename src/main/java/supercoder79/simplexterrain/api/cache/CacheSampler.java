@@ -5,6 +5,7 @@ import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 
 import java.util.HashMap;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Samples from an octave noise sampler using caches. Only useful in circumstances where a single position is sampled multiple times.
@@ -12,7 +13,7 @@ import java.util.WeakHashMap;
  * @author SuperCoder79
  */
 public class CacheSampler {
-	protected WeakHashMap<Long, Double> cache = new WeakHashMap<>();
+	protected HashMap<Long, Double> cache = new HashMap<>();
 	protected final OctaveNoiseSampler sampler;
 
 	public CacheSampler(OctaveNoiseSampler sampler) {

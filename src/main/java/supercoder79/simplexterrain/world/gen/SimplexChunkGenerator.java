@@ -35,8 +35,6 @@ import java.util.concurrent.CompletableFuture;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
-	private static final int HORIZONTAL_SECTION_COUNT = (int)Math.round(Math.log(16.0D) / Math.log(2.0D)) - 2;
-
 	private static final ChunkRandom reuseableRandom = new ChunkRandom();
 
 	private final OctaveNoiseSampler heightNoise;
@@ -105,24 +103,11 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 //	TODO: Fix this code
 
-//	@Override
-//	public void populateBiomes(Chunk chunk) {
-//		if (biomeSource instanceof SimplexBiomeSource) {
-//			ChunkPos chunkPos = chunk.getPos();
-//			int[] e = getHeightsInChunk(chunkPos);
-//			Biome[] biomes = new Biome[1024];
-//
-//			for (int x = 0; x < 16; x++) {
-//				for (int z = 0; z < 16; z++) {
-//					biomes[z*16 + x] = ((SimplexBiomeSource) biomeSource).sampleBiomeWithMathTM(x, z, e[z*16 + x]);
-//				}
-//			}
-//
-//			((ProtoChunk) chunk).method_22405(new BiomeArray(biomes));
-//		} else {
-//			super.populateBiomes(chunk);
-//		}
-//	}
+	@Override
+	public void populateBiomes(Chunk chunk) {
+		ChunkPos chunkPos = chunk.getPos();
+		((ProtoChunk)chunk).method_22405(SimplexBiomeArray.makeNewBiomeArray(chunkPos, this.biomeSource));
+	}
 
 	@Override
 	public void populateNoise(IWorld iWorld, Chunk chunk) {

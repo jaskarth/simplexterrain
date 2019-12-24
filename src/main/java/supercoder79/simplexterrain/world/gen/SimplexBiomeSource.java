@@ -50,13 +50,6 @@ public class SimplexBiomeSource extends BiomeSource {
 
 	@Override
 	public Biome getBiomeForNoiseGen(int x, int j, int z) {
-
-		//this does not work!!! mc just hangs here and idfk why
-//		int[] heights = heightmap.getHeightsInChunk(new ChunkPos(x << 2, z << 2));
-//		pos.set(x, j, z);
-//		return sampleBiomeWithMathTM(x, z, heights[(pos.getX() & 16)*16 +  pos.getZ() & 16]);
-
-		//This code is shitty and needs to be euthanized
 		return sampleBiomeWithMathTM(x, z, heightmap.getHeight((x << 2), (z << 2)));
 	}
 
