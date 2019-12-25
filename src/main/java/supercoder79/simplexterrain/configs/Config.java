@@ -13,12 +13,12 @@ import java.nio.file.Paths;
 
 public class Config {
 	public static void init() {
-		ConfigData configData = null;
+		MainConfigData configData = null;
 		try {
 
 			Path configDir = Paths.get("", "config", "simplexterrain.json");
 			if (Files.exists(configDir)) {
-				configData = ConfigUtil.gson.fromJson(new FileReader(configDir.toFile()), ConfigData.class);
+				configData = ConfigUtil.gson.fromJson(new FileReader(configDir.toFile()), MainConfigData.class);
 				//save new values
 				if (!configData.configVersion.equals(SimplexTerrain.VERSION)) {
 					configData.configVersion = SimplexTerrain.VERSION;
@@ -27,7 +27,7 @@ public class Config {
 					writer.close();
 				}
 			} else {
-				configData = new ConfigData();
+				configData = new MainConfigData();
 				Paths.get("", "config").toFile().mkdirs();
 				BufferedWriter writer = new BufferedWriter(new FileWriter(configDir.toFile()));
 				writer.write(ConfigUtil.gson.toJson(configData));

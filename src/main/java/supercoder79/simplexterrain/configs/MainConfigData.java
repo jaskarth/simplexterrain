@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ConfigData {
+public class MainConfigData {
 	public String configVersion = SimplexTerrain.VERSION;
 	public boolean doModCompat = true;
 	public boolean addDetailNoise = true;
