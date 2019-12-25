@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ConfigData {
 	public String configVersion = SimplexTerrain.VERSION;
 	public boolean doModCompat = true;
