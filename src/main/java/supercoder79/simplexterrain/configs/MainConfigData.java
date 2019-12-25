@@ -1,20 +1,22 @@
 package supercoder79.simplexterrain.configs;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import com.google.gson.annotations.SerializedName;
+
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.NoiseType;
 import supercoder79.simplexterrain.world.noisemodifier.NoiseModifiers;
 import supercoder79.simplexterrain.world.postprocessor.PostProcessors;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+public class MainConfigData {
+	@SerializedName("configVersion") public String configVersion = SimplexTerrain.VERSION;
+	@SerializedName("doModCompat") public boolean doModCompat = true;
+	@SerializedName("addDetailNoise") public boolean addDetailNoise = true;
 
-public class ConfigData {
-	public String configVersion = SimplexTerrain.VERSION;
-	public boolean doModCompat = true;
-	public boolean addDetailNoise = true;
-
-	public boolean reloadConfigCommand = false;
+	@SerializedName("reloadConfigCommand") public boolean reloadConfigCommand = false;
 	public boolean optimizeChunkGenerationInvasively = true;
 	public boolean threadedNoiseGeneration = true;
 	public boolean simplexIsDefault = false;

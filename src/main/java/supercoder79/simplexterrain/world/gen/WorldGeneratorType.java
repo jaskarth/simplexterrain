@@ -1,11 +1,11 @@
 package supercoder79.simplexterrain.world.gen;
 
+import java.util.function.Supplier;
+
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
-
-import java.util.function.Supplier;
 
 public class WorldGeneratorType extends ChunkGeneratorType<OverworldChunkGeneratorConfig, SimplexChunkGenerator> {
 

@@ -1,13 +1,13 @@
 package supercoder79.simplexterrain.world.biome;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public final class SimplexBiomesImpl {
 	private SimplexBiomesImpl() {

@@ -11,7 +11,7 @@ import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.configs.Config;
-import supercoder79.simplexterrain.configs.ConfigData;
+import supercoder79.simplexterrain.configs.MainConfigData;
 import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
@@ -22,7 +22,7 @@ public class SimplexTerrain implements ModInitializer {
 
 	public static WorldGeneratorType WORLDGEN_TYPE;
 
-	public static ConfigData CONFIG;
+	public static MainConfigData CONFIG;
 
 	static WorldType<?> loadMeOnClientPls; // make sure world types are loaded on client by referencing a field in onInitialize()
 

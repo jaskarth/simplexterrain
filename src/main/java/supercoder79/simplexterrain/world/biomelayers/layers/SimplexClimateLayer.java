@@ -1,13 +1,13 @@
 package supercoder79.simplexterrain.world.biomelayers.layers;
 
+import java.util.Random;
+
 import net.minecraft.world.biome.layer.type.InitLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
-
-import java.util.Random;
 
 public class SimplexClimateLayer implements InitLayer {
 	private OctaveNoiseSampler temperatureNoise;
