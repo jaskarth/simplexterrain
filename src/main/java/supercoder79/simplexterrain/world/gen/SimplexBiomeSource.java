@@ -1,11 +1,7 @@
 package supercoder79.simplexterrain.world.gen;
 
-import java.util.Set;
-
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
@@ -13,6 +9,8 @@ import net.minecraft.world.biome.source.BiomeSource;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.world.biomelayers.LandBiomeLayers;
+
+import java.util.Set;
 
 public class SimplexBiomeSource extends BiomeSource {
 	private final BiomeLayerSampler lowlandsSampler;

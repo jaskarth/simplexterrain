@@ -8,23 +8,27 @@ import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
+import supercoder79.simplexterrain.configs.ConfigUtil;
+import supercoder79.simplexterrain.configs.postprocessors.SoilConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
+import java.nio.file.Paths;
 import java.util.Random;
 
 public class SoilPostProcessor implements TerrainPostProcessor {
+	private SoilConfigData config;
 	private OctaveNoiseSampler coarseDirtSampler;
 	private OctaveNoiseSampler podzolSampler;
 
 	@Override
 	public void init(long seed) {
-		coarseDirtSampler = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed + 42), 4, Math.pow(2, 8), 6, 8);
-		podzolSampler = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed - 42), 4, Math.pow(2, 8), 6, 8);
+		coarseDirtSampler = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed + 42), config.coarseDirtOctaves, config.coarseDirtFrequency, config.coarseDirtAmplitudeHigh, config.coarseDirtAmplitudeLow);
+		podzolSampler = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed - 42), config.podzolOctaves, config.podzolFrequency, config.podzolAmplitudeHigh, config.podzolAmplitudeLow);
 	}
 
 	@Override
 	public void setup() {
-
+		config = ConfigUtil.getFromConfig(SoilConfigData.class, Paths.get("config", "simplexterrain", "postprocessors", "soil.json"));
 	}
 
 	@Override
@@ -39,9 +43,9 @@ public class SoilPostProcessor implements TerrainPostProcessor {
 				mutable.setY(height[x*16 + z]);
 
 				if (world.getBlockState(mutable) == Blocks.GRASS_BLOCK.getDefaultState()) {
-					if (coarseDirtSampler.sample(mutable.getX(), mutable.getZ()) > 0.65)
+					if (coarseDirtSampler.sample(mutable.getX(), mutable.getZ()) > config.coarseDirtThreshold)
 						world.setBlockState(mutable, Blocks.COARSE_DIRT.getDefaultState(), 0);
-					if (podzolSampler.sample(mutable.getX(), mutable.getZ()) < -0.65)
+					if (podzolSampler.sample(mutable.getX(), mutable.getZ()) < config.podzolThreshold)
 						world.setBlockState(mutable, Blocks.PODZOL.getDefaultState(), 0);
 				}
 			}

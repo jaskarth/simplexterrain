@@ -7,25 +7,30 @@ import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
+import supercoder79.simplexterrain.configs.ConfigUtil;
+import supercoder79.simplexterrain.configs.postprocessors.CaveConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
+import java.nio.file.Paths;
 import java.util.Random;
 
 public class CavePostProcessor implements TerrainPostProcessor {
+	private CaveConfigData config;
+
 	private OctaveNoiseSampler caveNoise;
 	private OctaveNoiseSampler caveEnabledNoise;
 	private OctaveNoiseSampler caveHeightNoise;
 
 	@Override
 	public void init(long seed) {
-		caveNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed), 6, 2048, 14, 14);
-		caveHeightNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed), 5, Math.pow(2, 5), 10, 10);
-		caveEnabledNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed + 20), 6, 1024, 1, 1);
+		caveNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed), config.caveNoiseOctaves, config.caveNoiseFrequency, config.caveNoiseAmplitudeHigh, config.caveNoiseAmplitudeLow);
+		caveHeightNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed - 2), config.caveHeightOctaves, config.caveHeightFrequency, config.caveHeightAmplitudeHigh, config.caveHeightAmplitudeLow);
+		caveEnabledNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed + 20), config.caveEnabledOctaves, config.caveEnabledFrequency, config.caveEnabledAmplitudeHigh, config.caveEnabledAmplitudeLow);
 	}
 
 	@Override
 	public void setup() {
-
+		config = ConfigUtil.getFromConfig(CaveConfigData.class, Paths.get("config", "simplexterrain", "postprocessors", "simplex_caves.json"));
 	}
 
 	@Override
@@ -36,12 +41,12 @@ public class CavePostProcessor implements TerrainPostProcessor {
 			for (int z = 0; z < 16; z++) {
 				mutable.setZ((chunkZ * 16) + z);
 
-				if (caveEnabledNoise.sample((chunkX * 16) + x, (chunkZ * 16) + z) > 0) {
-					int heightOffset = (int) (caveHeightNoise.sample((chunkX * 16) + x, (chunkZ * 16) + z)) + 30;
+				if (caveEnabledNoise.sample((chunkX * 16) + x, (chunkZ * 16) + z) > config.caveEnabledThreshold) {
+					int heightOffset = (int) (caveHeightNoise.sample((chunkX * 16) + x, (chunkZ * 16) + z)) + config.baseHeight;
 					int bottom = (int) caveNoise.sample((chunkX * 16) + x, (chunkZ * 16) + z) + heightOffset;
 					int top = bottom + (int) caveNoise.sample((chunkZ * 16) + z, (chunkX * 16) + x) * 2;
 
-					if (Math.abs(top - bottom) <= 3) continue;
+					if (Math.abs(top - bottom) <= config.caveDeletionThreshold) continue;
 					double[] vals = new double[]{bottom, top};
 
 					for (int y = 0; y < 256; y++) {

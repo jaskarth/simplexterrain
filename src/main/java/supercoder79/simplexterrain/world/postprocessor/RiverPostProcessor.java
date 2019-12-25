@@ -10,12 +10,15 @@ import supercoder79.simplexterrain.api.Coordinate2Function;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
+import supercoder79.simplexterrain.configs.ConfigUtil;
+import supercoder79.simplexterrain.configs.postprocessors.RiverConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
+import java.nio.file.Paths;
 import java.util.Random;
 
 public final class RiverPostProcessor implements TerrainPostProcessor {
-	private static final double RIVER_SCALE = 980;
+	private RiverConfigData config;
 	private OpenSimplexNoise noiseSampler;
 	private OctaveNoiseSampler sandNoise;
 	private ChunkRandom random;
@@ -24,11 +27,12 @@ public final class RiverPostProcessor implements TerrainPostProcessor {
 	public void init(long seed) {
 		random = new ChunkRandom(seed);
 		noiseSampler = new OpenSimplexNoise(seed - 8);
-		sandNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new Random(seed), 4, Math.pow(2, 12), 2, 2);
+		sandNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new Random(seed), config.sandNoiseOctaves,config.sandNoiseFrequency, config.sandNoiseAmplitudeHigh, config.sandNoiseAmplitudeLow);
 	}
 
 	@Override
 	public void setup() {
+		config = ConfigUtil.getFromConfig(RiverConfigData.class, Paths.get("config", "simplexterrain", "postprocessors", "rivers.json"));
 	}
 
 	@Override
@@ -43,7 +47,7 @@ public final class RiverPostProcessor implements TerrainPostProcessor {
 			for (int localZ = 0; localZ < 16; ++localZ) {
 				int z = localZ + startZ;
 				pos.setZ(z);
-				double noise = noiseSampler.sample((double) x / RIVER_SCALE, (double) z / RIVER_SCALE);
+				double noise = noiseSampler.sample((double) x / config.scale, (double) z / config.scale);
 				if (noise > 0.12 && noise < 0.15) {
 					addRiverInChunk(world, heightmap::getHeight, x, z, pos, 0.13 - noise);
 				}

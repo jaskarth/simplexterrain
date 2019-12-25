@@ -3,8 +3,6 @@ package supercoder79.simplexterrain.api.cache;
 import net.minecraft.util.math.BlockPos;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 
-import java.util.HashMap;
-
 /**
  * Samples using the OctaveNoiseSampler's sampleCustom function.
  *

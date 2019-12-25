@@ -23,7 +23,7 @@ public class ConfigData {
 
 	public NoiseType noiseGenerator = NoiseType.SIMPLEX;
 
-	public List<PostProcessors> postProcessors = new ArrayList<>(); //TODO: replace default post processors
+	public List<PostProcessors> postProcessors = new ArrayList<>();
 
 	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.PEAKS, NoiseModifiers.MESA, NoiseModifiers.DOMES);
 

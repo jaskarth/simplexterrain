@@ -3,10 +3,14 @@ package supercoder79.simplexterrain.world.noisemodifier;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.cache.CacheSampler;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
-import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
+import supercoder79.simplexterrain.configs.ConfigUtil;
+import supercoder79.simplexterrain.configs.noisemodifiers.PeaksConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
+import java.nio.file.Paths;
+
 public class PeaksNoiseModifier extends NoiseModifier {
+	private PeaksConfigData config;
 	public PeaksNoiseModifier() {
 		super(0L);
 	}
@@ -20,6 +24,8 @@ public class PeaksNoiseModifier extends NoiseModifier {
 
 	@Override
 	public void setup() {
+		//hands down the most useless config i've ever made
+		config = ConfigUtil.getFromConfig(PeaksConfigData.class, Paths.get("config", "simplexterrain", "noisemodifiers", "peaks.json"));
 	}
 
 	@Override

@@ -2,10 +2,15 @@ package supercoder79.simplexterrain.world.noisemodifier;
 
 import supercoder79.simplexterrain.api.cache.CacheSampler;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
-import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
+import supercoder79.simplexterrain.configs.ConfigUtil;
+import supercoder79.simplexterrain.configs.noisemodifiers.DomeConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
+import java.nio.file.Paths;
+
 public class DomeNoiseModifier extends NoiseModifier {
+	private DomeConfigData config;
+
 	public DomeNoiseModifier() {
 		super(39L);
 	}
@@ -14,18 +19,19 @@ public class DomeNoiseModifier extends NoiseModifier {
 
 	@Override
 	public void init(long seed) {
-		this.domeNoise = new CacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, 3, 200));
+		this.domeNoise = new CacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, config.octaves, config.frequency));
 	}
 
 	@Override
 	public void setup() {
+		config = ConfigUtil.getFromConfig(DomeConfigData.class, Paths.get("config", "simplexterrain", "noisemodifiers", "domes.json"));
 	}
 
 	@Override
 	public double modify(int x, int z, double currentNoiseValue, double scaleValue) {
 		double sample = domeNoise.sample(x, z);
-		if (sample > 0) {
-			currentNoiseValue -= sample * 40;
+		if (sample > config.replaceThreshold) {
+			currentNoiseValue -= sample * config.blocksReplaceAmt;
 		}
 		return currentNoiseValue;
 	}

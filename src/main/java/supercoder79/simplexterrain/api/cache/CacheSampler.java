@@ -4,8 +4,6 @@ import net.minecraft.util.math.BlockPos;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 
 import java.util.HashMap;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Samples from an octave noise sampler using caches. Only useful in circumstances where a single position is sampled multiple times.

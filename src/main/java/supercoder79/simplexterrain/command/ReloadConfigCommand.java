@@ -1,13 +1,11 @@
 package supercoder79.simplexterrain.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-
 import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
-import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.configs.Config;
 
 public class ReloadConfigCommand {

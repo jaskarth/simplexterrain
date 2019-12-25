@@ -1,7 +1,5 @@
 package supercoder79.simplexterrain.configs;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.NoiseType;
 
@@ -17,17 +15,15 @@ public class Config {
 	public static void init() {
 		ConfigData configData = null;
 		try {
-			GsonBuilder builder = new GsonBuilder();
-			builder.setPrettyPrinting();
-			Gson gson = builder.create();
+
 			Path configDir = Paths.get("", "config", "simplexterrain.json");
 			if (Files.exists(configDir)) {
-				configData = gson.fromJson(new FileReader(configDir.toFile()), ConfigData.class);
+				configData = ConfigUtil.gson.fromJson(new FileReader(configDir.toFile()), ConfigData.class);
 				//save new values
 				if (!configData.configVersion.equals(SimplexTerrain.VERSION)) {
 					configData.configVersion = SimplexTerrain.VERSION;
 					BufferedWriter writer = new BufferedWriter(new FileWriter(configDir.toFile()));
-					writer.write(gson.toJson(configData));
+					writer.write(ConfigUtil.gson.toJson(configData));
 
 					writer.close();
 				}
@@ -35,7 +31,7 @@ public class Config {
 				configData = new ConfigData();
 				Paths.get("", "config").toFile().mkdirs();
 				BufferedWriter writer = new BufferedWriter(new FileWriter(configDir.toFile()));
-				writer.write(gson.toJson(configData));
+				writer.write(ConfigUtil.gson.toJson(configData));
 
 				writer.close();
 			}
@@ -52,6 +48,9 @@ public class Config {
 		}
 
 		SimplexTerrain.CONFIG = configData;
+
+		Paths.get("", "config", "simplexterrain", "noisemodifiers").toFile().mkdirs();
+		Paths.get("", "config", "simplexterrain", "postprocessors").toFile().mkdirs();
 
 		// Setup (reading from configs and stuff like that)
 		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> postProcessors.postProcessor.setup());

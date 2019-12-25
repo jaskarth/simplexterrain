@@ -3,9 +3,15 @@ package supercoder79.simplexterrain.world.noisemodifier;
 import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
+import supercoder79.simplexterrain.configs.ConfigUtil;
+import supercoder79.simplexterrain.configs.noisemodifiers.SandbarConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
+import java.nio.file.Paths;
+
 public class SandbarNoiseModifier extends NoiseModifier {
+	private SandbarConfigData config;
+
 	private ChunkRandom random = new ChunkRandom(0);
 	private OctaveNoiseSampler stackNoise;
 
@@ -15,12 +21,13 @@ public class SandbarNoiseModifier extends NoiseModifier {
 
 	@Override
 	public void init(long seed) {
-		stackNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, random, 4, 250, 45, 32);
+		random.setSeed(seed);
+		stackNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, random, config.octaves, config.frequency, config.amplitudeHigh, config.amplitudeLow);
 	}
 
 	@Override
 	public void setup() {
-
+		config = ConfigUtil.getFromConfig(SandbarConfigData.class, Paths.get("config", "simplexterrain", "noisemodifiers", "sandbars.json"));
 	}
 
 	@Override
@@ -28,7 +35,7 @@ public class SandbarNoiseModifier extends NoiseModifier {
 		double noise = 0;
 		if (currentNoiseValue > -55 && currentNoiseValue < -40) {
 			double sample = stackNoise.sample(x, z);
-			if (sample > 0.5) noise = sample;
+			if (sample > config.threshold) noise = sample;
 		}
 		return currentNoiseValue + noise;
 	}
