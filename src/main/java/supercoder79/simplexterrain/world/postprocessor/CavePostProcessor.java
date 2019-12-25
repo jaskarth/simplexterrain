@@ -1,5 +1,8 @@
 package supercoder79.simplexterrain.world.postprocessor;
 
+import java.nio.file.Paths;
+import java.util.Random;
+
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -10,9 +13,6 @@ import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.configs.ConfigUtil;
 import supercoder79.simplexterrain.configs.postprocessors.CaveConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
-
-import java.nio.file.Paths;
-import java.util.Random;
 
 public class CavePostProcessor implements TerrainPostProcessor {
 	private CaveConfigData config;

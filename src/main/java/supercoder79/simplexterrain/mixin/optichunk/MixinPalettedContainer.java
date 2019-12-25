@@ -1,10 +1,11 @@
 package supercoder79.simplexterrain.mixin.optichunk;
 
-import net.minecraft.world.chunk.PalettedContainer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.world.chunk.PalettedContainer;
 import supercoder79.simplexterrain.SimplexTerrain;
 
 @Mixin(PalettedContainer.class)

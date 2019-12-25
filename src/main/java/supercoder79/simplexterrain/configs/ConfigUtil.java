@@ -1,18 +1,18 @@
 package supercoder79.simplexterrain.configs;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import supercoder79.simplexterrain.SimplexTerrain;
-
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import supercoder79.simplexterrain.SimplexTerrain;
 
 public class ConfigUtil {
 	public static Gson gson = new GsonBuilder().setPrettyPrinting().create();

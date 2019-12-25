@@ -1,9 +1,9 @@
 package supercoder79.simplexterrain.api.cache;
 
+import java.util.HashMap;
+
 import net.minecraft.util.math.BlockPos;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
-
-import java.util.HashMap;
 
 /**
  * Samples from an octave noise sampler using caches. Only useful in circumstances where a single position is sampled multiple times.

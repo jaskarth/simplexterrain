@@ -1,10 +1,10 @@
 package supercoder79.simplexterrain.noise.worley;
 
-import supercoder79.simplexterrain.api.noise.Noise;
-
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+
+import supercoder79.simplexterrain.api.noise.Noise;
 
 /**
  * Random number generator for voxel-based fractals based on the XorShift

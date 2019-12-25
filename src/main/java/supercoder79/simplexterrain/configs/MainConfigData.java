@@ -1,15 +1,15 @@
 package supercoder79.simplexterrain.configs;
 
-import supercoder79.simplexterrain.SimplexTerrain;
-import supercoder79.simplexterrain.api.noise.NoiseType;
-import supercoder79.simplexterrain.world.noisemodifier.NoiseModifiers;
-import supercoder79.simplexterrain.world.postprocessor.PostProcessors;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
+
+import supercoder79.simplexterrain.SimplexTerrain;
+import supercoder79.simplexterrain.api.noise.NoiseType;
+import supercoder79.simplexterrain.world.noisemodifier.NoiseModifiers;
+import supercoder79.simplexterrain.world.postprocessor.PostProcessors;
 
 public class MainConfigData {
 	@SerializedName("configVersion") public String configVersion = SimplexTerrain.VERSION;

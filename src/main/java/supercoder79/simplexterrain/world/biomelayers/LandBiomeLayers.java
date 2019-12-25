@@ -1,15 +1,25 @@
 package supercoder79.simplexterrain.world.biomelayers;
 
+import java.util.function.LongFunction;
+
 import net.minecraft.world.biome.layer.ScaleLayer;
 import net.minecraft.world.biome.layer.SmoothenShorelineLayer;
 import net.minecraft.world.biome.layer.type.ParentedLayer;
-import net.minecraft.world.biome.layer.util.*;
+import net.minecraft.world.biome.layer.util.CachingLayerContext;
+import net.minecraft.world.biome.layer.util.CachingLayerSampler;
+import net.minecraft.world.biome.layer.util.LayerFactory;
+import net.minecraft.world.biome.layer.util.LayerSampleContext;
+import net.minecraft.world.biome.layer.util.LayerSampler;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.level.LevelGeneratorType;
 import supercoder79.simplexterrain.SimplexTerrain;
-import supercoder79.simplexterrain.world.biomelayers.layers.*;
-
-import java.util.function.LongFunction;
+import supercoder79.simplexterrain.world.biomelayers.layers.ClimateTransformerLayer;
+import supercoder79.simplexterrain.world.biomelayers.layers.HighlandsBiomePassLayer;
+import supercoder79.simplexterrain.world.biomelayers.layers.LowlandsBiomePassLayer;
+import supercoder79.simplexterrain.world.biomelayers.layers.MidlandsBiomePassLayer;
+import supercoder79.simplexterrain.world.biomelayers.layers.MountainPeaksBiomePassLayer;
+import supercoder79.simplexterrain.world.biomelayers.layers.ReplaceBiomesLayer;
+import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 
 public class LandBiomeLayers {
 	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> repeat(long l, ParentedLayer parentedLayer, LayerFactory<T> layerFactory, int i, LongFunction<C> longFunction) {
