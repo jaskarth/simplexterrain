@@ -11,12 +11,12 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ConfigData {
-	public String configVersion = SimplexTerrain.VERSION;
-	public boolean doModCompat = true;
-	public boolean addDetailNoise = true;
+public class MainConfigData {
+	@SerializedName("configVersion") public String configVersion = SimplexTerrain.VERSION;
+	@SerializedName("doModCompat") public boolean doModCompat = true;
+	@SerializedName("addDetailNoise") public boolean addDetailNoise = true;
 
-	public boolean reloadConfigCommand = false;
+	@SerializedName("reloadConfigCommand") public boolean reloadConfigCommand = false;
 	public boolean optimizeChunkGenerationInvasively = true;
 	public boolean threadedNoiseGeneration = true;
 	public boolean simplexIsDefault = false;

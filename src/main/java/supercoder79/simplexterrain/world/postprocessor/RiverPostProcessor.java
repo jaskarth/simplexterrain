@@ -1,5 +1,8 @@
 package supercoder79.simplexterrain.world.postprocessor;
 
+import java.nio.file.Paths;
+import java.util.Random;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -13,9 +16,6 @@ import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.configs.ConfigUtil;
 import supercoder79.simplexterrain.configs.postprocessors.RiverConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
-
-import java.nio.file.Paths;
-import java.util.Random;
 
 public final class RiverPostProcessor implements TerrainPostProcessor {
 	private RiverConfigData config;
