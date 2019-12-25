@@ -1,6 +1,9 @@
 package supercoder79.simplexterrain.configs.noisemodifiers;
 
+import supercoder79.simplexterrain.SimplexTerrain;
+
 public class MesaConfigData {
+	public String version = SimplexTerrain.VERSION;
 	public int terraceOctaves = 1;
 	public int cutoffOctaves = 3;
 	public double terraceFrequency = 100.0;

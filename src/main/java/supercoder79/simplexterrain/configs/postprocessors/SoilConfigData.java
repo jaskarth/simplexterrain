@@ -1,6 +1,9 @@
 package supercoder79.simplexterrain.configs.postprocessors;
 
+import supercoder79.simplexterrain.SimplexTerrain;
+
 public class SoilConfigData {
+	public String version = SimplexTerrain.VERSION;
 	public int coarseDirtOctaves = 4;
 	public double coarseDirtFrequency = 256.0;
 	public double coarseDirtAmplitudeHigh = 6.0;

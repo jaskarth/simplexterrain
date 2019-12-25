@@ -24,7 +24,6 @@ public class Config {
 					configData.configVersion = SimplexTerrain.VERSION;
 					BufferedWriter writer = new BufferedWriter(new FileWriter(configDir.toFile()));
 					writer.write(ConfigUtil.gson.toJson(configData));
-
 					writer.close();
 				}
 			} else {

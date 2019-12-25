@@ -1,6 +1,9 @@
 package supercoder79.simplexterrain.configs.postprocessors;
 
+import supercoder79.simplexterrain.SimplexTerrain;
+
 public class CaveConfigData {
+	public String version = SimplexTerrain.VERSION;
 	public int caveNoiseOctaves = 6;
 	public int caveHeightOctaves = 5;
 	public int caveEnabledOctaves = 2;

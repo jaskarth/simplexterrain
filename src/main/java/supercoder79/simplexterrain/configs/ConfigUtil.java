@@ -2,12 +2,14 @@ package supercoder79.simplexterrain.configs;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import supercoder79.simplexterrain.SimplexTerrain;
 
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,13 +45,22 @@ public class ConfigUtil {
 			//config exists: return value
 			if (Files.exists(path)) {
 				config = ConfigUtil.gson.fromJson(new FileReader(path.toFile()), configClass);
+
+				//update to newest config using le epic reflection hacks
+				String version = (String) config.getClass().getField("version").get(config);
+				if (!version.equals(SimplexTerrain.VERSION)) {
+					config.getClass().getField("version").set(config, SimplexTerrain.VERSION);
+					BufferedWriter writer = new BufferedWriter(new FileWriter(path.toFile()));
+					writer.write(ConfigUtil.gson.toJson(config));
+					writer.close();
+				}
 			} else {
 				//config does not exist: write value
 				BufferedWriter writer = new BufferedWriter(new FileWriter(path.toFile()));
 				writer.write(ConfigUtil.gson.toJson(config));
 				writer.close();
 			}
-		} catch (IOException e) {
+		} catch (IOException | NoSuchFieldException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return config;
