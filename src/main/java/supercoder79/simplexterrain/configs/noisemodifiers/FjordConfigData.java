@@ -6,6 +6,6 @@ public class FjordConfigData {
 	public String version = SimplexTerrain.VERSION;
 	public int scale = 980;
 	public double threshold = 0.13;
-	public double size = 0.4;
+	public double size = 0.04;
 	public double depthModifier = 500;
 }
