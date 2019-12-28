@@ -1,12 +1,13 @@
 package supercoder79.simplexterrain.world.biome;
 
+import java.util.List;
+
 import com.google.common.collect.Lists;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
-
-import java.util.List;
 
 /**
  * Picks a biome. Pretty self explanatory.

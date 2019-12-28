@@ -1,13 +1,13 @@
 package supercoder79.simplexterrain.world.noisemodifier;
 
+import java.nio.file.Paths;
+
 import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.configs.ConfigUtil;
 import supercoder79.simplexterrain.configs.noisemodifiers.SandbarConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
-
-import java.nio.file.Paths;
 
 public class SandbarNoiseModifier extends NoiseModifier {
 	private SandbarConfigData config;

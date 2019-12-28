@@ -1,12 +1,12 @@
 package supercoder79.simplexterrain.world.gen;
 
+import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.biome.source.BiomeSource;
 import supercoder79.simplexterrain.SimplexTerrain;
-
-import java.util.concurrent.CompletableFuture;
 
 
 public class SimplexBiomeArray {

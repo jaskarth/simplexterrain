@@ -1,5 +1,7 @@
 package supercoder79.simplexterrain.world;
 
+import java.util.Map;
+
 import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -13,8 +15,6 @@ import supercoder79.simplexterrain.mixin.AccessorLevelGeneratorType;
 import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
 import supercoder79.simplexterrain.world.gen.SimplexBiomeSourceConfig;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
-
-import java.util.Map;
 
 public class WorldType<T extends ChunkGenerator<?>> {
 	public static final Map<LevelGeneratorType, WorldType<?>> LGT_TO_WT_MAP = Maps.newHashMap();

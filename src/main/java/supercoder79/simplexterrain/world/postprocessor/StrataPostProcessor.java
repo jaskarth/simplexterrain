@@ -1,5 +1,7 @@
 package supercoder79.simplexterrain.world.postprocessor;
 
+import java.util.Random;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -7,8 +9,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
-
-import java.util.Random;
 
 public class StrataPostProcessor implements TerrainPostProcessor {
 	private static final BlockState[] states = new BlockState[32];

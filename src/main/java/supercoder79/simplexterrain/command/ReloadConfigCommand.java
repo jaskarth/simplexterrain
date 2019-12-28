@@ -1,6 +1,7 @@
 package supercoder79.simplexterrain.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+
 import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;

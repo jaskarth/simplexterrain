@@ -1,11 +1,11 @@
 package supercoder79.simplexterrain.world.noisemodifier;
 
+import java.nio.file.Paths;
+
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.configs.ConfigUtil;
 import supercoder79.simplexterrain.configs.noisemodifiers.VentsConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
-
-import java.nio.file.Paths;
 
 public class VentsNoiseModifier extends NoiseModifier {
 	private VentsConfigData config;
