@@ -6,6 +6,7 @@
     "optichunk.MixinPalettedContainer",
     "optichunk.MixinChunkSection"
   ],
+  "client": ["MixinCreateWorldScreen"],
   "injectors": {
     "defaultRequire": 1
   }

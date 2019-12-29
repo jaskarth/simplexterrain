@@ -19,6 +19,7 @@ public class MainConfigData {
 	@SerializedName("reloadConfigCommand") public boolean reloadConfigCommand = false;
 	public boolean optimizeChunkGenerationInvasively = true;
 	public boolean threadedNoiseGeneration = true;
+	public boolean simplexIsDefault = false;
 
 	public int noiseGenerationThreads = 2;
 
