@@ -18,7 +18,6 @@ package supercoder79.simplexterrain.noise.worley;
  *  *&#47;
  */
 
-import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.NoiseImplementation;
 
@@ -59,7 +58,6 @@ public class WorleyNoise extends Noise {
 	 */
 	private static final class Point {
 		private final double x;
-		private final double y;
 		private final double z;
 
 		/**
@@ -67,14 +65,11 @@ public class WorleyNoise extends Noise {
 		 *
 		 * @param x
 		 *            the x coordinate of the point.
-		 * @param y
-		 *            the y coordinate of the point.
 		 * @param z
 		 *            the z coordinate of the point.
 		 */
-		private Point(double x, double y, double z) {
+		private Point(double x, double z) {
 			this.x = x;
-			this.y = y;
 			this.z = z;
 		}
 
@@ -88,9 +83,8 @@ public class WorleyNoise extends Noise {
 		 */
 		public double distanceSquared(Point other) {
 			double x2 = x - other.x;
-			double y2 = y - other.y;
 			double z2 = z - other.z;
-			return x2 * x2 + y2 * y2 + z2 * z2;
+			return x2 * x2 + z2 * z2;
 		}
 	}
 
@@ -109,7 +103,7 @@ public class WorleyNoise extends Noise {
 	private static double minimumDistance(XorShift.Instance r, Point origin) {
 		// hack, but easier than handling points that are exactly at negative
 		// integer latice-points correctly.
-		Point p = new Point(origin.x + 1e-7, 0, origin.z + 1e-7);
+		Point p = new Point(origin.x + 1e-7,  origin.z + 1e-7);
 		// get the coordinate that this point resides at
 		int x = floor(p.x);
 //		int y = floor(p.y);
@@ -160,7 +154,7 @@ public class WorleyNoise extends Noise {
 //			for(int j = -1; j <= 1; ++j) {
 				for(int k = -1; k <= 1; ++k) {
 					// don't check the ones we already did above
-					if(Math.abs(i) + /*Math.abs(j)*/ + Math.abs(k) <= 1) {
+					if(Noise.fastAbs(i) + /*Math.abs(j)*/ + Noise.fastAbs(k) <= 1) {
 						continue;
 					}
 					// find squared distance to voxel
@@ -188,12 +182,7 @@ public class WorleyNoise extends Noise {
 		// provide minimum. be sure to square root it to get the
 		// true distance.
 
-		//use fastsqrt based on user choice
-		return SimplexTerrain.CONFIG.sacrificeAccuracyForSpeed ? fastSqrt(s) : Math.sqrt(s);
-	}
-
-	public static double fastSqrt(double d) {
-		return Double.longBitsToDouble(((Double.doubleToLongBits(d)-(1l<<52))>>1 ) + (1l<<61));
+		return fastSqrt(s);
 	}
 
 	/**
@@ -218,7 +207,7 @@ public class WorleyNoise extends Noise {
 	 */
 	private static double processVoxel(XorShift.Instance r, Point p, double s, int x, int z) {
 		// reset random number generator for the voxel
-		r.setSeed(x, 0, z);
+		r.setSeed(x, z);
 		// each voxel always has one point
 //		Point created = new Point(
 //				x + r.nextDouble(),
@@ -226,18 +215,12 @@ public class WorleyNoise extends Noise {
 //				z + r.nextDouble());
 		Point created = new Point(
 				x + r.nextDouble(),
-				0,
 				z + r.nextDouble());
 		// determine the distance between the generated point
 		// and the source point we're checking.
 		double distance = p.distanceSquared(created);
 		// add distance if it is lowest
-		if(distance < s) {
-			return distance;
-		}
-		else {
-			return s;
-		}
+		return Math.min(distance, s);
 	}
 
 	private static double square(double n) {
@@ -263,7 +246,7 @@ public class WorleyNoise extends Noise {
 	 * @return the noise value at the coordinate.
 	 */
 	private double noise(double x, double y, double z) {
-		return minimumDistance(randomFactory.getInstance(), new Point(x, y, z));
+		return minimumDistance(randomFactory.getInstance(), new Point(x, z));
 	}
 
 	@Override

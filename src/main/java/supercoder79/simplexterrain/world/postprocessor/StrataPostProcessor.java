@@ -1,20 +1,20 @@
-package supercoder79.simplexterrain.world.postprocess;
+package supercoder79.simplexterrain.world.postprocessor;
+
+import java.util.Random;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
-import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
-
-import java.util.Random;
 
 public class StrataPostProcessor implements TerrainPostProcessor {
 	private static final BlockState[] states = new BlockState[32];
 
-	public StrataPostProcessor(long seed) {
+	@Override
+	public void init(long seed) {
 		for (int i = 0; i < 4; i++) {
 			states[i*8] = Blocks.STONE.getDefaultState();
 			states[i*8 + 1] = Blocks.ANDESITE.getDefaultState();
@@ -29,8 +29,13 @@ public class StrataPostProcessor implements TerrainPostProcessor {
 	}
 
 	@Override
-	public void postProcess(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
-		int[] heights = heightmap.getHeightInChunk(new ChunkPos(chunkX, chunkZ));
+	public void setup() {
+
+	}
+
+	@Override
+	public void process(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
+		int[] heights = heightmap.getHeightsInChunk(new ChunkPos(chunkX, chunkZ));
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int x = 0; x < 16; x++) {
 			mutable.setX(chunkX*16 + x);

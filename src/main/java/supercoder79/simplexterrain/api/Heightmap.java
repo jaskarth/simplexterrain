@@ -30,7 +30,7 @@ public interface Heightmap {
      * @param pos the position of the requested chunk
      * @return an int array of the height values for this chunk.
      */
-    default int[] getHeightInChunk(ChunkPos pos) {
+    default int[] getHeightsInChunk(ChunkPos pos) {
         int[] heights = new int[256];
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {

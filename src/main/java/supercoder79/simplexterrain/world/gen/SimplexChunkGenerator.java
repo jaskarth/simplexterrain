@@ -1,9 +1,11 @@
 package supercoder79.simplexterrain.world.gen;
 
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.function.LongFunction;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.crash.CrashException;
@@ -18,7 +20,6 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
@@ -26,26 +27,32 @@ import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
-import org.apache.commons.lang3.ArrayUtils;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
+import supercoder79.simplexterrain.api.cache.CacheCustomSampler;
+import supercoder79.simplexterrain.api.cache.CacheSampler;
 import supercoder79.simplexterrain.api.noise.Noise;
+import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
+	private static final ChunkRandom reuseableRandom = new ChunkRandom();
 
 	private final OctaveNoiseSampler heightNoise;
 	private final OctaveNoiseSampler detailNoise;
 	private final OctaveNoiseSampler scaleNoise;
-	private final OctaveNoiseSampler peaksNoise;
+
+	private final CacheSampler scaleCache;
+	private final CacheCustomSampler heightCache;
 
 	private final ChunkRandom random;
-	private final NoiseSampler surfaceDepthNoise;
-	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
 
-	private HashMap<ChunkPos, int[]> noiseCache = new HashMap<>();
+	private final NoiseSampler surfaceDepthNoise;
+	//	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
+
+	private HashMap<Long, int[]> noiseCache = new HashMap<>();
 
 	public SimplexChunkGenerator(IWorld world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
 		super(world, biomeSource, config);
@@ -57,8 +64,9 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		heightNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.baseOctaveAmount, SimplexTerrain.CONFIG.baseNoiseFrequencyCoefficient * amplitude, amplitude, amplitude);
 		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
 		scaleNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow);
-		peaksNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.peaksOctaveAmount, SimplexTerrain.CONFIG.peaksFrequency, 1.0, 1.0);
 
+		scaleCache = new CacheSampler(scaleNoise);
+		heightCache = new CacheCustomSampler(heightNoise);
 
 		if (biomeSource instanceof SimplexBiomeSource) {
 			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
@@ -66,15 +74,20 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		this.surfaceDepthNoise = new OctavePerlinNoiseSampler(this.random, 4, 0);
 
-		List<TerrainPostProcessor> postProcessors = new ArrayList<>();
-		postProcessorFactories.forEach(factory -> postProcessors.add(factory.apply(this.seed)));
-		terrainPostProcessors = postProcessors;
+		postProcessors.forEach(postProcessor -> postProcessor.init(this.seed));
+		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(this.seed, reuseableRandom));
 	}
 
-	private static final Collection<LongFunction<TerrainPostProcessor>> postProcessorFactories = new ArrayList<>();
+	private static final Collection<TerrainPostProcessor> postProcessors = new ArrayList<>();
 
-	public static void  addTerrainPostProcessor(LongFunction<TerrainPostProcessor> factory) {
-		postProcessorFactories.add(factory);
+	public static void addTerrainPostProcessor(TerrainPostProcessor postProcessor) {
+		postProcessors.add(postProcessor);
+	}
+
+	private static final Collection<NoiseModifier> noiseModifiers = new ArrayList<>();
+
+	public static void addNoiseModifier(NoiseModifier noiseModifier) {
+		noiseModifiers.add(noiseModifier);
 	}
 
 	@Override
@@ -91,25 +104,13 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		SpawnHelper.populateEntities(region, biome, i, j, chunkRandom);
 	}
 
-	//TODO: Fix this code
-//	@Override
-//	public void populateBiomes(Chunk chunk) {
-//		if (biomeSource instanceof SimplexBiomeSource) {
-//			ChunkPos chunkPos = chunk.getPos();
-//			int[] e = getHeightInChunk(chunkPos);
-//			Biome[] biomes = new Biome[256];
-//
-//			for (int x = 0; x < 16; x++) {
-//				for (int z = 0; z < 16; z++) {
-//					biomes[z * 16 + x] = ((SimplexBiomeSource)(biomeSource)).sampleBiomeWithMathTM(x, z, e[z*16 + x]);
-//				}
-//			}
-//
-//			((ProtoChunk) chunk).method_22405(new BiomeArray(biomes));
-//		} else {
-//			super.populateBiomes(chunk);
-//		}
-//	}
+//	TODO: Fix this code
+
+	@Override
+	public void populateBiomes(Chunk chunk) {
+		ChunkPos chunkPos = chunk.getPos();
+		((ProtoChunk)chunk).method_22405(SimplexBiomeArray.makeNewBiomeArray(chunkPos, this.biomeSource));
+	}
 
 	@Override
 	public void populateNoise(IWorld iWorld, Chunk chunk) {
@@ -117,7 +118,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		ChunkPos pos = chunk.getPos();
 
-		int[] requestedVals = getHeightInChunk(pos); //attempt to retrieve the values from the cache
+		int[] requestedVals = getHeightsInChunk(pos); // attempt to retrieve the values from the cache
 
 		for (int x = 0; x < 16; ++x) {
 			posMutable.setX(x);
@@ -130,28 +131,29 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 					double height = requestedVals[(x*16) + z];
 					if (height >= y) {
 						chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
-					} else if (y < 63) {
+					} else if (y < getSeaLevel()) {
 						chunk.setBlockState(posMutable, Blocks.WATER.getDefaultState(), false);
 					}
 					//TODO: see if this actually improves performance
-					if (y > height && y > 63) break;
+					if (y > height && y > getSeaLevel()) break;
 				}
 			}
 		}
 	}
 
 	@Override
-	public int[] getHeightInChunk(ChunkPos pos) {
+	public int[] getHeightsInChunk(ChunkPos pos) {
 		//return cached values
-		int[] res = noiseCache.get(pos);
+		int[] res = noiseCache.get(pos.toLong());
 		if (res != null) return res;
 
 		int[] vals = new int[256];
+
 		if (SimplexTerrain.CONFIG.threadedNoiseGeneration) {
-			CompletableFuture[] futures = new CompletableFuture[2];
-			for (int i = 0; i < 2; i++) {
+			CompletableFuture[] futures = new CompletableFuture[SimplexTerrain.CONFIG.noiseGenerationThreads];
+			for (int i = 0; i < SimplexTerrain.CONFIG.noiseGenerationThreads; i++) {
 				int finalI = i;
-				futures[i] = CompletableFuture.runAsync(() -> generateNoise(vals, pos, finalI * 8, 8));
+				futures[i] = CompletableFuture.runAsync(() -> generateNoise(vals, pos, finalI * 16 / SimplexTerrain.CONFIG.noiseGenerationThreads, 16 / SimplexTerrain.CONFIG.noiseGenerationThreads));
 			}
 
 			for (int i = 0; i < futures.length; i++) {
@@ -163,7 +165,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		}
 
 		//cache the values
-		noiseCache.put(pos, vals);
+		noiseCache.put(pos.toLong(), vals);
 
 		return vals;
 	}
@@ -176,6 +178,14 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		}
 	}
 
+	private double sigmoid(double val) {
+		return 256 / (Math.exp(8/3f - val/48) + 1);
+	}
+
+	private static double fade(double value) {
+		return value * value * (3 - (value * 2));
+	}
+
 	@Override
 	public int getHeightOnGround(int x, int z, net.minecraft.world.Heightmap.Type type) {
 		return getHeight(x, z);
@@ -183,19 +193,23 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	@Override
 	public int getHeight(int x, int z) {
-		int subX = ((x >> 2) << 2);
-		int subZ = ((z >> 2) << 2);
-		int subXUpper = subX + 4;
-		int subZUpper = subZ + 4;
+		int xLow = ((x >> 2) << 2);
+		int zLow = ((z >> 2) << 2);
+		int xUpper = xLow + 4;
+		int zUpper = zLow + 4;
 
-		double xProgress = (double) (x - subX) / 4.0;
-		double zProgress = (double) (z - subZ) / 4.0;
+		double xProgress = (double) (x - xLow) * 0.25;
+		double zProgress = (double) (z - zLow) * 0.25;
 
+		xProgress = fade(xProgress);
+		zProgress = fade(zProgress);
+
+//		System.out.println("Starting sample: " + x + ", " + z);
 		final double[] samples = new double[4];
-		samples[0] = sampleNoise(subX, subZ);
-		samples[1] = sampleNoise(subXUpper, subZ);
-		samples[2] = sampleNoise(subX, subZUpper);
-		samples[3] = sampleNoise(subXUpper, subZUpper);
+		samples[0] = sampleNoise(xLow, zLow);
+		samples[1] = sampleNoise(xUpper, zLow);
+		samples[2] = sampleNoise(xLow, zUpper);
+		samples[3] = sampleNoise(xUpper, zUpper);
 
 		double sample = MathHelper.lerp(zProgress,
 				MathHelper.lerp(xProgress, samples[0], samples[1]),
@@ -205,29 +219,41 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		if (SimplexTerrain.CONFIG.addDetailNoise) {
 			detail = sampleDetail(x, z);
 		}
-		return (int)(sample + detail);
+
+		return (int) (sigmoid((sample + detail)));
 	}
 
 	private double sampleNoise(int x, int z) {
-		double amplitudeSample = this.scaleNoise.sample(x, z) + SimplexTerrain.CONFIG.scaleAmplitudeLow; // change range to have a minimum value of 0.0
-		return this.heightNoise.sampleCustom(x, z, SimplexTerrain.CONFIG.baseNoiseSamplingFrequency, amplitudeSample, amplitudeSample, SimplexTerrain.CONFIG.baseOctaveAmount)
-				+ modifyPeaksNoise(this.peaksNoise.sample(x, z))
-				+ SimplexTerrain.CONFIG.baseHeight;
+		// Sample + shape and average
+		double noise = sampleNoiseBase(x, z);
+		noise += sampleNoiseBase(x + 4, z);
+		noise += sampleNoiseBase(x - 4, z);
+		noise += sampleNoiseBase(x, z + 4);
+		noise += sampleNoiseBase(x, z - 4);
+		noise *= 0.2;
+
+		noise += SimplexTerrain.CONFIG.baseHeight;
+
+		return noise;
 	}
 
-	private static double modifyPeaksNoise(double sample) {
-		sample += SimplexTerrain.CONFIG.peaksSampleOffset;
-		if (sample < 0) {
-			return 0;
-		} else {
-			return sample * SimplexTerrain.CONFIG.peaksAmplitude;
+	private double sampleNoiseBase(int x, int z) {
+//		System.out.println("sampling: " + x + ", " + z);
+		// These values should use caches for efficiency but that takes effort
+		double amplitudeSample = scaleCache.sample(x, z) + SimplexTerrain.CONFIG.scaleAmplitudeLow; // change range to have a minimum value of 0.0
+		double noise = this.heightCache.sampleCustom(x, z, SimplexTerrain.CONFIG.baseNoiseSamplingFrequency, amplitudeSample, SimplexTerrain.CONFIG.baseOctaveAmount);
+
+		for(NoiseModifier modifier : noiseModifiers) {
+			noise = modifier.modify(x, z, noise, amplitudeSample);
 		}
+
+		return noise;
 	}
 
 	private double sampleDetail(int x, int z) {
 		double sample = detailNoise.sample(x, z);
 		if (sample < SimplexTerrain.CONFIG.detailNoiseThreshold) {
-			if (scaleNoise.sample(x, z) < SimplexTerrain.CONFIG.scaleNoiseThreshold) {
+			if (scaleCache.sample(x, z) < SimplexTerrain.CONFIG.scaleNoiseThreshold) {
 				sample = 0;
 			}
 		}
@@ -300,7 +326,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		int chunkZ = region.getCenterChunkZ();
 		ChunkRandom rand = new ChunkRandom();
 		rand.setSeed(chunkX, chunkZ);
-		this.terrainPostProcessors.forEach(postProcessor -> postProcessor.postProcess(region, rand, chunkX, chunkZ, this));
+		postProcessors.forEach(postProcessor -> postProcessor.process(region, rand, chunkX, chunkZ, this));
 
 		int i = region.getCenterChunkX();
 		int j = region.getCenterChunkZ();

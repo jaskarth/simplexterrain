@@ -1,6 +1,10 @@
 package supercoder79.simplexterrain.world;
 
+import java.util.Map;
+
 import com.google.common.collect.Maps;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -12,8 +16,6 @@ import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
 import supercoder79.simplexterrain.world.gen.SimplexBiomeSourceConfig;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 
-import java.util.Map;
-
 public class WorldType<T extends ChunkGenerator<?>> {
 	public static final Map<LevelGeneratorType, WorldType<?>> LGT_TO_WT_MAP = Maps.newHashMap();
 	public static final Map<String, WorldType<?>> STR_TO_WT_MAP = Maps.newHashMap();
@@ -24,6 +26,23 @@ public class WorldType<T extends ChunkGenerator<?>> {
 	public WorldType(String name, WorldTypeChunkGeneratorFactory<T> chunkGenSupplier) {
 		this.generatorType = AccessorLevelGeneratorType.create(FabricLoader.getInstance().isModLoaded("cwt") ? 10 : 9, name);
 		generatorType.setCustomizable(false);
+
+		//There is nothing wrong that could happen with this
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+			if (SimplexTerrain.CONFIG.simplexIsDefault) {
+				LevelGeneratorType.TYPES[FabricLoader.getInstance().isModLoaded("cwt") ? 10 : 9] = null;
+				LevelGeneratorType[] temp = new LevelGeneratorType[16];
+				for (int i = 0; i < LevelGeneratorType.TYPES.length; i++) {
+					if (i == LevelGeneratorType.TYPES.length - 1) break;
+					temp[i + 1] = LevelGeneratorType.TYPES[i];
+				}
+				temp[0] = generatorType;
+				for (int i = 0; i < temp.length; i++) {
+					LevelGeneratorType.TYPES[i] = temp[i];
+				}
+			}
+		}
+
 		this.chunkGenSupplier = chunkGenSupplier;
 
 		if (this.generatorType == null) {
