@@ -32,6 +32,7 @@ public class ToadstoolFeature extends SimplexFeature {
 	public boolean generate(IWorld world, ChunkGenerator<? extends ChunkGeneratorConfig> generator, Random random, BlockPos pos, DefaultFeatureConfig config) {
 		if (world.getBlockState(pos.down()) != Blocks.GRASS_BLOCK.getDefaultState()) return true;
 
+		//TODO: set sides for mushroomState
 		world.setBlockState(pos, Blocks.MUSHROOM_STEM.getDefaultState().with(MushroomBlock.UP, false).with(MushroomBlock.DOWN, false), 2);
 		world.setBlockState(pos.up(), Blocks.MUSHROOM_STEM.getDefaultState().with(MushroomBlock.UP, false).with(MushroomBlock.DOWN, false), 2);
 		for (int x = -1; x < 2; x++) {
