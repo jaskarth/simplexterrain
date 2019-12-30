@@ -1,13 +1,10 @@
 package supercoder79.simplexterrain.world.gen;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.util.Pair;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
@@ -27,14 +24,18 @@ import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.cache.CacheCustomSampler;
 import supercoder79.simplexterrain.api.cache.CacheSampler;
+import supercoder79.simplexterrain.api.feature.FeaturePack;
+import supercoder79.simplexterrain.api.feature.SimplexFeature;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
+import supercoder79.simplexterrain.world.feature.smallvegetation.SimplexFeatureImpl;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
@@ -50,7 +51,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	private final ChunkRandom random;
 
 	private final NoiseSampler surfaceDepthNoise;
-	//	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
+	private final Map<GenerationStep.Feature, Map<Biome, List<ConfiguredFeature<?, ?>>>> featureList = new HashMap<>();
 
 	private HashMap<Long, int[]> noiseCache = new HashMap<>();
 
@@ -76,6 +77,17 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		postProcessors.forEach(postProcessor -> postProcessor.init(this.seed));
 		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(this.seed, reuseableRandom));
+
+//		 collate and setup feature packs
+		for (FeaturePack fp : SimplexFeatureImpl.getFeaturePacks()) {
+			for (SimplexFeature feature : fp.featuresInPack()) {
+				featureList.computeIfAbsent(feature.generationStep(), k -> new HashMap<>());
+				for (Biome biome : feature.generatesIn()) {
+					featureList.get(feature.generationStep()).computeIfAbsent(biome, l -> new ArrayList<>());
+					featureList.get(feature.generationStep()).get(biome).add(feature.configuredFeature());
+				}
+			}
+		}
 	}
 
 	private static final Collection<TerrainPostProcessor> postProcessors = new ArrayList<>();
@@ -204,7 +216,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		xProgress = fade(xProgress);
 		zProgress = fade(zProgress);
 
-//		System.out.println("Starting sample: " + x + ", " + z);
 		final double[] samples = new double[4];
 		samples[0] = sampleNoise(xLow, zLow);
 		samples[1] = sampleNoise(xUpper, zLow);
@@ -238,7 +249,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	}
 
 	private double sampleNoiseBase(int x, int z) {
-//		System.out.println("sampling: " + x + ", " + z);
 		// These values should use caches for efficiency but that takes effort
 		double amplitudeSample = scaleCache.sample(x, z) + SimplexTerrain.CONFIG.scaleAmplitudeLow; // change range to have a minimum value of 0.0
 		double noise = this.heightCache.sampleCustom(x, z, SimplexTerrain.CONFIG.baseNoiseSamplingFrequency, amplitudeSample, SimplexTerrain.CONFIG.baseOctaveAmount);
@@ -341,6 +351,14 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		for(int currentFeature = 0; currentFeature < featureLength; ++currentFeature) {
 			GenerationStep.Feature feature = features[currentFeature];
+
+			if (featureList.get(feature) != null) {
+				if (featureList.get(feature).containsKey(biome)) {
+					for (ConfiguredFeature<?, ?> configuredFeature : featureList.get(feature).get(biome)) {
+						configuredFeature.generate(region, this, chunkRandom, blockPos);
+					}
+				}
+			}
 
 			try {
 				biome.generateFeatureStep(feature, this, region, seed, chunkRandom, blockPos);

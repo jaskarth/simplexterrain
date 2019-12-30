@@ -1,6 +1,7 @@
-package supercoder79.simplexterrain.api.biomes;
+package supercoder79.simplexterrain.api;
 
 import net.minecraft.util.Identifier;
+import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.world.biome.SimplexBiomesImpl;
 
 /**

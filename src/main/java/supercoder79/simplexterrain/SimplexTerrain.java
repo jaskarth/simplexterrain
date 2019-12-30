@@ -7,13 +7,15 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
-import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
+import supercoder79.simplexterrain.api.SimplexBiomes;
+import supercoder79.simplexterrain.api.SimplexFeatures;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.MainConfigData;
 import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
+import supercoder79.simplexterrain.world.feature.smallvegetation.SmallVegetationFeaturePack;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
 
@@ -64,6 +66,8 @@ public class SimplexTerrain implements ModInitializer {
 		SimplexBiomes.addReplacementBiome(biomeId(Biomes.BADLANDS), biomeId(Biomes.WOODED_BADLANDS_PLATEAU), 10);
 		SimplexBiomes.addReplacementBiome(biomeId(Biomes.SNOWY_TUNDRA), biomeId(Biomes.ICE_SPIKES), 20);
 		SimplexBiomes.addReplacementBiome(biomeId(Biomes.PLAINS), biomeId(Biomes.MUSHROOM_FIELDS), 100);
+
+		SimplexFeatures.addFeaturePack(new SmallVegetationFeaturePack());
 
 		if (CONFIG.reloadConfigCommand) {
 			ReloadConfigCommand.init();
@@ -378,7 +382,7 @@ public class SimplexTerrain implements ModInitializer {
 	private static void addVanillaMidlands() {
 		final double jungleWeight = 1.0;
 		final double savannaPlateauWeight = 1.0;
-		final double birchForestWeight = 0.8;
+		final double birchForestWeight = 0.6;
 		final double darkForestWeight = 1.0;
 		final double forestWeight = 1.0;
 		final double plainsWeight = 0.5;
