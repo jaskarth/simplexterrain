@@ -17,6 +17,7 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
@@ -141,6 +142,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				for (int y = 0; y < 256; ++y) {
 					posMutable.setY(y);
 					double height = requestedVals[(x*16) + z];
+					if (this.biomeSource.getBiomeForNoiseGen(pos.x, 0, pos.z) == Biomes.SWAMP) height -= 20;
 					if (height >= y) {
 						chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
 					} else if (y < getSeaLevel()) {

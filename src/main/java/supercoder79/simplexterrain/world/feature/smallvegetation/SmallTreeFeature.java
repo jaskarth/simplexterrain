@@ -59,8 +59,7 @@ public class SmallTreeFeature extends SimplexFeature {
 				world.setBlockState(pos.add(0, i-1, 1), leafState, 2);
 		}
 
-		if (random.nextInt(4) > 0)
-			world.setBlockState(pos.add(0, height, 0), leafState, 2);
+		world.setBlockState(pos.add(0, height, 0), leafState, 2);
 
 		return true;
 	}

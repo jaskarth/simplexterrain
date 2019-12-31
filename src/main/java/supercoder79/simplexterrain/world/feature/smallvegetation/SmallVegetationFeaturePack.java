@@ -28,6 +28,10 @@ public class SmallVegetationFeaturePack extends FeaturePack {
 				new ShrubFeature(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.SNOWY_TAIGA, 0, 0.5f),
 
 				new SmallTreeFeature(Blocks.OAK_LOG.getDefaultState(), Blocks.OAK_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.FOREST, 1, 0.3f),
+				new SmallTreeFeature(Blocks.OAK_LOG.getDefaultState(), Blocks.OAK_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.SWAMP, 0, 0.1f),
+				new SmallTreeFeature(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.TAIGA, 1, 0.3f),
+				new SmallTreeFeature(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.MOUNTAIN_EDGE, 1, 0.3f),
+				new SmallTreeFeature(Blocks.BIRCH_LOG.getDefaultState(), Blocks.BIRCH_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.BIRCH_FOREST, 1, 0.3f),
 
 				new BoulderFeature(),
 				new MangroveTreeFeature(),
