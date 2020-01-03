@@ -2,6 +2,7 @@ package supercoder79.simplexterrain.world.biomelayers;
 
 import java.util.function.LongFunction;
 
+import net.minecraft.world.biome.layer.AddEdgeBiomesLayer;
 import net.minecraft.world.biome.layer.ScaleLayer;
 import net.minecraft.world.biome.layer.SmoothenShorelineLayer;
 import net.minecraft.world.biome.layer.type.ParentedLayer;
@@ -21,7 +22,7 @@ import supercoder79.simplexterrain.world.biomelayers.layers.MountainPeaksBiomePa
 import supercoder79.simplexterrain.world.biomelayers.layers.ReplaceBiomesLayer;
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 
-public class LandBiomeLayers {
+public class SimplexBiomeLayers {
 	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> repeat(long l, ParentedLayer parentedLayer, LayerFactory<T> layerFactory, int i, LongFunction<C> longFunction) {
 		LayerFactory<T> result = layerFactory;
 
@@ -37,7 +38,8 @@ public class LandBiomeLayers {
 
 		//lowlands (y67 - y90)
 		LayerFactory<T> lowlandsBiomeLayer = LowlandsBiomePassLayer.INSTANCE.create(contextProvider.apply(100L), climateLayer);
-		lowlandsBiomeLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000), lowlandsBiomeLayer);
+		lowlandsBiomeLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000L), lowlandsBiomeLayer);
+		lowlandsBiomeLayer = AddEdgeBiomesLayer.INSTANCE.create(contextProvider.apply(300L), lowlandsBiomeLayer);
 		lowlandsBiomeLayer = repeat(1000L, ScaleLayer.NORMAL, lowlandsBiomeLayer, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
 		lowlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(20L), lowlandsBiomeLayer);
 		lowlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25L), lowlandsBiomeLayer);
@@ -47,6 +49,7 @@ public class LandBiomeLayers {
 		//midlands (y91-y140)
 		LayerFactory<T> midlandsBiomeLayer = MidlandsBiomePassLayer.INSTANCE.create(contextProvider.apply(100L), climateLayer);
 		midlandsBiomeLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000), midlandsBiomeLayer);
+		midlandsBiomeLayer = AddEdgeBiomesLayer.INSTANCE.create(contextProvider.apply(301L), midlandsBiomeLayer);
 		midlandsBiomeLayer = repeat(1000L, ScaleLayer.NORMAL, midlandsBiomeLayer, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
 		midlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(20), midlandsBiomeLayer);
 		midlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25), midlandsBiomeLayer);
@@ -56,6 +59,7 @@ public class LandBiomeLayers {
 		//highlands (y141-y190)
 		LayerFactory<T> highlandsBiomeLayer = HighlandsBiomePassLayer.INSTANCE.create(contextProvider.apply(100L), climateLayer);
 		highlandsBiomeLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000), highlandsBiomeLayer);
+		highlandsBiomeLayer = AddEdgeBiomesLayer.INSTANCE.create(contextProvider.apply(330L), highlandsBiomeLayer);
 		highlandsBiomeLayer = repeat(1000L, ScaleLayer.NORMAL, highlandsBiomeLayer, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
 		highlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(20), highlandsBiomeLayer);
 		highlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25), highlandsBiomeLayer);
@@ -65,6 +69,7 @@ public class LandBiomeLayers {
 		//mountain peaks (y191+)
 		LayerFactory<T> mountainPeaksBiomePassLayer = MountainPeaksBiomePassLayer.INSTANCE.create(contextProvider.apply(100L), climateLayer);
 		mountainPeaksBiomePassLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000), mountainPeaksBiomePassLayer);
+		mountainPeaksBiomePassLayer = AddEdgeBiomesLayer.INSTANCE.create(contextProvider.apply(400L), mountainPeaksBiomePassLayer);
 		mountainPeaksBiomePassLayer = repeat(1000L, ScaleLayer.NORMAL, mountainPeaksBiomePassLayer, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
 		mountainPeaksBiomePassLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(20), mountainPeaksBiomePassLayer);
 		mountainPeaksBiomePassLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25), mountainPeaksBiomePassLayer);

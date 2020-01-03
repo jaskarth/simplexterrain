@@ -65,7 +65,7 @@ public class SpruceTreeFeature extends SimplexFeature {
 
 	@Override
 	public ConfiguredDecorator configureDecorator() {
-		return Decorator.COUNT_EXTRA_HEIGHTMAP.configure(new CountExtraChanceDecoratorConfig(0, 0.2f, 1));
+		return Decorator.COUNT_EXTRA_HEIGHTMAP.configure(new CountExtraChanceDecoratorConfig(0, 0.5f, 1));
 	}
 
 	@Override

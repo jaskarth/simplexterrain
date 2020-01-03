@@ -11,7 +11,7 @@ import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
-import supercoder79.simplexterrain.world.biomelayers.LandBiomeLayers;
+import supercoder79.simplexterrain.world.biomelayers.SimplexBiomeLayers;
 
 public class SimplexBiomeSource extends BiomeSource {
 	private final BiomeLayerSampler lowlandsSampler;
@@ -32,7 +32,7 @@ public class SimplexBiomeSource extends BiomeSource {
 		super(biomes);
 		long seed = config.getSeed();
 
-		BiomeLayerSampler[] biomeLayerSamplers = LandBiomeLayers.build(seed, config.getGeneratorType());
+		BiomeLayerSampler[] biomeLayerSamplers = SimplexBiomeLayers.build(seed, config.getGeneratorType());
 
 		this.lowlandsSampler = biomeLayerSamplers[0];
 		this.midlandsSampler = biomeLayerSamplers[1];
