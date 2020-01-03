@@ -15,7 +15,7 @@ public class SmallVegetationFeaturePack extends FeaturePack {
 		return Arrays.asList(
 				new ShrubFeature(Blocks.OAK_LOG.getDefaultState(), Blocks.OAK_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.PLAINS, 0, 0.3f),
 				new ShrubFeature(Blocks.OAK_LOG.getDefaultState(), Blocks.OAK_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.FOREST, 3, 0.3f),
-				new ShrubFeature(Blocks.OAK_LOG.getDefaultState(), Blocks.OAK_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.SWAMP, 4, 0.3f),
+				new ShrubFeature(Blocks.OAK_LOG.getDefaultState(), Blocks.OAK_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.SWAMP, 2, 0.3f),
 
 				new ShrubFeature(Blocks.BIRCH_LOG.getDefaultState(), Blocks.BIRCH_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.FOREST, 1, 0.3f),
 				new ShrubFeature(Blocks.BIRCH_LOG.getDefaultState(), Blocks.BIRCH_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.BIRCH_FOREST, 3, 0.3f),
@@ -32,6 +32,8 @@ public class SmallVegetationFeaturePack extends FeaturePack {
 				new SmallTreeFeature(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.TAIGA, 1, 0.3f),
 				new SmallTreeFeature(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.MOUNTAIN_EDGE, 1, 0.3f),
 				new SmallTreeFeature(Blocks.BIRCH_LOG.getDefaultState(), Blocks.BIRCH_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.BIRCH_FOREST, 1, 0.3f),
+
+				new SpruceTreeFeature(),
 
 				new BoulderFeature(),
 				new MangroveTreeFeature(),

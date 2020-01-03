@@ -142,13 +142,13 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				for (int y = 0; y < 256; ++y) {
 					posMutable.setY(y);
 					double height = requestedVals[(x*16) + z];
-					if (this.biomeSource.getBiomeForNoiseGen(pos.x, 0, pos.z) == Biomes.SWAMP) height -= 20;
+					//TODO: post processors right here
 					if (height >= y) {
 						chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
 					} else if (y < getSeaLevel()) {
 						chunk.setBlockState(posMutable, Blocks.WATER.getDefaultState(), false);
 					}
-					//TODO: see if this actually improves performance
+
 					if (y > height && y > getSeaLevel()) break;
 				}
 			}
