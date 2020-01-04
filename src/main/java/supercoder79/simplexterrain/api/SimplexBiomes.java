@@ -5,14 +5,14 @@ import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.world.biome.SimplexBiomesImpl;
 
 /**
- * API front for Simplex Biomes generator
+ * API front for Simplex Terrain's Biomes generator.
+ * Provides registries for registering biomes and for
  *
  * @author Valoeghese and Supercoder79
  */
 public final class SimplexBiomes {
 	private SimplexBiomes() {
 	}
-	
 	public static void addLowlandsBiome(Identifier biome, SimplexClimate climate, double weight) {
 		SimplexBiomesImpl.addToLowlands(biome, climate, weight);
 	}

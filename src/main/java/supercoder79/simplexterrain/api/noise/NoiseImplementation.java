@@ -3,6 +3,8 @@ package supercoder79.simplexterrain.api.noise;
 /**
  * Gets which functions are implemented properly in noise. This is used to ensure that the noise class can actually perform
  * a specified task.
+ *
+ * @author SuperCoder79
  */
 public class NoiseImplementation {
 	public static final int NOISE_2D = 0b001;

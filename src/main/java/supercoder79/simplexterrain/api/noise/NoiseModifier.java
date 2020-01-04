@@ -2,6 +2,12 @@ package supercoder79.simplexterrain.api.noise;
 
 import net.minecraft.world.gen.ChunkRandom;
 
+/**
+ * A class that can modify noise based on a given x z column.
+ * It also provides some utility functions.
+ *
+ * @author Valoeghese and SuperCoder79
+ */
 public abstract class NoiseModifier {
 	protected abstract void init(long seed);
 	public abstract void setup();

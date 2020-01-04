@@ -5,6 +5,11 @@ import java.util.Random;
 import net.minecraft.world.IWorld;
 import supercoder79.simplexterrain.api.Heightmap;
 
+/**
+ * A post processor that allows whole chunks to be modified.
+ *
+ * @author Valoeghese and SuperCoder79
+ */
 public interface TerrainPostProcessor {
 	/**
 	 * This function executes on creation of the chunk generator and is useful for setting up noise functions and randoms.

@@ -3,6 +3,11 @@ package supercoder79.simplexterrain.api.biomes;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 
+/**
+ * Maps temperature to an ocean type, deep ocean type, and beach type.
+ *
+ * @author Valoeghese
+ */
 public enum OceanSet {
 	TROPICAL(Biomes.BEACH, Biomes.WARM_OCEAN, Biomes.DEEP_WARM_OCEAN),
 	TEMPERATE(Biomes.BEACH, Biomes.OCEAN, Biomes.DEEP_OCEAN),

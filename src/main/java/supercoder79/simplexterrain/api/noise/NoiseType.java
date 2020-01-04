@@ -6,6 +6,11 @@ import supercoder79.simplexterrain.noise.gradient.PerlinNoise;
 import supercoder79.simplexterrain.noise.value.ValueNoise;
 import supercoder79.simplexterrain.noise.worley.WorleyNoise;
 
+/**
+ * Maps a noise type used for configs to a noise class.
+ *
+ * @author SuperCoder79
+ */
 public enum NoiseType {
 	SIMPLEX(OpenSimplexNoise.class),
 	WORLEY(WorleyNoise.class),
