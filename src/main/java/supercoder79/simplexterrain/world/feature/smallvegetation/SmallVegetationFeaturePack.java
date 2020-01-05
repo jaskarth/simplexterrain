@@ -35,6 +35,10 @@ public class SmallVegetationFeaturePack extends FeaturePack {
 
 				new SpruceTreeFeature(),
 
+				new MoreGenericSpruceTreeFeature(Blocks.OAK_LOG.getDefaultState(), Blocks.OAK_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.FOREST),
+				new MoreGenericSpruceTreeFeature(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.TAIGA),
+				new MoreGenericSpruceTreeFeature(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Biomes.MOUNTAIN_EDGE),
+
 				new BoulderFeature(),
 				new MangroveTreeFeature(),
 				new ToadstoolFeature(Blocks.BROWN_MUSHROOM_BLOCK.getDefaultState()),
