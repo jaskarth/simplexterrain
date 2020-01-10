@@ -324,7 +324,7 @@ public class SimplexTerrain implements ModInitializer {
 	}
 
 	private static void addVanillaLowlands() {
-		final double swampWeight = 1.3;
+		final double swampWeight = 0.8;
 		final double desertWeight = 1.6;
 		final double jungleWeight = 1.7;
 		final double savannahWeight = 1.2;
@@ -356,7 +356,7 @@ public class SimplexTerrain implements ModInitializer {
 		SimplexBiomes.addLowlandsBiome(biomeId(Biomes.SAVANNA), SimplexClimate.DRY_TEMPERATE, savannahWeight*0.8);
 
 		SimplexBiomes.addLowlandsBiome(SWAMP, SimplexClimate.TEMPERATE, swampWeight);
-		SimplexBiomes.addLowlandsBiome(PLAINS, SimplexClimate.TEMPERATE, plainsWeight);
+		SimplexBiomes.addLowlandsBiome(PLAINS, SimplexClimate.TEMPERATE, plainsWeight / 2);
 		SimplexBiomes.addLowlandsBiome(FOREST, SimplexClimate.TEMPERATE, forestWeight * 0.8);
 
 		SimplexBiomes.addLowlandsBiome(SWAMP, SimplexClimate.LUSH_TEMPERATE, swampWeight);
