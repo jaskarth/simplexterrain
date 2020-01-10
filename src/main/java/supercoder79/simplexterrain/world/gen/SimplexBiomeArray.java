@@ -15,16 +15,20 @@ public class SimplexBiomeArray {
 	public static BiomeArray makeNewBiomeArray(ChunkPos pos, BiomeSource source) {
 		Biome[] data = new Biome[BiomeArray.DEFAULT_LENGTH];
 
-		CompletableFuture[] futures = new CompletableFuture[SimplexTerrain.CONFIG.noiseGenerationThreads];
-		for (int i = 0; i < SimplexTerrain.CONFIG.noiseGenerationThreads; i++) {
-			int finalI = i;
-			futures[i] = CompletableFuture.runAsync(() -> generateBiomes(data, source, pos.getStartX() >> 2, pos.getStartZ() >> 2,
-					finalI * BiomeArray.DEFAULT_LENGTH / SimplexTerrain.CONFIG.noiseGenerationThreads,
-					BiomeArray.DEFAULT_LENGTH / SimplexTerrain.CONFIG.noiseGenerationThreads));
-		}
+		if (SimplexTerrain.CONFIG.threadedNoiseGeneration) {
+			CompletableFuture[] futures = new CompletableFuture[SimplexTerrain.CONFIG.noiseGenerationThreads];
+			for (int i = 0; i < SimplexTerrain.CONFIG.noiseGenerationThreads; i++) {
+				int finalI = i;
+				futures[i] = CompletableFuture.runAsync(() -> generateBiomes(data, source, pos.getStartX() >> 2, pos.getStartZ() >> 2,
+						finalI * BiomeArray.DEFAULT_LENGTH / SimplexTerrain.CONFIG.noiseGenerationThreads,
+						BiomeArray.DEFAULT_LENGTH / SimplexTerrain.CONFIG.noiseGenerationThreads));
+			}
 
-		for (int i = 0; i < futures.length; i++) {
-			futures[i].join();
+			for (int i = 0; i < futures.length; i++) {
+
+			}
+		} else {
+			generateBiomes(data, source, pos.getStartX() >> 2, pos.getStartZ() >> 2, 0, 16);
 		}
 
 		return new BiomeArray(data);
