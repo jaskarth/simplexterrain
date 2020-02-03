@@ -20,6 +20,7 @@ public class MainConfigData {
 	public boolean optimizeChunkGenerationInvasively = true;
 	public boolean threadedNoiseGeneration = true;
 	public boolean simplexIsDefault = false;
+	public boolean deleteLakes = false;
 
 	public int noiseGenerationThreads = 2;
 
