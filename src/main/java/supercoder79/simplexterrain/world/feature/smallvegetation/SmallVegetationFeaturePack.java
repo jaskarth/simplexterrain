@@ -42,7 +42,9 @@ public class SmallVegetationFeaturePack extends FeaturePack {
 				new BoulderFeature(),
 				new MangroveTreeFeature(),
 				new ToadstoolFeature(Blocks.BROWN_MUSHROOM_BLOCK.getDefaultState()),
-				new ToadstoolFeature(Blocks.RED_MUSHROOM_BLOCK.getDefaultState())
+				new ToadstoolFeature(Blocks.RED_MUSHROOM_BLOCK.getDefaultState()),
+
+				new BushTreeFeature()
 		);
 	}
 }
