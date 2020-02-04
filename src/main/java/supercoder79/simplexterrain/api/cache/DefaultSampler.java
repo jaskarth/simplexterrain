@@ -3,12 +3,12 @@ package supercoder79.simplexterrain.api.cache;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 
 /**
- * CacheSampler implementation without caching for less ram usage.
+ * AbstractSampler implementation without caching for less ram usage.
  *
  * @author SuperCoder79
  */
-public class NoCacheSampler extends AbstractSampler {
-	public NoCacheSampler(OctaveNoiseSampler sampler) {
+public class DefaultSampler extends AbstractSampler {
+	public DefaultSampler(OctaveNoiseSampler sampler) {
 		super(sampler);
 	}
 

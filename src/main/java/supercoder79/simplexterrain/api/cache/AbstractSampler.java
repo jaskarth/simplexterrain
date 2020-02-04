@@ -2,6 +2,11 @@ package supercoder79.simplexterrain.api.cache;
 
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 
+/**
+ * A Sampler which allows for extra functionality such as caching.
+ *
+ * @author SuperCoder79
+ */
 public abstract class AbstractSampler {
 
     protected final OctaveNoiseSampler sampler;

@@ -1,6 +1,5 @@
 package supercoder79.simplexterrain.api.cache;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.util.math.BlockPos;
@@ -8,7 +7,7 @@ import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 
 /**
- * Samples from an octave noise sampler using caches. Only useful in circumstances where a single position is sampled multiple times.
+ * AbstractSampler implementation which uses caches to save processing time. The cache is cleared every 10000 entries to prevent memory leakage.
  *
  * @author SuperCoder79
  */
@@ -52,6 +51,6 @@ public class CacheSampler extends AbstractSampler {
 	}
 
 	public static AbstractSampler makeCacheSampler(OctaveNoiseSampler sampler) {
-		return SimplexTerrain.CONFIG.optimizeForRamUsage ? new NoCacheSampler(sampler) : new CacheSampler(sampler);
+		return SimplexTerrain.CONFIG.optimizeForRamUsage ? new DefaultSampler(sampler) : new CacheSampler(sampler);
 	}
 }
