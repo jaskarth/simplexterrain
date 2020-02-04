@@ -19,7 +19,7 @@ public class PeaksNoiseModifier extends NoiseModifier {
 
 	@Override
 	public void init(long seed) {
-		this.peaksNoise = new CacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, SimplexTerrain.CONFIG.peaksOctaveAmount, SimplexTerrain.CONFIG.peaksFrequency));
+		this.peaksNoise = CacheSampler.makeCacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, SimplexTerrain.CONFIG.peaksOctaveAmount, SimplexTerrain.CONFIG.peaksFrequency));
 	}
 
 	@Override

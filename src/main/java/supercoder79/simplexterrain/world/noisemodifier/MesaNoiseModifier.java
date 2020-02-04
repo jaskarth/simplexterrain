@@ -20,8 +20,8 @@ public final class MesaNoiseModifier extends NoiseModifier {
 
 	@Override
 	public void init(long seed) {
-		this.cutoffSampler = new CacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, config.cutoffOctaves, config.cutoffFrequency));
-		this.terraceSampler = new CacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, config.terraceOctaves, config.terraceFrequency));
+		this.cutoffSampler = CacheSampler.makeCacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, config.cutoffOctaves, config.cutoffFrequency));
+		this.terraceSampler = CacheSampler.makeCacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, config.terraceOctaves, config.terraceFrequency));
 	}
 
 	@Override

@@ -21,6 +21,7 @@ public class MainConfigData {
 	public boolean threadedNoiseGeneration = true;
 	public boolean simplexIsDefault = false;
 	public boolean deleteLakes = false;
+	public boolean optimizeForRamUsage = false;
 
 	public int noiseGenerationThreads = 2;
 

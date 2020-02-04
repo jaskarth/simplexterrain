@@ -19,7 +19,7 @@ public class DomeNoiseModifier extends NoiseModifier {
 
 	@Override
 	public void init(long seed) {
-		this.domeNoise = new CacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, config.octaves, config.frequency));
+		this.domeNoise = CacheSampler.makeCacheSampler(this.createNoiseSampler(OpenSimplexNoise.class, config.octaves, config.frequency));
 	}
 
 	@Override

@@ -29,7 +29,6 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
-import supercoder79.simplexterrain.api.cache.CacheCustomSampler;
 import supercoder79.simplexterrain.api.cache.CacheSampler;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
@@ -45,7 +44,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	private final OctaveNoiseSampler scaleNoise;
 
 	private final CacheSampler scaleCache;
-	private final CacheCustomSampler heightCache;
+	private final CacheSampler heightCache;
 
 	private final ChunkRandom random;
 
@@ -65,8 +64,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
 		scaleNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow);
 
-		scaleCache = new CacheSampler(scaleNoise);
-		heightCache = new CacheCustomSampler(heightNoise);
+		scaleCache = CacheSampler.makeCacheSampler(scaleNoise);
+		heightCache = CacheSampler.makeCacheSampler(heightNoise);
 
 		if (biomeSource instanceof SimplexBiomeSource) {
 			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
