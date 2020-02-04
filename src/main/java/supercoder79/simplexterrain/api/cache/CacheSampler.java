@@ -1,6 +1,7 @@
 package supercoder79.simplexterrain.api.cache;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.util.math.BlockPos;
 import supercoder79.simplexterrain.SimplexTerrain;
@@ -11,12 +12,11 @@ import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
  *
  * @author SuperCoder79
  */
-public class CacheSampler {
-	protected HashMap<Long, Double> cache = new HashMap<>();
-	protected final OctaveNoiseSampler sampler;
+public class CacheSampler extends AbstractSampler {
+	protected ConcurrentHashMap<Long, Double> cache = new ConcurrentHashMap<>();
 
 	public CacheSampler(OctaveNoiseSampler sampler) {
-		this.sampler = sampler;
+		super(sampler);
 	}
 
 	public double sample(int x, int z) {
@@ -29,6 +29,9 @@ public class CacheSampler {
 		//not in cache
 		val = sampler.sample(x, z);
 		cache.put(BlockPos.asLong(x, 0, z), val);
+		if (cache.size() > 10000) {
+			cache.clear();
+		}
 		return val;
 	}
 
@@ -42,10 +45,13 @@ public class CacheSampler {
 		//not in cache
 		val = sampler.sampleCustom(x, z, samplingFrequency, amplitude, amplitude, octaves);
 		cache.put(BlockPos.asLong(x, 0, z), val);
+		if (cache.size() > 10000) {
+			cache.clear();
+		}
 		return val;
 	}
 
-	public static CacheSampler makeCacheSampler(OctaveNoiseSampler sampler) {
+	public static AbstractSampler makeCacheSampler(OctaveNoiseSampler sampler) {
 		return SimplexTerrain.CONFIG.optimizeForRamUsage ? new NoCacheSampler(sampler) : new CacheSampler(sampler);
 	}
 }

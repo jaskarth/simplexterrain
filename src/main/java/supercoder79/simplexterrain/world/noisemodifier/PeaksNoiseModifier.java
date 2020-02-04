@@ -3,6 +3,7 @@ package supercoder79.simplexterrain.world.noisemodifier;
 import java.nio.file.Paths;
 
 import supercoder79.simplexterrain.SimplexTerrain;
+import supercoder79.simplexterrain.api.cache.AbstractSampler;
 import supercoder79.simplexterrain.api.cache.CacheSampler;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.configs.ConfigUtil;
@@ -15,7 +16,7 @@ public class PeaksNoiseModifier extends NoiseModifier {
 		super(0L);
 	}
 
-	private CacheSampler peaksNoise;
+	private AbstractSampler peaksNoise;
 
 	@Override
 	public void init(long seed) {

@@ -7,15 +7,17 @@ import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
  *
  * @author SuperCoder79
  */
-public class NoCacheSampler extends CacheSampler {
+public class NoCacheSampler extends AbstractSampler {
 	public NoCacheSampler(OctaveNoiseSampler sampler) {
 		super(sampler);
 	}
 
+	@Override
 	public double sample(int x, int z) {
 		return sampler.sample(x, z);
 	}
 
+	@Override
 	public double sampleCustom(int x, int z, double samplingFrequency, double amplitude, int octaves) {
 		return sampler.sampleCustom(x, z, samplingFrequency, amplitude, amplitude, octaves);
 	}

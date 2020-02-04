@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.crash.CrashException;
@@ -29,6 +30,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
+import supercoder79.simplexterrain.api.cache.AbstractSampler;
 import supercoder79.simplexterrain.api.cache.CacheSampler;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
@@ -43,15 +45,14 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	private final OctaveNoiseSampler detailNoise;
 	private final OctaveNoiseSampler scaleNoise;
 
-	private final CacheSampler scaleCache;
-	private final CacheSampler heightCache;
+	private final AbstractSampler scaleCache;
+	private final AbstractSampler heightCache;
 
 	private final ChunkRandom random;
 
 	private final NoiseSampler surfaceDepthNoise;
-	//	private final Iterable<TerrainPostProcessor> terrainPostProcessors;
 
-	private HashMap<Long, int[]> noiseCache = new HashMap<>();
+	private ConcurrentHashMap<Long, int[]> noiseCache = new ConcurrentHashMap<>();
 
 	public SimplexChunkGenerator(IWorld world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
 		super(world, biomeSource, config);
@@ -163,8 +164,13 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 			generateNoise(vals, pos, 0, 16); //generate all noise on the main thread
 		}
 
-		//cache the values
-		noiseCache.put(pos.toLong(), vals);
+		synchronized (this) {
+			//cache the values
+			noiseCache.put(pos.toLong(), vals);
+			if (noiseCache.size() > 200) {
+				noiseCache.clear();
+			}
+		}
 
 		return vals;
 	}
@@ -203,7 +209,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		xProgress = fade(xProgress);
 		zProgress = fade(zProgress);
 
-//		System.out.println("Starting sample: " + x + ", " + z);
 		final double[] samples = new double[4];
 		samples[0] = sampleNoise(xLow, zLow);
 		samples[1] = sampleNoise(xUpper, zLow);

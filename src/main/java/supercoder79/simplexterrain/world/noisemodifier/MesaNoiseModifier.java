@@ -2,6 +2,7 @@ package supercoder79.simplexterrain.world.noisemodifier;
 
 import java.nio.file.Paths;
 
+import supercoder79.simplexterrain.api.cache.AbstractSampler;
 import supercoder79.simplexterrain.api.cache.CacheSampler;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.configs.ConfigUtil;
@@ -11,8 +12,8 @@ import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 public final class MesaNoiseModifier extends NoiseModifier {
 	private MesaConfigData config;
 
-	private CacheSampler cutoffSampler;
-	private CacheSampler terraceSampler;
+	private AbstractSampler cutoffSampler;
+	private AbstractSampler terraceSampler;
 
 	public MesaNoiseModifier() {
 		super(8L);
