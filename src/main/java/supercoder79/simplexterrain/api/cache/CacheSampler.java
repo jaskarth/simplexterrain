@@ -34,6 +34,22 @@ public class CacheSampler extends AbstractSampler {
 		return val;
 	}
 
+	public double sample(int x, int y, int z) {
+		//test the cache
+		Double val = cache.get(BlockPos.asLong(x, 0, z));
+		if (val != null) {
+			return val;
+		}
+
+		//not in cache
+		val = sampler.sample(x, y, z);
+		cache.put(BlockPos.asLong(x, y, z), val);
+		if (cache.size() > 10000) {
+			cache.clear();
+		}
+		return val;
+	}
+
 	public double sampleCustom(int x, int z, double samplingFrequency, double amplitude, int octaves) {
 		//test the cache
 		Double val = cache.get(BlockPos.asLong(x, 0, z));

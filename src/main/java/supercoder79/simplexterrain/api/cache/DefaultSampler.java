@@ -18,6 +18,11 @@ public class DefaultSampler extends AbstractSampler {
 	}
 
 	@Override
+	public double sample(int x, int y, int z) {
+		return sampler.sample(x, y, z);
+	}
+
+	@Override
 	public double sampleCustom(int x, int z, double samplingFrequency, double amplitude, int octaves) {
 		return sampler.sampleCustom(x, z, samplingFrequency, amplitude, amplitude, octaves);
 	}

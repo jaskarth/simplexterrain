@@ -16,6 +16,7 @@ import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
+import supercoder79.simplexterrain.world.postprocessor.VeryCursedCavesPostProcessor;
 
 public class SimplexTerrain implements ModInitializer {
 	public static final String VERSION = "0.5.1";

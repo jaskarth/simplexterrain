@@ -17,5 +17,7 @@ public abstract class AbstractSampler {
 
     public abstract double sample(int x, int z);
 
+    public abstract double sample(int x, int y, int z);
+
     public abstract double sampleCustom(int x, int z, double samplingFrequency, double amplitude, int octaves);
 }
