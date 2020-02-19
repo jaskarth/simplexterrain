@@ -64,7 +64,7 @@ public class NoiseMap extends Noise {
 
     @Override
     public double sample(double x, double z) {
-        return read(16, 16)[0] / 500f;
+        return read(16, 16)[0] / 500.0;
     }
 
     @Override

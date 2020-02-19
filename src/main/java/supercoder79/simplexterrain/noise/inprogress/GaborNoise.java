@@ -29,17 +29,13 @@ public class GaborNoise extends Noise {
 
 	static class PRNG {
 		Random r;
-		long x_;
 
 		void seed(long s) {
 			r = new Random(s);
-//            x_ = s;
 		}
 
 		long operator() {
 			return r.nextLong();
-//            x_ *= 3039177861L;
-//            return x_;
 		}
 
 		float uniform_0_1() {
@@ -73,12 +69,6 @@ public class GaborNoise extends Noise {
 	static long morton(long x, long y) {
 		Random r = new Random(31 * x + y);
 		return r.nextLong();
-//        long z = 0;
-//        for (long i = 0; i < Long.SIZE; ++i) {
-//            z |= ((x & (1 << i)) << i) | ((y & (1 << i)) << (i + 1));
-//        }
-//        System.out.println(x+" "+y+" => "+z);
-//        return z;
 	}
 
 	static class InternalNoise {
@@ -95,8 +85,6 @@ public class GaborNoise extends Noise {
 		}
 
 		float operator(float x, float y) {
-//            System.out.println(x+" "+y);
-//            return cell(23,13,x/256.0f,y/256.0f);
 			x /= kernel_radius_;
 			y /= kernel_radius_;
 			float int_x = (float) Math.floor(x), int_y = (float) Math.floor(y);
@@ -114,7 +102,6 @@ public class GaborNoise extends Noise {
 		float cell(int i, int j, float x, float y) {
 //			long s = (((long(j) % period_) * period_) + (long(i) % period_)) + random_offset_; // periodic noise
 			long s = morton(i, j) + random_offset_; // nonperiodic noise
-//            if(Math.sqrt(5)>)return (float)s/Long.MAX_VALUE;
 			if (s == 0) s = 1;
 			PRNG prng = new PRNG();
 			prng.seed(s);
