@@ -28,11 +28,13 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.7.0"
+    "fabricloader": ">=0.7.0",
+    "fabric": "*"
   },
 
   "suggests": {
     "winterbiomemod": "*",
-    "traverse": "*"
+    "traverse": "*",
+    "terrestria": "*"
   }
 }
