@@ -1,5 +1,7 @@
 package supercoder79.simplexterrain.world.gen;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,7 +9,10 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.IntStream;
 
+import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
@@ -50,7 +55,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	private final ChunkRandom random;
 
-	private final NoiseSampler surfaceDepthNoise;
+	private NoiseSampler surfaceDepthNoise;
 
 	private ConcurrentHashMap<Long, int[]> noiseCache = new ConcurrentHashMap<>();
 
@@ -72,7 +77,14 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
 		}
 
-		this.surfaceDepthNoise = new OctavePerlinNoiseSampler(this.random, 4, 0);
+		//TODO: remove this reflection fuckery
+		try {
+			Constructor<OctavePerlinNoiseSampler> constructor = OctavePerlinNoiseSampler.class.getDeclaredConstructor(ChunkRandom.class, IntSortedSet.class);
+			constructor.setAccessible(true);
+			surfaceDepthNoise = constructor.newInstance(random, new IntRBTreeSet(IntStream.rangeClosed(-3, 0).toArray()));
+		} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
 
 		postProcessors.forEach(postProcessor -> postProcessor.init(this.seed));
 		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(this.seed, reuseableRandom));

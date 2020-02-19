@@ -12,7 +12,6 @@ public class NoiseMap extends Noise {
     public NoiseMap(long seed) {
         super(seed);
         this.random = new Random(seed);
-        this.levels = 0;
         this.fuzz = 16;
         this.levels = 1;
     }
