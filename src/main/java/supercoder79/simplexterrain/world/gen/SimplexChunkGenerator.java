@@ -59,6 +59,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	private ConcurrentHashMap<Long, int[]> noiseCache = new ConcurrentHashMap<>();
 
+	private final CompletableFuture[] futures;
+
 	public SimplexChunkGenerator(IWorld world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
 		super(world, biomeSource, config);
 		this.random = new ChunkRandom(world.getSeed());
@@ -72,6 +74,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		scaleCache = CacheSampler.makeCacheSampler(scaleNoise);
 		heightCache = CacheSampler.makeCacheSampler(heightNoise);
+
+		futures = new CompletableFuture[SimplexTerrain.CONFIG.noiseGenerationThreads];
 
 		if (biomeSource instanceof SimplexBiomeSource) {
 			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
@@ -115,8 +119,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		chunkRandom.setSeed(region.getSeed(), i << 4, j << 4);
 		SpawnHelper.populateEntities(region, biome, i, j, chunkRandom);
 	}
-
-//	TODO: Fix this code
 
 	@Override
 	public void populateBiomes(Chunk chunk) {
@@ -162,10 +164,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		int[] vals = new int[256];
 
 		if (SimplexTerrain.CONFIG.threadedNoiseGeneration) {
-			CompletableFuture[] futures = new CompletableFuture[SimplexTerrain.CONFIG.noiseGenerationThreads];
 			for (int i = 0; i < SimplexTerrain.CONFIG.noiseGenerationThreads; i++) {
 				int finalI = i;
-				futures[i] = CompletableFuture.runAsync(() -> generateNoise(vals, pos, finalI * 16 / SimplexTerrain.CONFIG.noiseGenerationThreads, 16 / SimplexTerrain.CONFIG.noiseGenerationThreads));
+				futures[i] = CompletableFuture.runAsync(() -> generateNoise(vals, pos, finalI * 16 / SimplexTerrain.CONFIG.noiseGenerationThreads, 16 / SimplexTerrain.CONFIG.noiseGenerationThreads),
+						SimplexTerrain.globalThreadPool);
 			}
 
 			for (int i = 0; i < futures.length; i++) {
@@ -178,10 +180,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		synchronized (this) {
 			//cache the values
-			noiseCache.put(pos.toLong(), vals);
-			if (noiseCache.size() > 200) {
+			if (noiseCache.size() > 500) {
 				noiseCache.clear();
 			}
+			noiseCache.put(pos.toLong(), vals);
 		}
 
 		return vals;

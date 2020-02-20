@@ -18,6 +18,8 @@ import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
 import supercoder79.simplexterrain.world.postprocessor.VeryCursedCavesPostProcessor;
 
+import java.util.concurrent.*;
+
 public class SimplexTerrain implements ModInitializer {
 	public static final String VERSION = "0.5.1";
 
@@ -26,6 +28,8 @@ public class SimplexTerrain implements ModInitializer {
 	public static MainConfigData CONFIG;
 
 	static WorldType<?> loadMeOnClientPls; // make sure world types are loaded on client by referencing a field in onInitialize()
+
+	public static ForkJoinPool globalThreadPool;
 
 	private static Identifier SWAMP;
 	private static Identifier PLAINS;
@@ -54,6 +58,10 @@ public class SimplexTerrain implements ModInitializer {
 		GRAVELLY_MOUNTAINS = biomeId(Biomes.GRAVELLY_MOUNTAINS);
 
 		Config.init();
+
+		globalThreadPool = new ForkJoinPool(CONFIG.noiseGenerationThreads,
+						ForkJoinPool.defaultForkJoinWorkerThreadFactory,
+						null, true);
 
 		loadMeOnClientPls = WorldType.SIMPLEX;
 		addDefaultBiomes();
