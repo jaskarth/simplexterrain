@@ -2,11 +2,7 @@ package supercoder79.simplexterrain.world.gen;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.IntStream;
@@ -26,11 +22,13 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.SimplexTerrain;
@@ -368,6 +366,36 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				throw new CrashException(crashReport);
 			}
 		}
+	}
+
+	@Override
+	public void carve(BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
+		if (!SimplexTerrain.CONFIG.generateVanillaCaves) return;
+		ChunkRandom chunkRandom = new ChunkRandom();
+		ChunkPos chunkPos = chunk.getPos();
+		int j = chunkPos.x;
+		int k = chunkPos.z;
+		Biome biome = this.getDecorationBiome(biomeAccess, chunkPos.getCenterBlockPos());
+		BitSet bitSet = chunk.getCarvingMask(carver);
+
+		for(int l = j - 8; l <= j + 8; ++l) {
+			for(int m = k - 8; m <= k + 8; ++m) {
+				List<ConfiguredCarver<?>> list = biome.getCarversForStep(carver);
+				ListIterator listIterator = list.listIterator();
+
+				while(listIterator.hasNext()) {
+					int n = listIterator.nextIndex();
+					ConfiguredCarver<?> configuredCarver = (ConfiguredCarver)listIterator.next();
+					chunkRandom.setStructureSeed(this.seed + (long)n, l, m);
+					if (configuredCarver.shouldCarve(chunkRandom, l, m)) {
+						configuredCarver.carve(chunk, (blockPos) -> {
+							return this.getDecorationBiome(biomeAccess, blockPos);
+						}, chunkRandom, this.getSeaLevel(), l, m, j, k, bitSet);
+					}
+				}
+			}
+		}
+
 	}
 
 	@Override

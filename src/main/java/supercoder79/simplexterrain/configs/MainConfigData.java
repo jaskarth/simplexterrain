@@ -22,6 +22,7 @@ public class MainConfigData {
 	public boolean simplexIsDefault = false;
 	public boolean deleteLakes = false;
 	public boolean optimizeForRamUsage = false;
+	public boolean generateVanillaCaves = true;
 
 	public int noiseGenerationThreads = 2;
 

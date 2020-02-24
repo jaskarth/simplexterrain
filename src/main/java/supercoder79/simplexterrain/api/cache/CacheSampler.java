@@ -36,7 +36,7 @@ public class CacheSampler extends AbstractSampler {
 
 	public double sample(int x, int y, int z) {
 		//test the cache
-		Double val = cache.get(BlockPos.asLong(x, 0, z));
+		Double val = cache.get(BlockPos.asLong(x, y, z));
 		if (val != null) {
 			return val;
 		}
