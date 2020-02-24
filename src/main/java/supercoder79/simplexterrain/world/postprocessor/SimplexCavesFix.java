@@ -42,11 +42,12 @@ public class SimplexCavesFix implements TerrainPostProcessor {
             pos.setX(chunkX*16 + x);
             for (int z = 0; z < 16; z++) {
                 pos.setZ(chunkZ*16 + z);
-                for (int y = 1; y < heights[x*16 + z]+1; y++) {
+                int h = heights[x*16 + z]+1;
+                for (int y = 1; y < h; y++) {
                     double d1 = sampler1.sample(pos.getX() / 20f, y / 10f, pos.getZ() / 20f);
                     double d2 = sampler2.sample(pos.getX() / 20f, y / 10f, pos.getZ() / 20f);
                     double d = (d1 * d1) + (d2 * d2);
-                    if (d > getThreshold(pos.getX(), y, pos.getZ())) {
+                    if (d > getThreshold(pos.getX(), y, pos.getZ(), h)) {
                         pos.setY(y);
                         if (world.getBlockState(pos) == Blocks.BEDROCK.getDefaultState()) continue;
 
@@ -61,8 +62,8 @@ public class SimplexCavesFix implements TerrainPostProcessor {
         }
     }
 
-    private double getThreshold(int x, int y, int z) {
-        double c = (1 / (float)(y + 2)) + 0.4;
+    private double getThreshold(int x, int y, int z, int height) {
+        double c = (1 / (float)(y + 2)) + (3 / (float)(Math.abs(height - y)) + 0.4);
         return c + (threshold.sample(x / 20f, y / 10f, z / 20f) * ((1 / (float)(y + 7) + (threshold2.sample(x / 4f, y / 2f, z / 4f) * 0.2))));
     }
 }

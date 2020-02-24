@@ -16,7 +16,6 @@ import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
-import supercoder79.simplexterrain.world.postprocessor.SimplexCavesFix;
 
 import java.util.concurrent.*;
 
@@ -59,7 +58,8 @@ public class SimplexTerrain implements ModInitializer {
 
 		Config.init();
 
-		globalThreadPool = new ForkJoinPool(CONFIG.noiseGenerationThreads,
+		//FIXME: custom thread pool thing
+		globalThreadPool = new ForkJoinPool(CONFIG.noiseGenerationThreads*2,
 						ForkJoinPool.defaultForkJoinWorkerThreadFactory,
 						null, true);
 
