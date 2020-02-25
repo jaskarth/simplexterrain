@@ -84,7 +84,7 @@ public class LandBiomeLayers {
 	}
 
 	public static BiomeLayerSampler[] build(long l, LevelGeneratorType levelGeneratorType) {
-		LayerFactory<CachingLayerSampler>[] arr = stackFactories(levelGeneratorType, l, (salt) -> new CachingLayerContext(25, l, salt));
+		LayerFactory<CachingLayerSampler>[] arr = stackFactories(levelGeneratorType, l, (salt) -> new CachingLayerContext(5, l, salt));
 		return new BiomeLayerSampler[]{new BiomeLayerSampler(arr[0]), new BiomeLayerSampler(arr[1]), new BiomeLayerSampler(arr[2]), new BiomeLayerSampler(arr[3]), new BiomeLayerSampler(arr[4]), new BiomeLayerSampler(arr[5]), new BiomeLayerSampler(arr[6])};
 	}
 }

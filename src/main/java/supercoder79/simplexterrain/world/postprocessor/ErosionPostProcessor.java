@@ -20,11 +20,11 @@ import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 public class ErosionPostProcessor implements TerrainPostProcessor {
 	private ErosionConfigData config;
-	private AbstractSampler sampler;
+	private OctaveNoiseSampler sampler;
 
 	@Override
 	public void init(long seed) {
-		sampler = CacheSampler.makeCacheSampler(new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed), config.octaves, config.frequency, config.amplitudeHigh, config.amplitudeLow));
+		sampler = new OctaveNoiseSampler<>(OpenSimplexNoise.class, new ChunkRandom(seed), config.octaves, config.frequency, config.amplitudeHigh, config.amplitudeLow);
 	}
 
 	@Override

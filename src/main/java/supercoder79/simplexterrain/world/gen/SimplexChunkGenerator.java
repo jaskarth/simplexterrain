@@ -146,7 +146,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 					} else if (y < getSeaLevel()) {
 						chunk.setBlockState(posMutable, Blocks.WATER.getDefaultState(), false);
 					}
-					//TODO: see if this actually improves performance
 					if (y > height && y > getSeaLevel()) break;
 				}
 			}
@@ -178,7 +177,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		synchronized (this) {
 			//cache the values
-			if (noiseCache.size() > 500) {
+			if (noiseCache.size() > 1000) {
 				noiseCache.clear();
 			}
 			noiseCache.put(pos.toLong(), vals);
@@ -196,7 +195,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	}
 
 	private double sigmoid(double val) {
-		return 256 / (Math.exp(8/3f - val/48) + 1);
+		return 256 / (Math.exp(8 / 3f - val / 48) + 1);
 	}
 
 	private static double fade(double value) {

@@ -59,7 +59,7 @@ public class SimplexTerrain implements ModInitializer {
 		Config.init();
 
 		//FIXME: custom thread pool thing
-		globalThreadPool = new ForkJoinPool(CONFIG.noiseGenerationThreads*2,
+		globalThreadPool = new ForkJoinPool(CONFIG.noiseGenerationThreads,
 						ForkJoinPool.defaultForkJoinWorkerThreadFactory,
 						null, true);
 

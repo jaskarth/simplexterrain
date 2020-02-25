@@ -15,6 +15,10 @@ public class StrataPostProcessor implements TerrainPostProcessor {
 
 	@Override
 	public void init(long seed) {
+	}
+
+	@Override
+	public void setup() {
 		for (int i = 0; i < 4; i++) {
 			states[i*8] = Blocks.STONE.getDefaultState();
 			states[i*8 + 1] = Blocks.ANDESITE.getDefaultState();
@@ -24,13 +28,7 @@ public class StrataPostProcessor implements TerrainPostProcessor {
 			states[i*8 + 5] = Blocks.DIORITE.getDefaultState();
 			states[i*8 + 6] = Blocks.ANDESITE.getDefaultState();
 			states[i*8 + 7] = Blocks.STONE.getDefaultState();
-
 		}
-	}
-
-	@Override
-	public void setup() {
-
 	}
 
 	@Override

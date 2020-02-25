@@ -17,7 +17,6 @@ public class SimplexBiomeArray {
 		Biome[] data = new Biome[BiomeArray.DEFAULT_LENGTH];
 
 		if (SimplexTerrain.CONFIG.threadedNoiseGeneration) {
-
 			for (int i = 0; i < SimplexTerrain.CONFIG.noiseGenerationThreads; i++) {
 				int finalI = i;
 				futures[i] = CompletableFuture.runAsync(() -> generateBiomes(data, source, pos.getStartX() >> 2, pos.getStartZ() >> 2,
