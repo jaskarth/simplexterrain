@@ -6,7 +6,8 @@
     "AccessorLevelGeneratorType",
     "MixinOverworldDimension",
     "optichunk.MixinChunkSection",
-    "antibad.MixinLakeFeature"
+    "antibad.MixinLakeFeature",
+    "MixinCavesChunkGenerator"
   ],
   "client": [
     "MixinLevelGeneratorTypeClient"
