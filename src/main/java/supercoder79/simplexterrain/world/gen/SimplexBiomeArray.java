@@ -13,7 +13,7 @@ public class SimplexBiomeArray {
 	private static final int HORIZONTAL_SECTION_COUNT = (int)Math.round(Math.log(16.0D) / Math.log(2.0D)) - 2;
 	private static final CompletableFuture[] futures = new CompletableFuture[SimplexTerrain.CONFIG.noiseGenerationThreads];
 
-	public static BiomeArray makeNewBiomeArray(ChunkPos pos, BiomeSource source) {
+	public static BiomeArray makeNewBiomeArray(ChunkPos pos, SimplexBiomeSource source) {
 		Biome[] data = new Biome[BiomeArray.DEFAULT_LENGTH];
 
 		if (SimplexTerrain.CONFIG.threadedNoiseGeneration) {
@@ -36,7 +36,7 @@ public class SimplexBiomeArray {
 	}
 
 	// cused vanilla code
-	private static void generateBiomes(Biome[] array, BiomeSource source, int x, int z, int start, int size) {
+	private static void generateBiomes(Biome[] array, SimplexBiomeSource source, int x, int z, int start, int size) {
 		for(int k = start; k < size; ++k) {
 			int l = k & BiomeArray.HORIZONTAL_BIT_MASK;
 			int m = k >> HORIZONTAL_SECTION_COUNT + HORIZONTAL_SECTION_COUNT & BiomeArray.VERTICAL_BIT_MASK;

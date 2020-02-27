@@ -15,10 +15,6 @@ public abstract class Noise {
 
 	public abstract double sample(double x, double y, double z);
 
-	public int implementedFunctions() {
-		return NoiseImplementation.GOOD_ENOUGH;
-	}
-
 	//Helper noise functions =======================
 
 	private static final int CHAR_BIT = 8;

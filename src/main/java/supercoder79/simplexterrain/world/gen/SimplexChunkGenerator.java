@@ -121,7 +121,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	@Override
 	public void populateBiomes(Chunk chunk) {
 		ChunkPos chunkPos = chunk.getPos();
-		((ProtoChunk)chunk).method_22405(SimplexBiomeArray.makeNewBiomeArray(chunkPos, this.biomeSource));
+		((ProtoChunk)chunk).method_22405(SimplexBiomeArray.makeNewBiomeArray(chunkPos, (SimplexBiomeSource) this.biomeSource));
 	}
 
 	@Override
@@ -253,8 +253,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	}
 
 	private double sampleNoiseBase(int x, int z) {
-//		System.out.println("sampling: " + x + ", " + z);
-		// These values should use caches for efficiency but that takes effort
 		double amplitudeSample = scaleCache.sample(x, z) + SimplexTerrain.CONFIG.scaleAmplitudeLow; // change range to have a minimum value of 0.0
 		double noise = this.heightCache.sampleCustom(x, z, SimplexTerrain.CONFIG.baseNoiseSamplingFrequency, amplitudeSample, SimplexTerrain.CONFIG.baseOctaveAmount);
 

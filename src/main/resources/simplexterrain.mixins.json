@@ -5,7 +5,6 @@
   "mixins": [
     "AccessorLevelGeneratorType",
     "MixinOverworldDimension",
-    "optichunk.MixinPalettedContainer",
     "optichunk.MixinChunkSection",
     "antibad.MixinLakeFeature"
   ],

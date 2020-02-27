@@ -1,4 +1,4 @@
-package supercoder79.simplexterrain.noise.inprogress;
+package supercoder79.simplexterrain.noise.gradient;
 
 import supercoder79.simplexterrain.api.noise.Noise;
 
@@ -11,6 +11,7 @@ import java.util.Random;
  */
 public class GaborNoise extends Noise {
 	InternalNoise internalNoise;
+	private static final Random rand = new Random();
 
 	public GaborNoise(long seed) {
 		super(seed);
@@ -67,8 +68,8 @@ public class GaborNoise extends Noise {
 	}
 
 	static long morton(long x, long y) {
-		Random r = new Random(31 * x + y);
-		return r.nextLong();
+		rand.setSeed(31 * x + y);
+		return rand.nextLong();
 	}
 
 	static class InternalNoise {

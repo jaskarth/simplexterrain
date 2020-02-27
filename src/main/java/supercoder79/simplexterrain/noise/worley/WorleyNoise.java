@@ -19,7 +19,6 @@ package supercoder79.simplexterrain.noise.worley;
  */
 
 import supercoder79.simplexterrain.api.noise.Noise;
-import supercoder79.simplexterrain.api.noise.NoiseImplementation;
 
 /**
  * This is an implementation of Steve Worley's cellular noise function. It is
@@ -257,10 +256,5 @@ public class WorleyNoise extends Noise {
 	@Override
 	public double sample(double x, double y, double z) {
 		return noise(x, y, z);
-	}
-
-	@Override
-	public int implementedFunctions() {
-		return NoiseImplementation.NOISE_2D;
 	}
 }

@@ -3,7 +3,7 @@ package supercoder79.simplexterrain.api.noise;
 import supercoder79.simplexterrain.noise.gradient.CubicNoise;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.noise.gradient.PerlinNoise;
-import supercoder79.simplexterrain.noise.inprogress.GaborNoise;
+import supercoder79.simplexterrain.noise.gradient.GaborNoise;
 import supercoder79.simplexterrain.noise.value.ValueNoise;
 import supercoder79.simplexterrain.noise.worley.WorleyNoise;
 

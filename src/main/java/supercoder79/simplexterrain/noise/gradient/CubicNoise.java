@@ -1,7 +1,6 @@
 package supercoder79.simplexterrain.noise.gradient;
 
 import supercoder79.simplexterrain.api.noise.Noise;
-import supercoder79.simplexterrain.api.noise.NoiseImplementation;
 
 public class CubicNoise extends Noise {
 	private static final int RND_A = 134775813;
@@ -76,10 +75,5 @@ public class CubicNoise extends Noise {
 		final double p = (d - c) - (a - b);
 
 		return x * (x * (x * p + ((a - b) - p)) + (c - a)) + b;
-	}
-
-	@Override
-	public int implementedFunctions() {
-		return NoiseImplementation.NOISE_2D;
 	}
 }

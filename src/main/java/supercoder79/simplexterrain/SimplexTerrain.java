@@ -16,6 +16,7 @@ import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
+import supercoder79.simplexterrain.world.postprocessor.SimplexCavesFix;
 
 import java.util.concurrent.*;
 
@@ -81,6 +82,7 @@ public class SimplexTerrain implements ModInitializer {
 		//Addition to the chunk generator
 		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> SimplexChunkGenerator.addTerrainPostProcessor(postProcessors.postProcessor));
 		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier));
+		SimplexChunkGenerator.addTerrainPostProcessor(new SimplexCavesFix());
 
 		WORLDGEN_TYPE = Registry.register(Registry.CHUNK_GENERATOR_TYPE, new Identifier("simplexterrain", "simplex"), new WorldGeneratorType(false, OverworldChunkGeneratorConfig::new));
 	}
