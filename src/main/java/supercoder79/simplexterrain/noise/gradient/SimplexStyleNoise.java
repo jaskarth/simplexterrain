@@ -209,6 +209,63 @@ public class SimplexStyleNoise extends Noise {
     }
 
     /*
+     * Multi-Evaluators
+     */
+
+    /**
+     * Multi-seed evaluator for noise3_XZBeforeY
+     */
+    public static void noise3_XZBeforeY(SimplexStyleNoise[] instances, double x, double y, double z, double[] values) {
+
+        // Re-orient the cubic lattices without skewing, to make X and Z triangular like 2D.
+        // Orthonormal rotation. Not a skew transform.
+        double xz = x + z;
+        double s2 = xz * -0.211324865405187;
+        double yy = y * 0.577350269189626;
+        double xr = x + s2 - yy; double zr = z + s2 - yy;
+        double yr = xz * 0.577350269189626 + yy;
+
+        // Evaluate both lattices to form a BCC lattice.
+        noise3_BCC(instances, xr, yr, zr, values);
+    }
+
+    /**
+     * Base for 3D multi-seed evaluators.
+     */
+    private static void noise3_BCC(SimplexStyleNoise[] instances, double xr, double yr, double zr, double[] values) {
+
+        // Get base and offsets inside cube of first lattice.
+        int xrb = fastFloor(xr), yrb = fastFloor(yr), zrb = fastFloor(zr);
+        double xri = xr - xrb, yri = yr - yrb, zri = zr - zrb;
+
+        // Identify which octant of the cube we're in. This determines which cell
+        // in the other cubic lattice we're in, and also narrows down one point on each.
+        int xht = (int)(xri + 0.5), yht = (int)(yri + 0.5), zht = (int)(zri + 0.5);
+        int index = (xht << 0) | (yht << 1) | (zht << 2);
+
+        // Point contributions
+        LatticePoint3D c = LOOKUP_3D[index];
+        while (c != null) {
+            double dxr = xri + c.dxr, dyr = yri + c.dyr, dzr = zri + c.dzr;
+            double attn = 0.5 - dxr * dxr - dyr * dyr - dzr * dzr;
+            if (attn < 0) {
+                c = c.nextOnFailure;
+            } else {
+                int pxm = (xrb + c.xrv) & PMASK, pym = (yrb + c.yrv) & PMASK, pzm = (zrb + c.zrv) & PMASK;
+                attn *= attn;
+                attn *= attn;
+                for (int i = 0; i < instances.length; i++) {
+                    SimplexStyleNoise instance = instances[i];
+                    Grad3 grad = instance.permGrad3[instance.perm[instance.perm[pxm] ^ pym] ^ pzm];
+                    double extrapolation = grad.dx * dxr + grad.dy * dyr + grad.dz * dzr;
+                    values[i] += attn * extrapolation;
+                }
+                c = c.nextOnSuccess;
+            }
+        }
+    }
+
+    /*
      * Utility
      */
 
