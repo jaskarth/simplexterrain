@@ -9,6 +9,7 @@ import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.noise.gradient.SimplexStyleNoise;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class SimplexCavesFix implements TerrainPostProcessor {
@@ -51,12 +52,12 @@ public class SimplexCavesFix implements TerrainPostProcessor {
                     if (a < 0) a = 0; else a *= a;
                     a += 2.3;
                     double thresholdBase = (0.03125 / (y + 2.0)) - (0.0234375 / a) + 0.0125;
-                    double thresholdAmp1 = 0.03125 / (y + 7.0);
-                    double thresholdSubAmp2 = 0.00625;
+                    double thresholdAmp1 = 0.06125 / (y + 7.0);
+                    double thresholdSubAmp2 = 0.04625;
 
                     // Reset values for Y, and calculate noises for this block
-                    for (int i = 0; i < values.length; i++) values[i] = 0;
-                    SimplexStyleNoise.noise3_XZBeforeY(multiEvalInstances, pos.getX() / 69.2820323, y / 51.9615242, pos.getZ() / 69.2820323, values);
+                    Arrays.fill(values, 0);
+                    SimplexStyleNoise.noise3_XZBeforeY(multiEvalInstances, pos.getX() / 70f, y / 50f, pos.getZ() / 70f, values);
                     double d1 = values[0], d2 = values[1], thresholdNoise1 = values[2];
 
                     // Sum of squared noise values, near zero produces tunnels
@@ -75,7 +76,7 @@ public class SimplexCavesFix implements TerrainPostProcessor {
                     // If it's in the range where the second threshold noise makes a difference,
                     // compute that and then we have our final answer.
                     if (!removeBlock) {
-                        double thresholdNoise2 = threshold2.sample(pos.getX() / 13.8564065, y / 10.3923048, pos.getZ() / 13.8564065);
+                        double thresholdNoise2 = threshold2.sample(pos.getX() / 15f, y / 10f, pos.getZ() / 15f);
                         double threshold = thresholdBase + thresholdNoise1 * (thresholdAmp1 + thresholdNoise2 * thresholdSubAmp2);
                         removeBlock = (d < threshold);
                     }

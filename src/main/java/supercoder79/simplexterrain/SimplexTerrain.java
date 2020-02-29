@@ -27,7 +27,7 @@ public class SimplexTerrain implements ModInitializer {
 
 	public static MainConfigData CONFIG;
 
-	static WorldType<?> loadMeOnClientPls; // make sure world types are loaded on client by referencing a field in onInitialize()
+	private static WorldType<?> loadMeOnClientPls; // make sure world types are loaded on client by referencing a field in onInitialize()
 
 	public static ForkJoinPool globalThreadPool;
 

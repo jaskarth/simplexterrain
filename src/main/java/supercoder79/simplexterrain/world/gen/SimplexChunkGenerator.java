@@ -196,6 +196,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	private double sigmoid(double val) {
 		return 256 / (Math.exp(8 / 3f - val / 48) + 1);
+		//TODO: add this
+//		return 256 / (Math.exp(7 / 3f - val / 64) + 1);
 	}
 
 	private static double fade(double value) {

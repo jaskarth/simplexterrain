@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.noise.gradient.SimplexStyleNoise;
 
 @Mixin(CavesChunkGenerator.class)
@@ -25,6 +24,11 @@ public class MixinCavesChunkGenerator extends SurfaceChunkGenerator {
     @Shadow @Final private double[] noiseFalloff;
 
     private SimplexStyleNoise noise;
+    private SimplexStyleNoise noise2;
+    private SimplexStyleNoise lowerResolution;
+    private SimplexStyleNoise higherResolution;
+    private SimplexStyleNoise vertical;
+    private SimplexStyleNoise threshold;
 
     public MixinCavesChunkGenerator(IWorld world, BiomeSource biomeSource, int verticalNoiseResolution, int horizontalNoiseResolution, int worldHeight, ChunkGeneratorConfig config, boolean useSimplexNoise) {
         super(world, biomeSource, verticalNoiseResolution, horizontalNoiseResolution, worldHeight, config, useSimplexNoise);
@@ -34,6 +38,11 @@ public class MixinCavesChunkGenerator extends SurfaceChunkGenerator {
     @Inject(method = "<init>", at = @At("RETURN"))
     private void constructor(World world, BiomeSource biomeSource, CavesChunkGeneratorConfig config, CallbackInfo ci) {
         noise = new SimplexStyleNoise(world.getSeed());
+        noise2 = new SimplexStyleNoise(world.getSeed() + 20);
+        lowerResolution = new SimplexStyleNoise(world.getSeed() + 21);
+        higherResolution = new SimplexStyleNoise(world.getSeed() - 21);
+        vertical = new SimplexStyleNoise(world.getSeed() + 22);
+        threshold = new SimplexStyleNoise(world.getSeed() - 20);
     }
 
     @Override
@@ -48,7 +57,7 @@ public class MixinCavesChunkGenerator extends SurfaceChunkGenerator {
 
                 for (int y = 0; y < 127; y++) {
                     posMutable.setY(y);
-                    if (getThresholdAt((chunk.getPos().x*16) + x, y, (chunk.getPos().z*16) + z) > 0.25) {
+                    if (getNoiseAt((chunk.getPos().x*16) + x, y, (chunk.getPos().z*16) + z) > getThreshold((chunk.getPos().x*16) + x, y, (chunk.getPos().z*16) + z)) {
                         chunk.setBlockState(posMutable, Blocks.NETHERRACK.getDefaultState(), false);
                     } else if (y < this.getSeaLevel()) {
                         chunk.setBlockState(posMutable, Blocks.LAVA.getDefaultState(), false);
@@ -58,13 +67,22 @@ public class MixinCavesChunkGenerator extends SurfaceChunkGenerator {
         }
     }
 
-    private double getThresholdAt(int x, int y, int z) {
+    private double getNoiseAt(int x, int y, int z) {
+//        double coefficient = ((noiseCoefficient.sample(x / 150f, y / 75f, z / 150f) + 1) * 5);
+//        System.out.println(coefficient);
         double baseline = noise.sample(x / 70f, y / 35f, z / 70f);
-        baseline += (12 / (float)y); //lower bound
-        baseline += (-12 / ((float)(y - 130))); //upper bound
-        return baseline;
+        double addition = noise2.sample(x / 70f, y / 35f, z / 70f);
+        double addition2 = lowerResolution.sample(x / 35f, y / 20f, z / 35f);
+        double addition3 = higherResolution.sample(x / 150f, y / 75f, z / 150f);
+        double verticalNoise = vertical.sample(x / 70f, y / 7.5f, z / 70f);
+        baseline += (15 / (float)y); //lower bound
+        baseline += (-15 / ((float)(y - 130))); //upper bound
+        return (baseline*0.75) + (addition*0.3) + (addition2*0.25) + (addition3*0.175) + (verticalNoise*0.1);
     }
 
+    private double getThreshold(int x, int y, int z) {
+        return 0.25 + (threshold.sample(x / 28f, y / 12f, z / 28f) * 0.125);
+    }
     @Override
     public double[] computeNoiseRange(int x, int z) {
         return new double[]{0.0D, 0.0D};
