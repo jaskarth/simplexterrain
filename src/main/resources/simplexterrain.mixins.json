@@ -3,17 +3,10 @@
   "package": "supercoder79.simplexterrain.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "AccessorLevelGeneratorType",
-    "MixinOverworldDimension",
     "optichunk.MixinPalettedContainer",
     "optichunk.MixinChunkSection"
   ],
-  "client": [
-    "MixinLevelGeneratorTypeClient"
-  ],
-  "server": [
-    "MixinLevelGeneratorTypeServer"
-  ],
+  "client": ["MixinCreateWorldScreen"],
   "injectors": {
     "defaultRequire": 1
   }

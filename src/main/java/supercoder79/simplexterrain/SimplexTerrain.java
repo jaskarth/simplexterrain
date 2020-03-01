@@ -1,30 +1,34 @@
 package supercoder79.simplexterrain;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.level.generator.v1.LevelGeneratorFactory;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
+import net.minecraft.world.level.LevelGeneratorType;
+
 import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.MainConfigData;
-import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
+import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
+import supercoder79.simplexterrain.world.gen.SimplexBiomeSourceConfig;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
-import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
 
 public class SimplexTerrain implements ModInitializer {
 	public static final String VERSION = "0.5.0";
+	public static final String MOD_ID = "simplexterrain";
 
-	public static WorldGeneratorType WORLDGEN_TYPE;
+	public static ChunkGeneratorType<OverworldChunkGeneratorConfig, SimplexChunkGenerator> SIMPLEX_CHUNKGEN;
+	public static LevelGeneratorType SIMPLEX_LEVELGEN;
 
 	public static MainConfigData CONFIG;
-
-	static WorldType<?> loadMeOnClientPls; // make sure world types are loaded on client by referencing a field in onInitialize()
 
 	private static Identifier SWAMP;
 	private static Identifier PLAINS;
@@ -54,7 +58,6 @@ public class SimplexTerrain implements ModInitializer {
 
 		Config.init();
 
-		loadMeOnClientPls = WorldType.SIMPLEX;
 		addDefaultBiomes();
 		SimplexBiomes.addReplacementBiome(FOREST, biomeId(Biomes.FLOWER_FOREST), 15);
 		SimplexBiomes.addReplacementBiome(BIRCH_FOREST, biomeId(Biomes.TALL_BIRCH_FOREST), 6);
@@ -73,7 +76,10 @@ public class SimplexTerrain implements ModInitializer {
 		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> SimplexChunkGenerator.addTerrainPostProcessor(postProcessors.postProcessor));
 		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier));
 
-		WORLDGEN_TYPE = Registry.register(Registry.CHUNK_GENERATOR_TYPE, new Identifier("simplexterrain", "simplex"), new WorldGeneratorType(false, OverworldChunkGeneratorConfig::new));
+		Identifier name = new Identifier(MOD_ID, "simplex");
+		SIMPLEX_CHUNKGEN = FabricChunkGeneratorType.register(name, SimplexChunkGenerator::new, OverworldChunkGeneratorConfig::new, false);
+		SIMPLEX_LEVELGEN = LevelGeneratorFactory.create(name, SIMPLEX_CHUNKGEN, (world ->
+						new SimplexBiomeSource(new SimplexBiomeSourceConfig(world.getLevelProperties()))));
 	}
 
 	private static void addDefaultBiomes() {
