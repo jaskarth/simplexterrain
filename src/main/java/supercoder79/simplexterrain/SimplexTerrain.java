@@ -9,6 +9,7 @@ import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
+import supercoder79.simplexterrain.api.biomes.SimplexNether;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.MainConfigData;
@@ -112,6 +113,11 @@ public class SimplexTerrain implements ModInitializer {
 		addVanillaMidlands();
 		addVanillaHighlands();
 		addVanillaMountainPeaks();
+
+		//Add nether biomes
+		SimplexNether.setBiomeExpansiveness(Biomes.CRIMSON_FOREST, 1.2);
+		SimplexNether.setBiomeExpansiveness(Biomes.WARPED_FOREST, 0.8);
+		SimplexNether.setBiomeExpansiveness(Biomes.SOUL_SAND_VALLEY, -0.25);
 	}
 
 	public static void addTerrestriaBiomes() {
