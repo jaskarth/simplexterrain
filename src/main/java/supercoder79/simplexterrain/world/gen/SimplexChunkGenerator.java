@@ -194,16 +194,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		}
 	}
 
-	private double sigmoid(double val) {
-		return 256 / (Math.exp(8 / 3f - val / 48) + 1);
-		//TODO: add this
-//		return 256 / (Math.exp(7 / 3f - val / 64) + 1);
-	}
-
-	private static double fade(double value) {
-		return value * value * (3 - (value * 2));
-	}
-
 	@Override
 	public int getHeightOnGround(int x, int z, net.minecraft.world.Heightmap.Type type) {
 		return getHeight(x, z);
@@ -211,68 +201,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	@Override
 	public int getHeight(int x, int z) {
-		int xLow = ((x >> 2) << 2);
-		int zLow = ((z >> 2) << 2);
-		int xUpper = xLow + 4;
-		int zUpper = zLow + 4;
 
-		double xProgress = (double) (x - xLow) * 0.25;
-		double zProgress = (double) (z - zLow) * 0.25;
-
-		xProgress = fade(xProgress);
-		zProgress = fade(zProgress);
-
-		final double[] samples = new double[4];
-		samples[0] = sampleNoise(xLow, zLow);
-		samples[1] = sampleNoise(xUpper, zLow);
-		samples[2] = sampleNoise(xLow, zUpper);
-		samples[3] = sampleNoise(xUpper, zUpper);
-
-		double sample = MathHelper.lerp(zProgress,
-				MathHelper.lerp(xProgress, samples[0], samples[1]),
-				MathHelper.lerp(xProgress, samples[2], samples[3]));
-
-		double detail = 0;
-		if (SimplexTerrain.CONFIG.addDetailNoise) {
-			detail = sampleDetail(x, z);
-		}
-
-		return (int) (sigmoid((sample + detail)));
-	}
-
-	private double sampleNoise(int x, int z) {
-		// Sample + shape and average
-		double noise = sampleNoiseBase(x, z);
-		noise += sampleNoiseBase(x + 4, z);
-		noise += sampleNoiseBase(x - 4, z);
-		noise += sampleNoiseBase(x, z + 4);
-		noise += sampleNoiseBase(x, z - 4);
-		noise *= 0.2;
-
-		noise += SimplexTerrain.CONFIG.baseHeight;
-
-		return noise;
-	}
-
-	private double sampleNoiseBase(int x, int z) {
-		double amplitudeSample = scaleCache.sample(x, z) + SimplexTerrain.CONFIG.scaleAmplitudeLow; // change range to have a minimum value of 0.0
-		double noise = this.heightCache.sampleCustom(x, z, SimplexTerrain.CONFIG.baseNoiseSamplingFrequency, amplitudeSample, SimplexTerrain.CONFIG.baseOctaveAmount);
-
-		for(NoiseModifier modifier : noiseModifiers) {
-			noise = modifier.modify(x, z, noise, amplitudeSample);
-		}
-
-		return noise;
-	}
-
-	private double sampleDetail(int x, int z) {
-		double sample = detailNoise.sample(x, z);
-		if (sample < SimplexTerrain.CONFIG.detailNoiseThreshold) {
-			if (scaleCache.sample(x, z) < SimplexTerrain.CONFIG.scaleNoiseThreshold) {
-				sample = 0;
-			}
-		}
-		return sample;
+		return 0;
 	}
 
 	@Override
