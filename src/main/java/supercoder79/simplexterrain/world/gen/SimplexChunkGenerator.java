@@ -39,18 +39,16 @@ import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
+import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
 	private static final ChunkRandom reuseableRandom = new ChunkRandom();
 
-	private final OctaveNoiseSampler heightNoise;
-	private final OctaveNoiseSampler detailNoise;
-	private final OctaveNoiseSampler scaleNoise;
-
-	private final AbstractSampler scaleCache;
-	private final AbstractSampler heightCache;
-
+	private final OctaveNoiseSampler newNoise;
+	private final OpenSimplexNoise newNoise2;
+	private final OpenSimplexNoise newNoise3;
+	private final OpenSimplexNoise enableNoise;
 	private final ChunkRandom random;
 
 	private NoiseSampler surfaceDepthNoise;
@@ -63,15 +61,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		super(world, biomeSource, config);
 		this.random = new ChunkRandom(world.getSeed());
 
-		double amplitude = Math.pow(2, SimplexTerrain.CONFIG.baseOctaveAmount);
-
-		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
-		heightNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.baseOctaveAmount, SimplexTerrain.CONFIG.baseNoiseFrequencyCoefficient * amplitude, amplitude, amplitude);
-		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.detailOctaveAmount, SimplexTerrain.CONFIG.detailFrequency, SimplexTerrain.CONFIG.detailAmplitudeHigh, SimplexTerrain.CONFIG.detailAmplitudeLow);
-		scaleNoise = new OctaveNoiseSampler<>(noiseClass, this.random, SimplexTerrain.CONFIG.scaleOctaveAmount, Math.pow(2, SimplexTerrain.CONFIG.scaleFrequencyExponent), SimplexTerrain.CONFIG.scaleAmplitudeHigh, SimplexTerrain.CONFIG.scaleAmplitudeLow);
-
-		scaleCache = CacheSampler.makeCacheSampler(scaleNoise);
-		heightCache = CacheSampler.makeCacheSampler(heightNoise);
+		newNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, this.random, 4, 800, 256+128, 0);
+		newNoise2 = new OpenSimplexNoise(world.getSeed() - 30);
+		newNoise3 = new OpenSimplexNoise(world.getSeed() - 31);
+		enableNoise = new OpenSimplexNoise(world.getSeed() + 30);
 
 		futures = new CompletableFuture[SimplexTerrain.CONFIG.noiseGenerationThreads];
 
@@ -138,21 +131,52 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 			for (int z = 0; z < 16; ++z) {
 				posMutable.setZ(z);
 
-				for (int y = 0; y < 256; ++y) {
+				int height = requestedVals[(x*16) + z];
+
+				//Place guiding terrain
+				for (int y = 0; y <= height; ++y) {
 					posMutable.setY(y);
-					double height = requestedVals[(x*16) + z];
-					if (height >= y) {
-						chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
-					} else if (y < getSeaLevel()) {
-						chunk.setBlockState(posMutable, Blocks.WATER.getDefaultState(), false);
-					}
-					if (y > height && y > getSeaLevel()) break;
+					chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
 				}
+
+				//3D modification
+                for (int y = height; y < 256; y++) {
+                    if (carveOutExtra(chunk.getPos(), height - 1, x, y, z)) {
+                        posMutable.setY(y);
+                        chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
+                    }
+                }
+
+                // water placement
+                for (int y = 0; y < getSeaLevel(); y++) {
+                    posMutable.setY(y);
+                    if (chunk.getBlockState(posMutable).isAir()) {
+                        chunk.setBlockState(posMutable, Blocks.WATER.getDefaultState(), false);
+                    }
+                }
 			}
 		}
 	}
 
-	@Override
+	public boolean carveOutExtra(ChunkPos pos, int height, int x, int y, int z) {
+	    double coefficient = 5.0 / ((y - height) + 6); //height falloff
+
+	    double noise1 = (newNoise2.sample(((pos.x*16) + x) / 90f, y / 30f, ((pos.z*16) + z) / 90f)*coefficient);
+	    double noise2 = (newNoise3.sample(((pos.x*16) + x) / 90f, y / 30f, ((pos.z*16) + z) / 90f)*coefficient);
+
+	    return noise1 + noise2 > 0.2;
+    }
+
+    public int getGuidingHeight(int x, int z) {
+        return (int) sigmoid(newNoise.sample(x, z));
+    }
+
+	private double sigmoid(double val) {
+		return 256 / (Math.exp(7 / 3f - val / 64) + 1);
+	}
+
+
+    @Override
 	public int[] getHeightsInChunk(ChunkPos pos) {
 		//return cached values
 		int[] res = noiseCache.get(pos.toLong());
@@ -201,8 +225,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	@Override
 	public int getHeight(int x, int z) {
-
-		return 0;
+		return getGuidingHeight(x, z);
 	}
 
 	@Override

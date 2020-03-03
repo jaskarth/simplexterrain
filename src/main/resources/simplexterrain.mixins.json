@@ -10,7 +10,8 @@
     "MixinCavesChunkGenerator"
   ],
   "client": [
-    "MixinLevelGeneratorTypeClient"
+    "MixinLevelGeneratorTypeClient",
+    "antibad.MixinFixStupidCrash"
   ],
   "server": [
     "MixinLevelGeneratorTypeServer"
