@@ -49,7 +49,7 @@ public class SimplexBiomeSource extends BiomeSource {
 	}
 
 	@Override
-	public Biome getBiomeForNoiseGen(int x, int j, int z) {
+	public Biome getBiomeForNoiseGen(int x, int y, int z) {
 		return sampleBiomeWithMathTM(x, z, heightmap.getHeight((x << 2), (z << 2)));
 //		int xReal = (x << 2);
 //		int zReal = (z << 2);

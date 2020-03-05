@@ -31,12 +31,12 @@ public class MixinFixStupidCrash {
     }
 
     @Redirect(method = "render",
-    at = @At(target = "Lnet/minecraft/util/CubicSampler;method_24895(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/CubicSampler$class_4859;)Lnet/minecraft/util/math/Vec3d;", value = "INVOKE"))
-    private static Vec3d irritatered(Vec3d vec3d, CubicSampler.class_4859 arg) {
+    at = @At(target = "Lnet/minecraft/util/CubicSampler;sampleColor(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/CubicSampler$RgbFetcher;)Lnet/minecraft/util/math/Vec3d;", value = "INVOKE"))
+    private static Vec3d irritatered(Vec3d vec3d, CubicSampler.RgbFetcher arg) {
         Vec3d vec3d3 = cache;
         try {
-            vec3d3 = CubicSampler.method_24895(vec3d, (ix, j, kx) ->
-                    world.dimension.modifyFogColor(Vec3d.unpackRgb(world.getBiomeAccess().method_24854(ix, j, kx).getFogColor()),
+            vec3d3 = CubicSampler.sampleColor(vec3d, (ix, j, kx) ->
+                    world.dimension.modifyFogColor(Vec3d.unpackRgb(world.getBiomeAccess().getBiomeForNoiseGen(ix, j, kx).getFogColor()),
                             MathHelper.clamp(MathHelper.cos(world.getSkyAngle(value) * 6.2831855F) * 2.0F + 0.5F, 0.0F, 1.0F)));
             cache = vec3d3;
         } catch (NullPointerException e) {

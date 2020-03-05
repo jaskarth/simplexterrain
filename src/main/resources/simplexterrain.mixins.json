@@ -11,7 +11,8 @@
   ],
   "client": [
     "MixinLevelGeneratorTypeClient",
-    "antibad.MixinFixStupidCrash"
+    "antibad.MixinFixStupidCrash",
+    "antibad.MixinFixStupidCrash2"
   ],
   "server": [
     "MixinLevelGeneratorTypeServer"

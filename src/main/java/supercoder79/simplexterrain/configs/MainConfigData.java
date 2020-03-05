@@ -17,7 +17,6 @@ public class MainConfigData {
 	@SerializedName("addDetailNoise") public boolean addDetailNoise = true;
 
 	@SerializedName("reloadConfigCommand") public boolean reloadConfigCommand = false;
-	public boolean optimizeChunkGenerationInvasively = true;
 	public boolean threadedNoiseGeneration = true;
 	public boolean simplexIsDefault = false;
 	public boolean deleteLakes = false;
@@ -30,7 +29,7 @@ public class MainConfigData {
 
 	public List<PostProcessors> postProcessors = new ArrayList<>();
 
-	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.PEAKS, NoiseModifiers.MESA, NoiseModifiers.DOMES);
+	public List<NoiseModifiers> noiseModifiers = Arrays.asList();
 
 	public int baseHeight = 100;
 

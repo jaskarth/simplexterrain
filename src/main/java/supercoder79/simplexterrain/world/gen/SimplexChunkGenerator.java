@@ -14,7 +14,6 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.NoiseSampler;
 import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
@@ -22,6 +21,7 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
@@ -33,9 +33,6 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
-import supercoder79.simplexterrain.api.cache.AbstractSampler;
-import supercoder79.simplexterrain.api.cache.CacheSampler;
-import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
@@ -48,12 +45,57 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	private final OctaveNoiseSampler newNoise;
 	private final OpenSimplexNoise newNoise2;
 	private final OpenSimplexNoise newNoise3;
-	private final OpenSimplexNoise enableNoise;
 	private final ChunkRandom random;
+
+	public boolean gender;
 
 	private NoiseSampler surfaceDepthNoise;
 
 	private ConcurrentHashMap<Long, int[]> noiseCache = new ConcurrentHashMap<>();
+
+	private static Map<Biome, Double> biome2FalloffMap = new HashMap<>();
+
+	static {
+		// Ocean biomes should not have 3d modification
+		biome2FalloffMap.put(Biomes.OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.COLD_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.FROZEN_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.LUKEWARM_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.WARM_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.DEEP_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.DEEP_COLD_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.DEEP_FROZEN_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.DEEP_LUKEWARM_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.DEEP_WARM_OCEAN, 0.0);
+
+		biome2FalloffMap.put(Biomes.PLAINS, 7.5);
+		biome2FalloffMap.put(Biomes.JUNGLE, 7.5);
+		biome2FalloffMap.put(Biomes.BADLANDS, 12.5);
+		biome2FalloffMap.put(Biomes.SHATTERED_SAVANNA_PLATEAU, 20.0);
+	}
+
+	private static Map<Biome, Double> biome2ThresholdMap = new HashMap<>();
+
+	static {
+		biome2ThresholdMap.put(Biomes.PLAINS, 0.15);
+		biome2ThresholdMap.put(Biomes.JUNGLE, 0.14);
+		biome2ThresholdMap.put(Biomes.FOREST, 0.175);
+		biome2ThresholdMap.put(Biomes.BADLANDS, 0.1);
+		biome2ThresholdMap.put(Biomes.SWAMP, 0.125);
+		biome2ThresholdMap.put(Biomes.SHATTERED_SAVANNA_PLATEAU, 0.025);
+
+		// oceans should never generate 3d noise part 2
+		biome2FalloffMap.put(Biomes.OCEAN, 1.5);
+		biome2FalloffMap.put(Biomes.COLD_OCEAN, 1.5);
+		biome2FalloffMap.put(Biomes.FROZEN_OCEAN, 1.5);
+		biome2FalloffMap.put(Biomes.LUKEWARM_OCEAN, 1.5);
+		biome2FalloffMap.put(Biomes.WARM_OCEAN, 1.5);
+		biome2FalloffMap.put(Biomes.DEEP_OCEAN, 1.5);
+		biome2FalloffMap.put(Biomes.DEEP_COLD_OCEAN, 1.5);
+		biome2FalloffMap.put(Biomes.DEEP_FROZEN_OCEAN, 1.5);
+		biome2FalloffMap.put(Biomes.DEEP_LUKEWARM_OCEAN, 1.5);
+		biome2FalloffMap.put(Biomes.DEEP_WARM_OCEAN, 1.5);
+	}
 
 	private final CompletableFuture[] futures;
 
@@ -61,10 +103,9 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		super(world, biomeSource, config);
 		this.random = new ChunkRandom(world.getSeed());
 
-		newNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, this.random, 4, 800, 256+128, 0);
+		newNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, this.random, 4, 1024, 256+128, -64);
 		newNoise2 = new OpenSimplexNoise(world.getSeed() - 30);
-		newNoise3 = new OpenSimplexNoise(world.getSeed() - 31);
-		enableNoise = new OpenSimplexNoise(world.getSeed() + 30);
+		newNoise3 = new OpenSimplexNoise(world.getSeed() + 30);
 
 		futures = new CompletableFuture[SimplexTerrain.CONFIG.noiseGenerationThreads];
 
@@ -131,6 +172,22 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 			for (int z = 0; z < 16; ++z) {
 				posMutable.setZ(z);
 
+				double falloff = 0;
+				double threshold = 0;
+
+				for (int x1 = -1; x1 <= 1; x1++) {
+					for (int z1 = -1; z1 <= 1; z1++) {
+						falloff += biome2FalloffMap.getOrDefault(
+								biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), getSeaLevel(), (chunk.getPos().z*16) + (z + z1)), 5.0);
+
+						threshold += biome2ThresholdMap.getOrDefault(
+								biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), getSeaLevel(), (chunk.getPos().z*16) + (z + z1)), 0.2);
+					}
+				}
+
+				falloff /= 9;
+				threshold /= 9;
+
 				int height = requestedVals[(x*16) + z];
 
 				//Place guiding terrain
@@ -139,13 +196,15 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 					chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
 				}
 
-				//3D modification
-                for (int y = height; y < 256; y++) {
-                    if (carveOutExtra(chunk.getPos(), height - 1, x, y, z)) {
-                        posMutable.setY(y);
-                        chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
-                    }
-                }
+
+				//3D modification (Bunes)
+				for (int y = height; y < 256; y++) {
+					if (y - height > 40) break;
+					if (place3DNoise(chunk.getPos(), height - 1, x, y, z, falloff, threshold)) {
+						posMutable.setY(y);
+						chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
+					}
+				}
 
                 // water placement
                 for (int y = 0; y < getSeaLevel(); y++) {
@@ -158,13 +217,13 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		}
 	}
 
-	public boolean carveOutExtra(ChunkPos pos, int height, int x, int y, int z) {
-	    double coefficient = 5.0 / ((y - height) + 6); //height falloff
+	public boolean place3DNoise(ChunkPos pos, int height, int x, int y, int z, double falloff, double threshold) {
+	    double coefficient = falloff / ((y - height) + 6); //height falloff
 
 	    double noise1 = (newNoise2.sample(((pos.x*16) + x) / 90f, y / 30f, ((pos.z*16) + z) / 90f)*coefficient);
 	    double noise2 = (newNoise3.sample(((pos.x*16) + x) / 90f, y / 30f, ((pos.z*16) + z) / 90f)*coefficient);
 
-	    return noise1 + noise2 > 0.2;
+		return noise1 + noise2 > threshold;
     }
 
     public int getGuidingHeight(int x, int z) {
@@ -174,7 +233,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	private double sigmoid(double val) {
 		return 256 / (Math.exp(7 / 3f - val / 64) + 1);
 	}
-
 
     @Override
 	public int[] getHeightsInChunk(ChunkPos pos) {
@@ -340,9 +398,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 					ConfiguredCarver<?> configuredCarver = (ConfiguredCarver)listIterator.next();
 					chunkRandom.setStructureSeed(this.seed + (long)n, l, m);
 					if (configuredCarver.shouldCarve(chunkRandom, l, m)) {
-						configuredCarver.carve(chunk, (blockPos) -> {
-							return this.getDecorationBiome(biomeAccess, blockPos);
-						}, chunkRandom, this.getSeaLevel(), l, m, j, k, bitSet);
+						configuredCarver.carve(chunk, (blockPos) -> this.getDecorationBiome(biomeAccess, blockPos), chunkRandom, this.getSeaLevel(), l, m, j, k, bitSet);
 					}
 				}
 			}
