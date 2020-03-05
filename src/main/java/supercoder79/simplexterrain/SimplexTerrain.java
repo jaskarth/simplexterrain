@@ -19,6 +19,7 @@ import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
 import supercoder79.simplexterrain.world.postprocessor.SimplexCavesFix;
 
+import java.util.Random;
 import java.util.concurrent.*;
 
 public class SimplexTerrain implements ModInitializer {
@@ -114,7 +115,7 @@ public class SimplexTerrain implements ModInitializer {
 		addVanillaHighlands();
 		addVanillaMountainPeaks();
 
-		//Add nether biomes
+		//Add nether biome data
 		SimplexNether.setBiomeExpansiveness(Biomes.CRIMSON_FOREST, 1.2);
 		SimplexNether.setBiomeExpansiveness(Biomes.WARPED_FOREST, 0.8);
 		SimplexNether.setBiomeExpansiveness(Biomes.SOUL_SAND_VALLEY, -0.25);

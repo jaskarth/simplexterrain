@@ -12,6 +12,7 @@ import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
+import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.world.biomelayers.LandBiomeLayers;
 
 public class SimplexBiomeSource extends BiomeSource {
@@ -22,6 +23,8 @@ public class SimplexBiomeSource extends BiomeSource {
 	private final BiomeLayerSampler beachSampler;
 	private final BiomeLayerSampler oceanSampler;
 	private final BiomeLayerSampler deepOceanSampler;
+
+	private final OpenSimplexNoise beachStartSampler;
 
 	private static final BlockPos.Mutable pos = new BlockPos.Mutable();
 
@@ -42,6 +45,8 @@ public class SimplexBiomeSource extends BiomeSource {
 		this.beachSampler = biomeLayerSamplers[4];
 		this.oceanSampler = biomeLayerSamplers[5];
 		this.deepOceanSampler = biomeLayerSamplers[6];
+
+		beachStartSampler = new OpenSimplexNoise(seed + 12);
 	}
 
 	public void setHeightmap(Heightmap heightmap) {
@@ -51,19 +56,19 @@ public class SimplexBiomeSource extends BiomeSource {
 	@Override
 	public Biome getBiomeForNoiseGen(int x, int y, int z) {
 		return sampleBiomeWithMathTM(x, z, heightmap.getHeight((x << 2), (z << 2)));
-//		int xReal = (x << 2);
-//		int zReal = (z << 2);
-//		pos.set(xReal, 0, zReal);
-//		int[] heights = heightmap.getHeightsInChunk(new ChunkPos(pos));
-//		return sampleBiomeWithMathTM(x, z, heights[((xReal & 16)*16) + zReal & 16]);
 	}
 
 	public Biome sampleBiomeWithMathTM(int x, int z, int height) {
+		Biome lowlands = this.lowlandsSampler.sample(x, z);
 		if (height < SimplexTerrain.CONFIG.seaLevel / 2) return this.deepOceanSampler.sample(x, z);
 		if (height < SimplexTerrain.CONFIG.seaLevel - 9) return this.oceanSampler.sample(x, z);
 		if (height < SimplexTerrain.CONFIG.seaLevel - 4) return Biomes.OCEAN;
-		if (height < SimplexTerrain.CONFIG.lowlandStartHeight) return this.beachSampler.sample(x, z);
-		if (height < SimplexTerrain.CONFIG.midlandStartHeight)  return this.lowlandsSampler.sample(x, z);
+		if (height < SimplexTerrain.CONFIG.lowlandStartHeight + (beachStartSampler.sample(x / 128f, z / 128f)*6)) {
+			if (lowlands == Biomes.BADLANDS) return lowlands;
+			if (lowlands == Biomes.SWAMP) return lowlands;
+			return this.beachSampler.sample(x, z);
+		}
+		if (height < SimplexTerrain.CONFIG.midlandStartHeight) return this.lowlandsSampler.sample(x, z);
 		if (height < SimplexTerrain.CONFIG.highlandStartHeight) return this.midlandsSampler.sample(x, z);
 		if (height < SimplexTerrain.CONFIG.toplandStartHeight) return this.highlandsSampler.sample(x, z);
 		return this.toplandsSampler.sample(x, z);

@@ -27,6 +27,9 @@ public class OctaveNoiseSampler<T extends Noise> {
 		return null;
 	}
 
+	/**
+	 * Reflection hackery to make the Noise objects
+	 */
 	private T create(Constructor<T> constructor, long seed) {
 		if (constructor == null) {
 			return null;

@@ -13,13 +13,7 @@ import net.minecraft.world.biome.layer.util.LayerSampler;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.level.LevelGeneratorType;
 import supercoder79.simplexterrain.SimplexTerrain;
-import supercoder79.simplexterrain.world.biomelayers.layers.ClimateTransformerLayer;
-import supercoder79.simplexterrain.world.biomelayers.layers.HighlandsBiomePassLayer;
-import supercoder79.simplexterrain.world.biomelayers.layers.LowlandsBiomePassLayer;
-import supercoder79.simplexterrain.world.biomelayers.layers.MidlandsBiomePassLayer;
-import supercoder79.simplexterrain.world.biomelayers.layers.MountainPeaksBiomePassLayer;
-import supercoder79.simplexterrain.world.biomelayers.layers.ReplaceBiomesLayer;
-import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
+import supercoder79.simplexterrain.world.biomelayers.layers.*;
 
 public class LandBiomeLayers {
 	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> repeat(long l, ParentedLayer parentedLayer, LayerFactory<T> layerFactory, int i, LongFunction<C> longFunction) {

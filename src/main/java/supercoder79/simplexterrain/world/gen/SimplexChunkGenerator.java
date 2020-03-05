@@ -33,6 +33,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
+import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
@@ -42,12 +43,10 @@ import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
 	private static final ChunkRandom reuseableRandom = new ChunkRandom();
 
-	private final OctaveNoiseSampler newNoise;
+	public final OctaveNoiseSampler newNoise;
 	private final OpenSimplexNoise newNoise2;
 	private final OpenSimplexNoise newNoise3;
 	private final ChunkRandom random;
-
-	public boolean gender;
 
 	private NoiseSampler surfaceDepthNoise;
 
@@ -103,7 +102,9 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		super(world, biomeSource, config);
 		this.random = new ChunkRandom(world.getSeed());
 
-		newNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, this.random, 4, 1024, 256+128, -64);
+		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
+
+		newNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 4, 1024, 256+128, -128);
 		newNoise2 = new OpenSimplexNoise(world.getSeed() - 30);
 		newNoise3 = new OpenSimplexNoise(world.getSeed() + 30);
 
@@ -160,17 +161,15 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	@Override
 	public void populateNoise(IWorld iWorld, Chunk chunk) {
-		BlockPos.Mutable posMutable = new BlockPos.Mutable();
+		BlockPos.Mutable pos = new BlockPos.Mutable();
 
-		ChunkPos pos = chunk.getPos();
-
-		int[] requestedVals = getHeightsInChunk(pos); // attempt to retrieve the values from the cache
+		int[] requestedVals = getHeightsInChunk(chunk.getPos()); // attempt to retrieve the values from the cache
 
 		for (int x = 0; x < 16; ++x) {
-			posMutable.setX(x);
+			pos.setX(x);
 
 			for (int z = 0; z < 16; ++z) {
-				posMutable.setZ(z);
+				pos.setZ(z);
 
 				double falloff = 0;
 				double threshold = 0;
@@ -192,25 +191,24 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 				//Place guiding terrain
 				for (int y = 0; y <= height; ++y) {
-					posMutable.setY(y);
-					chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
+					pos.setY(y);
+					chunk.setBlockState(pos, Blocks.STONE.getDefaultState(), false);
 				}
-
 
 				//3D modification (Bunes)
 				for (int y = height; y < 256; y++) {
 					if (y - height > 40) break;
 					if (place3DNoise(chunk.getPos(), height - 1, x, y, z, falloff, threshold)) {
-						posMutable.setY(y);
-						chunk.setBlockState(posMutable, Blocks.STONE.getDefaultState(), false);
+						pos.setY(y);
+						chunk.setBlockState(pos, Blocks.STONE.getDefaultState(), false);
 					}
 				}
 
                 // water placement
                 for (int y = 0; y < getSeaLevel(); y++) {
-                    posMutable.setY(y);
-                    if (chunk.getBlockState(posMutable).isAir()) {
-                        chunk.setBlockState(posMutable, Blocks.WATER.getDefaultState(), false);
+                    pos.setY(y);
+                    if (chunk.getBlockState(pos).isAir()) {
+                        chunk.setBlockState(pos, Blocks.WATER.getDefaultState(), false);
                     }
                 }
 			}
