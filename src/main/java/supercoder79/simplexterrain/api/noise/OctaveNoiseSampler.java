@@ -13,7 +13,7 @@ import java.util.Random;
  * @param <T> The noise sampler that you are using. It must have a constructor with just a long parameter.
  * @author Valoeghese and SuperCoder79
  */
-public class OctaveNoiseSampler<T extends Noise> {
+public class OctaveNoiseSampler<T extends Noise> extends Noise {
 	private Noise[] samplers;
 	private double clamp;
 	private double frequency, amplitudeLow, amplitudeHigh;
@@ -44,6 +44,7 @@ public class OctaveNoiseSampler<T extends Noise> {
 	}
 
 	public OctaveNoiseSampler(Class<T> classT, Random rand, int octaves, double frequency, double amplitudeHigh, double amplitudeLow) {
+		super(0);
 		samplers = new Noise[octaves];
 		clamp = 1D / (1D - (1D / Math.pow(2, octaves)));
 

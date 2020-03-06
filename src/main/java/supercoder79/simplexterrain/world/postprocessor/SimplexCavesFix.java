@@ -5,6 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import supercoder79.simplexterrain.api.Heightmap;
+import supercoder79.simplexterrain.api.postprocess.PostProcessorTarget;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.noise.gradient.SimplexStyleNoise;
@@ -94,5 +95,10 @@ public class SimplexCavesFix implements TerrainPostProcessor {
                 }
             }
         }
+    }
+
+    @Override
+    public PostProcessorTarget getTarget() {
+        return PostProcessorTarget.CARVERS;
     }
 }

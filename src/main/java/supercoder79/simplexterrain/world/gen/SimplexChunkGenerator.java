@@ -34,14 +34,18 @@ import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.Noise;
-import supercoder79.simplexterrain.api.noise.NoiseModifier;
+import supercoder79.simplexterrain.api.noisemodifier.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
+import supercoder79.simplexterrain.noise.NoiseMath;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
+import supercoder79.simplexterrain.world.postprocessor.PostProcessors;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
 	private static final ChunkRandom reuseableRandom = new ChunkRandom();
+
+	public static SimplexChunkGenerator THIS;
 
 	public final OctaveNoiseSampler newNoise;
 	private final OpenSimplexNoise newNoise2;
@@ -51,6 +55,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	private NoiseSampler surfaceDepthNoise;
 
 	private ConcurrentHashMap<Long, int[]> noiseCache = new ConcurrentHashMap<>();
+
+	private static ArrayList<TerrainPostProcessor> noisePostProcesors = new ArrayList<>();
+	private static ArrayList<TerrainPostProcessor> carverPostProcesors = new ArrayList<>();
+	private static ArrayList<TerrainPostProcessor> featurePostProcesors = new ArrayList<>();
 
 	private static Map<Biome, Double> biome2FalloffMap = new HashMap<>();
 
@@ -123,14 +131,26 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 			e.printStackTrace();
 		}
 
-		postProcessors.forEach(postProcessor -> postProcessor.init(this.seed));
+		noisePostProcesors.forEach(postProcessor -> postProcessor.init(this.seed));
+		carverPostProcesors.forEach(postProcessor -> postProcessor.init(this.seed));
+		featurePostProcesors.forEach(postProcessor -> postProcessor.init(this.seed));
 		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(this.seed, reuseableRandom));
+
+		THIS = this;
 	}
 
-	private static final Collection<TerrainPostProcessor> postProcessors = new ArrayList<>();
-
 	public static void addTerrainPostProcessor(TerrainPostProcessor postProcessor) {
-		postProcessors.add(postProcessor);
+		switch (postProcessor.getTarget()) {
+			case NOISE:
+				noisePostProcesors.add(postProcessor);
+				break;
+			case CARVERS:
+				carverPostProcesors.add(postProcessor);
+				break;
+			case FEATURES:
+				featurePostProcesors.add(postProcessor);
+				break;
+		}
 	}
 
 	private static final Collection<NoiseModifier> noiseModifiers = new ArrayList<>();
@@ -213,6 +233,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
                 }
 			}
 		}
+		noisePostProcesors.forEach(postProcessor -> postProcessor.process(world, new ChunkRandom(), chunk.getPos().x, chunk.getPos().z, this));
 	}
 
 	public boolean place3DNoise(ChunkPos pos, int height, int x, int y, int z, double falloff, double threshold) {
@@ -225,12 +246,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
     }
 
     public int getGuidingHeight(int x, int z) {
-        return (int) sigmoid(newNoise.sample(x, z));
+        return (int) NoiseMath.sigmoid(newNoise.sample(x, z));
     }
-
-	private double sigmoid(double val) {
-		return 256 / (Math.exp(7 / 3f - val / 64) + 1);
-	}
 
     @Override
 	public int[] getHeightsInChunk(ChunkPos pos) {
@@ -350,7 +367,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		int chunkZ = region.getCenterChunkZ();
 		ChunkRandom rand = new ChunkRandom();
 		rand.setSeed(chunkX, chunkZ);
-		postProcessors.forEach(postProcessor -> postProcessor.process(region, rand, chunkX, chunkZ, this));
+		featurePostProcesors.forEach(postProcessor -> postProcessor.process(region, rand, chunkX, chunkZ, this));
 
 		int i = region.getCenterChunkX();
 		int j = region.getCenterChunkZ();
@@ -378,13 +395,13 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	@Override
 	public void carve(BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
-		if (!SimplexTerrain.CONFIG.generateVanillaCaves) return;
 		ChunkRandom chunkRandom = new ChunkRandom();
 		ChunkPos chunkPos = chunk.getPos();
 		int j = chunkPos.x;
 		int k = chunkPos.z;
 		Biome biome = this.getDecorationBiome(biomeAccess, chunkPos.getCenterBlockPos());
 		BitSet bitSet = chunk.getCarvingMask(carver);
+		if (!SimplexTerrain.CONFIG.generateVanillaCaves) return;
 
 		for(int l = j - 8; l <= j + 8; ++l) {
 			for(int m = k - 8; m <= k + 8; ++m) {
@@ -401,7 +418,11 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				}
 			}
 		}
+	}
 
+	// Irritatered
+	public void carvePostProcessors(ChunkRegion world, Chunk chunk) {
+		carverPostProcesors.forEach(postProcessor -> postProcessor.process(world, new ChunkRandom(), chunk.getPos().x, chunk.getPos().z, this));
 	}
 
 	@Override

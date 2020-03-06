@@ -1,6 +1,8 @@
-package supercoder79.simplexterrain.api.noise;
+package supercoder79.simplexterrain.api.noisemodifier;
 
 import net.minecraft.world.gen.ChunkRandom;
+import supercoder79.simplexterrain.api.noise.Noise;
+import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 
 public abstract class NoiseModifier {
 	protected abstract void init(long seed);

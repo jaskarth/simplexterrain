@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.cache.AbstractSampler;
 import supercoder79.simplexterrain.api.cache.CacheSampler;
-import supercoder79.simplexterrain.api.noise.NoiseModifier;
+import supercoder79.simplexterrain.api.noisemodifier.NoiseModifier;
 import supercoder79.simplexterrain.configs.ConfigUtil;
 import supercoder79.simplexterrain.configs.noisemodifiers.PeaksConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;

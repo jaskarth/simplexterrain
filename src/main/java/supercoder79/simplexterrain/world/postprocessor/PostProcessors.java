@@ -1,5 +1,6 @@
 package supercoder79.simplexterrain.world.postprocessor;
 
+import supercoder79.simplexterrain.api.postprocess.PostProcessorTarget;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 
 public enum PostProcessors {

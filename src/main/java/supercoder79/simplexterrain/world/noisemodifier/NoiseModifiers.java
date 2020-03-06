@@ -1,6 +1,6 @@
 package supercoder79.simplexterrain.world.noisemodifier;
 
-import supercoder79.simplexterrain.api.noise.NoiseModifier;
+import supercoder79.simplexterrain.api.noisemodifier.NoiseModifier;
 
 public enum NoiseModifiers {
 	PEAKS(new PeaksNoiseModifier()),

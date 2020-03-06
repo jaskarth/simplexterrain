@@ -22,4 +22,11 @@ public interface TerrainPostProcessor {
 	 * This function executes for every chunk being generated.
 	 */
 	void process(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap);
+
+	/**
+	 * Returns the specified time for the post processor to be run.
+	 */
+	default PostProcessorTarget getTarget() {
+		return PostProcessorTarget.FEATURES;
+	}
 }
