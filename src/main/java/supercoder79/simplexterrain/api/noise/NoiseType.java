@@ -5,6 +5,7 @@ import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.noise.gradient.PerlinNoise;
 import supercoder79.simplexterrain.noise.gradient.GaborNoise;
 import supercoder79.simplexterrain.noise.value.ValueNoise;
+import supercoder79.simplexterrain.noise.voronoi.VoronoiNoise;
 import supercoder79.simplexterrain.noise.worley.WorleyNoise;
 
 public enum NoiseType {
@@ -13,7 +14,8 @@ public enum NoiseType {
 	PERLIN(PerlinNoise.class),
 	VALUE(ValueNoise.class),
 	CUBIC(CubicNoise.class),
-	GABOR(GaborNoise.class);
+	GABOR(GaborNoise.class),
+	VORONOI(VoronoiNoise.class);
 
 	public final Class<? extends Noise> noiseClass;
 

@@ -62,47 +62,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	private static Map<Biome, Double> biome2FalloffMap = new HashMap<>();
 
-	static {
-		// Ocean biomes should not have 3d modification
-		biome2FalloffMap.put(Biomes.OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.COLD_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.FROZEN_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.LUKEWARM_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.WARM_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.DEEP_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.DEEP_COLD_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.DEEP_FROZEN_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.DEEP_LUKEWARM_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.DEEP_WARM_OCEAN, 0.0);
-
-		biome2FalloffMap.put(Biomes.PLAINS, 7.5);
-		biome2FalloffMap.put(Biomes.JUNGLE, 7.5);
-		biome2FalloffMap.put(Biomes.BADLANDS, 12.5);
-		biome2FalloffMap.put(Biomes.SHATTERED_SAVANNA_PLATEAU, 20.0);
-	}
-
 	private static Map<Biome, Double> biome2ThresholdMap = new HashMap<>();
-
-	static {
-		biome2ThresholdMap.put(Biomes.PLAINS, 0.15);
-		biome2ThresholdMap.put(Biomes.JUNGLE, 0.14);
-		biome2ThresholdMap.put(Biomes.FOREST, 0.175);
-		biome2ThresholdMap.put(Biomes.BADLANDS, 0.1);
-		biome2ThresholdMap.put(Biomes.SWAMP, 0.125);
-		biome2ThresholdMap.put(Biomes.SHATTERED_SAVANNA_PLATEAU, 0.025);
-
-		// oceans should never generate 3d noise part 2
-		biome2FalloffMap.put(Biomes.OCEAN, 1.5);
-		biome2FalloffMap.put(Biomes.COLD_OCEAN, 1.5);
-		biome2FalloffMap.put(Biomes.FROZEN_OCEAN, 1.5);
-		biome2FalloffMap.put(Biomes.LUKEWARM_OCEAN, 1.5);
-		biome2FalloffMap.put(Biomes.WARM_OCEAN, 1.5);
-		biome2FalloffMap.put(Biomes.DEEP_OCEAN, 1.5);
-		biome2FalloffMap.put(Biomes.DEEP_COLD_OCEAN, 1.5);
-		biome2FalloffMap.put(Biomes.DEEP_FROZEN_OCEAN, 1.5);
-		biome2FalloffMap.put(Biomes.DEEP_LUKEWARM_OCEAN, 1.5);
-		biome2FalloffMap.put(Biomes.DEEP_WARM_OCEAN, 1.5);
-	}
 
 	private final CompletableFuture[] futures;
 
@@ -176,7 +136,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	@Override
 	public void populateBiomes(Chunk chunk) {
 		ChunkPos chunkPos = chunk.getPos();
-		((ProtoChunk)chunk).method_22405(SimplexBiomeArray.makeNewBiomeArray(chunkPos, (SimplexBiomeSource) this.biomeSource));
+		((ProtoChunk)chunk).method_22405(SimplexBiomeArray.makeNewBiomeArray(chunkPos, this.biomeSource));
 	}
 
 	@Override
@@ -420,7 +380,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		}
 	}
 
-	// Irritatered
+	// irritatered
 	public void carvePostProcessors(ChunkRegion world, Chunk chunk) {
 		carverPostProcesors.forEach(postProcessor -> postProcessor.process(world, new ChunkRandom(), chunk.getPos().x, chunk.getPos().z, this));
 	}
@@ -428,5 +388,45 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	@Override
 	public int getSeaLevel() {
 		return SimplexTerrain.CONFIG.seaLevel;
+	}
+
+	//Too lazy to clean this shit up
+
+	static {
+		biome2ThresholdMap.put(Biomes.PLAINS, 0.15);
+		biome2ThresholdMap.put(Biomes.JUNGLE, 0.14);
+		biome2ThresholdMap.put(Biomes.FOREST, 0.175);
+		biome2ThresholdMap.put(Biomes.BADLANDS, 0.1);
+		biome2ThresholdMap.put(Biomes.SWAMP, 0.125);
+		biome2ThresholdMap.put(Biomes.SHATTERED_SAVANNA_PLATEAU, 0.025);
+
+		// oceans should never generate 3d noise part 2
+		biome2ThresholdMap.put(Biomes.OCEAN, 0.35);
+		biome2ThresholdMap.put(Biomes.COLD_OCEAN, 0.35);
+		biome2ThresholdMap.put(Biomes.FROZEN_OCEAN, 0.35);
+		biome2ThresholdMap.put(Biomes.LUKEWARM_OCEAN, 0.35);
+		biome2ThresholdMap.put(Biomes.WARM_OCEAN, 0.35);
+		biome2ThresholdMap.put(Biomes.DEEP_OCEAN, 0.35);
+		biome2ThresholdMap.put(Biomes.DEEP_COLD_OCEAN, 0.35);
+		biome2ThresholdMap.put(Biomes.DEEP_FROZEN_OCEAN, 0.35);
+		biome2ThresholdMap.put(Biomes.DEEP_LUKEWARM_OCEAN, 0.35);
+		biome2ThresholdMap.put(Biomes.DEEP_WARM_OCEAN, 0.35);
+
+		// Ocean biomes should not have 3d modification
+		biome2FalloffMap.put(Biomes.OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.COLD_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.FROZEN_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.LUKEWARM_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.WARM_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.DEEP_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.DEEP_COLD_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.DEEP_FROZEN_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.DEEP_LUKEWARM_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.DEEP_WARM_OCEAN, 0.0);
+
+		biome2FalloffMap.put(Biomes.PLAINS, 7.5);
+		biome2FalloffMap.put(Biomes.JUNGLE, 7.5);
+		biome2FalloffMap.put(Biomes.BADLANDS, 12.5);
+		biome2FalloffMap.put(Biomes.SHATTERED_SAVANNA_PLATEAU, 20.0);
 	}
 }
