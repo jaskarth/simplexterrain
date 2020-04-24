@@ -8,6 +8,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.CavesChunkGenerator;
 import net.minecraft.world.gen.chunk.CavesChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
@@ -35,12 +36,12 @@ public class MixinCavesChunkGenerator extends SurfaceChunkGenerator {
 
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void constructor(World world, BiomeSource biomeSource, CavesChunkGeneratorConfig config, CallbackInfo ci) {
+    private void constructor(IWorld world, BiomeSource biomeSource, CavesChunkGeneratorConfig config, CallbackInfo ci) {
         SimplexNetherGeneration.init(world.getSeed());
     }
 
     @Override
-    public void populateNoise(IWorld world, Chunk chunk) {
+    public void populateNoise(IWorld world, StructureAccessor structureAccessor, Chunk chunk) {
         SimplexNetherGeneration.generate(world, chunk, this.biomeSource, getSeaLevel());
     }
 

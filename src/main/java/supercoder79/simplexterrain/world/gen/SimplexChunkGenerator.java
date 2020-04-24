@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
@@ -17,6 +18,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.noise.NoiseSampler;
 import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.SpawnHelper;
@@ -28,9 +30,11 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
+import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.Noise;
@@ -129,18 +133,18 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		int j = region.getCenterChunkZ();
 		Biome biome = region.getBiome((new ChunkPos(i, j)).getCenterBlockPos());
 		ChunkRandom chunkRandom = new ChunkRandom();
-		chunkRandom.setSeed(region.getSeed(), i << 4, j << 4);
+		chunkRandom.setPopulationSeed(region.getSeed(), i << 4, j << 4);
 		SpawnHelper.populateEntities(region, biome, i, j, chunkRandom);
 	}
 
 	@Override
 	public void populateBiomes(Chunk chunk) {
 		ChunkPos chunkPos = chunk.getPos();
-		((ProtoChunk)chunk).method_22405(SimplexBiomeArray.makeNewBiomeArray(chunkPos, this.biomeSource));
+		((ProtoChunk)chunk).setBiomes(SimplexBiomeArray.makeNewBiomeArray(chunkPos, this.biomeSource));
 	}
 
 	@Override
-	public void populateNoise(IWorld iWorld, Chunk chunk) {
+	public void populateNoise(IWorld world, StructureAccessor accessor, Chunk chunk) {
 		BlockPos.Mutable pos = new BlockPos.Mutable();
 
 		int[] requestedVals = getHeightsInChunk(chunk.getPos()); // attempt to retrieve the values from the cache
@@ -267,7 +271,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		int i = chunkPos.x;
 		int j = chunkPos.z;
 		ChunkRandom chunkRandom = new ChunkRandom();
-		chunkRandom.setSeed(i, j);
+		chunkRandom.setTerrainSeed(i, j);
 		ChunkPos chunkPos2 = chunk.getPos();
 		int startX = chunkPos2.getStartX();
 		int startZ = chunkPos2.getStartZ();
@@ -291,8 +295,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		int i = chunk.getPos().getStartX();
 		int j = chunk.getPos().getStartZ();
 		OverworldChunkGeneratorConfig chunkGeneratorConfig = this.getConfig();
-		int k = chunkGeneratorConfig.getMinY();
-		int l = chunkGeneratorConfig.getMaxY();
+		int k = chunkGeneratorConfig.getBedrockFloorY();
+		int l = chunkGeneratorConfig.getBedrockCeilingY();
 		Iterator<BlockPos> var9 = BlockPos.iterate(i, 0, j, i + 15, 0, j + 15).iterator();
 
 		while(true) {
@@ -322,11 +326,12 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	}
 
 	@Override
-	public void generateFeatures(ChunkRegion region) {
+	public void generateFeatures(ChunkRegion region, StructureAccessor accesor) {
 		int chunkX = region.getCenterChunkX();
 		int chunkZ = region.getCenterChunkZ();
 		ChunkRandom rand = new ChunkRandom();
-		rand.setSeed(chunkX, chunkZ);
+		//TODO: add world seed
+		rand.setTerrainSeed(chunkX, chunkZ);
 		featurePostProcesors.forEach(postProcessor -> postProcessor.process(region, rand, chunkX, chunkZ, this));
 
 		int i = region.getCenterChunkX();
@@ -336,7 +341,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		BlockPos blockPos = new BlockPos(k, 0, l);
 		Biome biome = this.getDecorationBiome(region.getBiomeAccess(), blockPos.add(8, 8, 8));
 		ChunkRandom chunkRandom = new ChunkRandom();
-		long seed = chunkRandom.setSeed(region.getSeed(), k, l);
+		long seed = chunkRandom.setDecoratorSeed(region.getSeed(), k, l);
 		GenerationStep.Feature[] features = GenerationStep.Feature.values();
 		int featureLength = features.length;
 
@@ -344,7 +349,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 			GenerationStep.Feature feature = features[currentFeature];
 
 			try {
-				biome.generateFeatureStep(feature, this, region, seed, chunkRandom, blockPos);
+				biome.generateFeatureStep(feature, accesor, this, region, seed, chunkRandom, blockPos);
 			} catch (Exception exception) {
 				CrashReport crashReport = CrashReport.create(exception, "Biome decoration");
 				crashReport.addElement("Generation").add("CenterX", i).add("CenterZ", j).add("Step", feature).add("Seed", seed).add("Biome", Registry.BIOME.getId(biome));
@@ -371,7 +376,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				while(listIterator.hasNext()) {
 					int n = listIterator.nextIndex();
 					ConfiguredCarver<?> configuredCarver = (ConfiguredCarver)listIterator.next();
-					chunkRandom.setStructureSeed(this.seed + (long)n, l, m);
+					chunkRandom.setCarverSeed(this.seed + (long)n, l, m);
 					if (configuredCarver.shouldCarve(chunkRandom, l, m)) {
 						configuredCarver.carve(chunk, (blockPos) -> this.getDecorationBiome(biomeAccess, blockPos), chunkRandom, this.getSeaLevel(), l, m, j, k, bitSet);
 					}
@@ -388,6 +393,32 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	@Override
 	public int getSeaLevel() {
 		return SimplexTerrain.CONFIG.seaLevel;
+	}
+
+	//TODO: figure out what this bullshit does
+	@Override
+	public int getHeight(int x, int z, net.minecraft.world.Heightmap.Type heightmapType) {
+		return getHeight(x, z);
+	}
+
+	//????????????????????????????
+	@Override
+	public BlockView getColumnSample(int x, int z) {
+		int height = getHeight(x, z);
+		BlockState[] array = new BlockState[256];
+		for (int y = 255; y >= 0; y--) {
+			if (y > height) {
+				if (y > getSeaLevel()) {
+					array[y] = Blocks.AIR.getDefaultState();
+				} else {
+					array[y] = Blocks.WATER.getDefaultState();
+				}
+			} else {
+				array[y] = Blocks.STONE.getDefaultState();
+			}
+		}
+
+		return new VerticalBlockSample(array);
 	}
 
 	//Too lazy to clean this shit up

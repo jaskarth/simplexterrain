@@ -3,7 +3,6 @@
   "package": "supercoder79.simplexterrain.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "AccessorLevelGeneratorType",
     "MixinOverworldDimension",
     "optichunk.MixinChunkSection",
     "antibad.MixinLakeFeature",
@@ -13,7 +12,8 @@
   "client": [
     "MixinLevelGeneratorTypeClient",
     "antibad.MixinFixStupidCrash",
-    "antibad.MixinFixStupidCrash2"
+    "antibad.MixinFixStupidCrash2",
+    "antibad.MixinFixStupidCrash3"
   ],
   "server": [
     "MixinLevelGeneratorTypeServer"

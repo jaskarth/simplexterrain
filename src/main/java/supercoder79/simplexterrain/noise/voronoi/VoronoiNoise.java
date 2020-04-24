@@ -6,47 +6,24 @@ import java.util.Random;
 
 public class VoronoiNoise extends Noise {
 
-    private static final double SQRT_2 = 1.4142135623730950488;
-    private static final double SQRT_3 = 1.7320508075688772935;
+    private static final double SQRT_2 = 1 / 1.4142135623730950488;
+    private static final double SQRT_3 = 1 / 1.7320508075688772935;
 
     private long seed;
-    private short distanceMethod;
 
 
     public VoronoiNoise(long seed) {
         super(seed);
         this.seed = seed;
-        this.distanceMethod = 0;
     }
 
     private double getDistance(double xDist, double zDist) {
-        switch(distanceMethod) {
-            case 0:
-                return fastSqrt((xDist * xDist) + (zDist * zDist)) / SQRT_2;
-            case 1:
-                return xDist + zDist;
-            case 2:
-                return Math.pow(Math.E, Math.sqrt(xDist * xDist + zDist * zDist) / SQRT_2) / Math.E;
-            default:
-                return 1.0;
-        }
+        return fastSqrt((xDist * xDist) + (zDist * zDist)) * SQRT_2;
     }
 
     private double getDistance(double xDist, double yDist, double zDist) {
-        switch(distanceMethod) {
-            case 0:
-                return fastSqrt(xDist * xDist + yDist * yDist + zDist * zDist) / SQRT_3;
-            case 1:
-                return xDist + yDist + zDist;
-            default:
-                return 1.0;
-        }
+        return fastSqrt(xDist * xDist + yDist * yDist + zDist * zDist) * SQRT_3;
     }
-
-    public short getDistanceMethod() {
-        return distanceMethod;
-    }
-
     public long getSeed() {
         return seed;
     }
@@ -81,7 +58,7 @@ public class VoronoiNoise extends Noise {
         double xDist = xCandidate - x;
         double zDist = zCandidate - z;
 
-        return getDistance(xDist, zDist);
+        return (getDistance(xDist, zDist) * 2) - 1;
     }
 
     @Override
@@ -125,15 +102,7 @@ public class VoronoiNoise extends Noise {
         double yDist = yCandidate - y;
         double zDist = zCandidate - z;
 
-        return getDistance(xDist, yDist, zDist);
-    }
-
-    public void setDistanceMethod(short distanceMethod) {
-        this.distanceMethod = distanceMethod;
-    }
-
-    public void setSeed(long seed) {
-        this.seed = seed;
+        return (getDistance(xDist, yDist, zDist) * 2) - 1;
     }
 
     public static double valueNoise2D(int x, int z, long seed) {

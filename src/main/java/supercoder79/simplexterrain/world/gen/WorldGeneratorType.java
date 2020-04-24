@@ -2,6 +2,7 @@ package supercoder79.simplexterrain.world.gen;
 
 import java.util.function.Supplier;
 
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
@@ -18,7 +19,7 @@ public class WorldGeneratorType extends ChunkGeneratorType<OverworldChunkGenerat
 	}
 
 	@Override
-	public SimplexChunkGenerator create(World world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
+	public SimplexChunkGenerator create(IWorld world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
 		return new SimplexChunkGenerator(world, biomeSource, config);
 	}
 }
