@@ -13,7 +13,8 @@
     "MixinLevelGeneratorTypeClient",
     "antibad.MixinFixStupidCrash",
     "antibad.MixinFixStupidCrash2",
-    "antibad.MixinFixStupidCrash3"
+    "antibad.MixinFixStupidCrash3",
+    "MixinBiomeAccess"
   ],
   "server": [
     "MixinLevelGeneratorTypeServer"

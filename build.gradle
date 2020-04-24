@@ -31,7 +31,7 @@ dependencies {
 
 	modRuntime ("com.github.mrmangohands:sodium-fabric:4ba93ad1aa3b18b8284e4c455004da722bdd883e")
 	modRuntime ("com.github.SuperCoder7979:phosphor-fabric:11d964bf07d44bdf6cbdbb7cce25ed9da81d9f78")
-	modRuntime ("com.github.SuperCoder7979:lithium-fabric:084e95f5db18404cae388eb35d7ef87f181b650a")
+//	modRuntime ("com.github.SuperCoder7979:lithium-fabric:084e95f5db18404cae388eb35d7ef87f181b650a")
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.

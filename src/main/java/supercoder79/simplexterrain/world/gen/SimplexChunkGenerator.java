@@ -43,7 +43,6 @@ import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.noise.NoiseMath;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
-import supercoder79.simplexterrain.world.postprocessor.PostProcessors;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
@@ -52,6 +51,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	public static SimplexChunkGenerator THIS;
 
 	public final OctaveNoiseSampler newNoise;
+	public final OctaveNoiseSampler yateNoise;
 	private final OpenSimplexNoise newNoise2;
 	private final OpenSimplexNoise newNoise3;
 	private final ChunkRandom random;
@@ -76,7 +76,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
 
-		newNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 4, 1024, 256+128, -128);
+		newNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 4, 1024, 256+128, -64);
+		yateNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 512, 1, 1);
 		newNoise2 = new OpenSimplexNoise(world.getSeed() - 30);
 		newNoise3 = new OpenSimplexNoise(world.getSeed() + 30);
 
@@ -179,14 +180,15 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 					chunk.setBlockState(pos, Blocks.STONE.getDefaultState(), false);
 				}
 
+
 				//3D modification (Bunes)
-				for (int y = height; y < 256; y++) {
-					if (y - height > 40) break;
-					if (place3DNoise(chunk.getPos(), height - 1, x, y, z, falloff, threshold)) {
-						pos.setY(y);
-						chunk.setBlockState(pos, Blocks.STONE.getDefaultState(), false);
-					}
-				}
+//				for (int y = height; y < 256; y++) {
+//					if (y - height > 40) break;
+//					if (place3DNoise(chunk.getPos(), height - 1, x, y, z, falloff, threshold)) {
+//						pos.setY(y);
+//						chunk.setBlockState(pos, Blocks.STONE.getDefaultState(), false);
+//					}
+//				}
 
                 // water placement
                 for (int y = 0; y < getSeaLevel(); y++) {
@@ -210,7 +212,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
     }
 
     public int getGuidingHeight(int x, int z) {
-        return (int) NoiseMath.sigmoid(newNoise.sample(x, z));
+        return (int) (NoiseMath.sigmoid(newNoise.sample(x, z) + ((1 - Math.abs(yateNoise.sample(x, z))) * 40)));
     }
 
     @Override
@@ -432,28 +434,28 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		biome2ThresholdMap.put(Biomes.SHATTERED_SAVANNA_PLATEAU, 0.025);
 
 		// oceans should never generate 3d noise part 2
-		biome2ThresholdMap.put(Biomes.OCEAN, 0.35);
-		biome2ThresholdMap.put(Biomes.COLD_OCEAN, 0.35);
-		biome2ThresholdMap.put(Biomes.FROZEN_OCEAN, 0.35);
-		biome2ThresholdMap.put(Biomes.LUKEWARM_OCEAN, 0.35);
-		biome2ThresholdMap.put(Biomes.WARM_OCEAN, 0.35);
-		biome2ThresholdMap.put(Biomes.DEEP_OCEAN, 0.35);
-		biome2ThresholdMap.put(Biomes.DEEP_COLD_OCEAN, 0.35);
-		biome2ThresholdMap.put(Biomes.DEEP_FROZEN_OCEAN, 0.35);
-		biome2ThresholdMap.put(Biomes.DEEP_LUKEWARM_OCEAN, 0.35);
-		biome2ThresholdMap.put(Biomes.DEEP_WARM_OCEAN, 0.35);
+		biome2ThresholdMap.put(Biomes.OCEAN, 0.0);
+		biome2ThresholdMap.put(Biomes.COLD_OCEAN, 0.0);
+		biome2ThresholdMap.put(Biomes.FROZEN_OCEAN, 0.0);
+		biome2ThresholdMap.put(Biomes.LUKEWARM_OCEAN, 0.0);
+		biome2ThresholdMap.put(Biomes.WARM_OCEAN, 0.0);
+		biome2ThresholdMap.put(Biomes.DEEP_OCEAN, 0.0);
+		biome2ThresholdMap.put(Biomes.DEEP_COLD_OCEAN, 0.0);
+		biome2ThresholdMap.put(Biomes.DEEP_FROZEN_OCEAN, 0.0);
+		biome2ThresholdMap.put(Biomes.DEEP_LUKEWARM_OCEAN, 0.0);
+		biome2ThresholdMap.put(Biomes.DEEP_WARM_OCEAN, 0.0);
 
 		// Ocean biomes should not have 3d modification
-		biome2FalloffMap.put(Biomes.OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.COLD_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.FROZEN_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.LUKEWARM_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.WARM_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.DEEP_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.DEEP_COLD_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.DEEP_FROZEN_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.DEEP_LUKEWARM_OCEAN, 0.0);
-		biome2FalloffMap.put(Biomes.DEEP_WARM_OCEAN, 0.0);
+		biome2FalloffMap.put(Biomes.OCEAN, 1.0);
+		biome2FalloffMap.put(Biomes.COLD_OCEAN, 1.0);
+		biome2FalloffMap.put(Biomes.FROZEN_OCEAN, 1.0);
+		biome2FalloffMap.put(Biomes.LUKEWARM_OCEAN, 1.0);
+		biome2FalloffMap.put(Biomes.WARM_OCEAN, 1.0);
+		biome2FalloffMap.put(Biomes.DEEP_OCEAN, 1.0);
+		biome2FalloffMap.put(Biomes.DEEP_COLD_OCEAN, 1.0);
+		biome2FalloffMap.put(Biomes.DEEP_FROZEN_OCEAN, 1.0);
+		biome2FalloffMap.put(Biomes.DEEP_LUKEWARM_OCEAN, 1.0);
+		biome2FalloffMap.put(Biomes.DEEP_WARM_OCEAN, 1.0);
 
 		biome2FalloffMap.put(Biomes.PLAINS, 7.5);
 		biome2FalloffMap.put(Biomes.JUNGLE, 7.5);
