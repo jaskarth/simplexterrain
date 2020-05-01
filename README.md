@@ -14,6 +14,9 @@ Different noise algorithms that you can use are covered in detail [here!](https:
 ## Discord server
 Join our **Discord server** https://discord.gg/BuBGds9 to get the latest updates on what we're doing, to get help, or to simply talk about the cool words that you've made! If you'd like to help contribute, please contact us here.
 
+## Want to support development?
+Please consider supporting development via my [Patreon](https://www.patreon.com/supercoder79)! Supporting me through Patreon allows me to spend more time modding and put out more updates for everyone.
+
 ## Specific Implementation Details
 Simplex Terrain Generation uses a heightmap made out of simplex noise, normalized to fit between 256 and 0. This heightmap is used to place the actual blocks and to place the biomes. The biomes are placed in 7 distinct "regions", to make the terrain more natural. Here's a list of them:
 
@@ -34,10 +37,7 @@ Worley noise:
 Foothills noise preset: (Learn more about presets [on the GitHub wiki](https://github.com/SuperCoder7979/simplexterrain/wiki/Config-Presets/_edit))  
 ![](https://cdn.discordapp.com/attachments/651608793880461322/652333136335732756/unknown.png)
 
-#Disclaimers
-This project is heavily in development. This means things can break and there will be bugs. A forge port will not be made of this mod (by me at least). If you want to port the mod yourself, go ahead! 
-
-##Credits
+## Credits
 
 SuperCoder79 - Breaks everything  
 Valoeghese - World Generation Magician  

@@ -25,6 +25,7 @@ import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeAccess;
+import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
@@ -51,7 +52,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	public static SimplexChunkGenerator THIS;
 
 	public final OctaveNoiseSampler newNoise;
-	public final OctaveNoiseSampler yateNoise;
+	public final OctaveNoiseSampler ridgedNoise;
 	private final OpenSimplexNoise newNoise2;
 	private final OpenSimplexNoise newNoise3;
 	private final ChunkRandom random;
@@ -76,8 +77,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
 
-		newNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 4, 1024, 256+128, -64);
-		yateNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 512, 1, 1);
+		newNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 4, 1200, 256+96, -64);
+		ridgedNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 512, 1, 1);
 		newNoise2 = new OpenSimplexNoise(world.getSeed() - 30);
 		newNoise3 = new OpenSimplexNoise(world.getSeed() + 30);
 
@@ -141,7 +142,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	@Override
 	public void populateBiomes(Chunk chunk) {
 		ChunkPos chunkPos = chunk.getPos();
-		((ProtoChunk)chunk).setBiomes(SimplexBiomeArray.makeNewBiomeArray(chunkPos, this.biomeSource));
+//		((ProtoChunk)chunk).setBiomes(SimplexBiomeArray.makeNewBiomeArray(chunkPos, this.biomeSource));
+		((ProtoChunk)chunk).setBiomes(new BiomeArray(chunkPos, this.biomeSource));
 	}
 
 	@Override
@@ -212,7 +214,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
     }
 
     public int getGuidingHeight(int x, int z) {
-        return (int) (NoiseMath.sigmoid(newNoise.sample(x, z) + ((1 - Math.abs(yateNoise.sample(x, z))) * 40)));
+        return (int) (NoiseMath.sigmoid(newNoise.sample(x, z) + ((1 - Math.abs(ridgedNoise.sample(x, z))) * 40)));
     }
 
     @Override

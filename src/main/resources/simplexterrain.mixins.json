@@ -10,11 +10,7 @@
     "MixinChunkStatus"
   ],
   "client": [
-    "MixinLevelGeneratorTypeClient",
-    "antibad.MixinFixStupidCrash",
-    "antibad.MixinFixStupidCrash2",
-    "antibad.MixinFixStupidCrash3",
-    "MixinBiomeAccess"
+    "MixinLevelGeneratorTypeClient"
   ],
   "server": [
     "MixinLevelGeneratorTypeServer"
