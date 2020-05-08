@@ -62,8 +62,7 @@ public class SimplexBiomeSource extends BiomeSource {
 	public Biome sampleBiomeWithMathTM(int x, int z, int height) {
 		Biome lowlands = this.lowlandsSampler.sample(x, z);
 		if (height < SimplexTerrain.CONFIG.seaLevel - 20) return this.deepOceanSampler.sample(x, z);
-		if (height < SimplexTerrain.CONFIG.seaLevel - 9) return this.oceanSampler.sample(x, z);
-		if (height < SimplexTerrain.CONFIG.seaLevel - 4) return Biomes.OCEAN;
+		if (height < SimplexTerrain.CONFIG.seaLevel - 4) return this.oceanSampler.sample(x, z);
 		if (height < SimplexTerrain.CONFIG.lowlandStartHeight + (beachStartSampler.sample(x / 128f, z / 128f)*6)) {
 			if (lowlands == Biomes.BADLANDS) return lowlands;
 			if (lowlands == Biomes.SWAMP) return lowlands;

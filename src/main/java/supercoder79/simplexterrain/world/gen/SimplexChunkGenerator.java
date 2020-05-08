@@ -51,8 +51,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	public static SimplexChunkGenerator THIS;
 
-	public final OctaveNoiseSampler newNoise;
+	public final OctaveNoiseSampler baseNoise;
+	public final OctaveNoiseSampler mountainNoise;
 	public final OctaveNoiseSampler ridgedNoise;
+	public final OctaveNoiseSampler detailNoise;
 	private final OpenSimplexNoise newNoise2;
 	private final OpenSimplexNoise newNoise3;
 	private final ChunkRandom random;
@@ -77,8 +79,10 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
 
-		newNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 4, 1200, 256+96, -64);
+		baseNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 1600, 128, -8);
+		mountainNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 1800, 196, 64);
 		ridgedNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 512, 1, 1);
+		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 2, 32, 2, 2);
 		newNoise2 = new OpenSimplexNoise(world.getSeed() - 30);
 		newNoise3 = new OpenSimplexNoise(world.getSeed() + 30);
 
@@ -214,7 +218,11 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
     }
 
     public int getGuidingHeight(int x, int z) {
-        return (int) (NoiseMath.sigmoid(newNoise.sample(x, z) + ((1 - Math.abs(ridgedNoise.sample(x, z))) * 40)));
+        return (int) (
+        		NoiseMath.sigmoid(baseNoise.sample(x, z) +
+						((1 - Math.abs(ridgedNoise.sample(x, z))) * 70) +
+						(Math.max(mountainNoise.sample(x, z), 0)) +
+						detailNoise.sample(x, z)));
     }
 
     @Override
