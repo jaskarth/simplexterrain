@@ -79,7 +79,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
 
-		baseNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 1600, 128, -8);
+		baseNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 2400, 128, -8);
 		mountainNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 1800, 196, 64);
 		ridgedNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 512, 1, 1);
 		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 2, 32, 2, 2);

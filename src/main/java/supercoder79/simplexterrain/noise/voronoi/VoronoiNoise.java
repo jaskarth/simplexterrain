@@ -30,8 +30,8 @@ public class VoronoiNoise extends Noise {
 
     @Override
     public double sample(double x, double z) {
-        int xInt = (x > .0? (int)x: (int)x - 1);
-        int zInt = (z > .0? (int)z: (int)z - 1);
+        int xInt = (x > 0 ? (int)x : (int)x - 1);
+        int zInt = (z > 0 ? (int)z : (int)z - 1);
 
         double minDist = 32000000.0;
 
@@ -64,9 +64,9 @@ public class VoronoiNoise extends Noise {
     @Override
     public double sample(double x, double y, double z) {
 
-        int xInt = (x > .0? (int)x: (int)x - 1);
-        int yInt = (y > .0? (int)y: (int)y - 1);
-        int zInt = (z > .0? (int)z: (int)z - 1);
+        int xInt = (x > 0 ? (int)x : (int)x - 1);
+        int yInt = (y > 0 ? (int)y : (int)y - 1);
+        int zInt = (z > 0 ? (int)z : (int)z - 1);
 
         double minDist = 32000000.0;
 
