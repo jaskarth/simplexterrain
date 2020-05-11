@@ -14,7 +14,6 @@ public enum NoiseType {
 	PERLIN(PerlinNoise.class),
 	VALUE(ValueNoise.class),
 	CUBIC(CubicNoise.class),
-	GABOR(GaborNoise.class),
 	VORONOI(VoronoiNoise.class);
 
 	public final Class<? extends Noise> noiseClass;

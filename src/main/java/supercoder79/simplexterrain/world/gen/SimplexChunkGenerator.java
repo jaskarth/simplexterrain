@@ -79,8 +79,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
 
-		baseNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 2400, 128, -8);
-		mountainNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 1800, 196, 64);
+		baseNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 3200, 144, 32);
+		mountainNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 2800, 256, 64);
 		ridgedNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 512, 1, 1);
 		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 2, 32, 2, 2);
 		newNoise2 = new OpenSimplexNoise(world.getSeed() - 30);
@@ -353,7 +353,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		BlockPos blockPos = new BlockPos(k, 0, l);
 		Biome biome = this.getDecorationBiome(region.getBiomeAccess(), blockPos.add(8, 8, 8));
 		ChunkRandom chunkRandom = new ChunkRandom();
-		long seed = chunkRandom.setDecoratorSeed(region.getSeed(), k, l);
+		long seed = chunkRandom.setPopulationSeed(region.getSeed(), k, l);
 		GenerationStep.Feature[] features = GenerationStep.Feature.values();
 		int featureLength = features.length;
 

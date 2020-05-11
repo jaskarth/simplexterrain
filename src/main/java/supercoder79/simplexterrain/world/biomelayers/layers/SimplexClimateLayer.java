@@ -15,6 +15,11 @@ public class SimplexClimateLayer implements InitLayer {
 
 	private final long worldSeed;
 
+	private int tempOffsetX;
+	private int tempOffsetZ;
+	private int humidityOffsetX;
+	private int humidityOffsetZ;
+
 	private static final Random RAND = new Random();
 
 	public SimplexClimateLayer(long worldSeed) {
@@ -24,14 +29,18 @@ public class SimplexClimateLayer implements InitLayer {
 	
 	public void initialiseNoise() {
 		RAND.setSeed(worldSeed);
+		tempOffsetX = RAND.nextInt(10000);
+		tempOffsetZ = RAND.nextInt(10000);
+		humidityOffsetX = RAND.nextInt(10000);
+		humidityOffsetZ = RAND.nextInt(10000);
 		temperatureNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, RAND, SimplexTerrain.CONFIG.temperatureOctaveAmount, SimplexTerrain.CONFIG.temperatureFrequency, SimplexTerrain.CONFIG.temperatureAmplitude, SimplexTerrain.CONFIG.temperatureAmplitude);
 		humidityNoise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, RAND, SimplexTerrain.CONFIG.humidityOctaveAmount, SimplexTerrain.CONFIG.humidityFrequency, SimplexTerrain.CONFIG.humidityAmplitude, SimplexTerrain.CONFIG.humidityAmplitude);
 	}
 
 	@Override
 	public int sample(LayerRandomnessSource rand, int x, int z) {
-		double temperature = temperatureNoise.sample(x, z) + SimplexTerrain.CONFIG.temperatureOffset;
-		double humidity = humidityNoise.sample(x, z) + SimplexTerrain.CONFIG.humidityOffset;
+		double temperature = temperatureNoise.sample(tempOffsetX + x, tempOffsetZ + z) + SimplexTerrain.CONFIG.temperatureOffset;
+		double humidity = humidityNoise.sample(humidityOffsetX + x, humidityOffsetZ + z) + SimplexTerrain.CONFIG.humidityOffset;
 
 		return SimplexClimate.fromTemperatureHumidity(temperature, humidity).id;
 	}

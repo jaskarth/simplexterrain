@@ -15,7 +15,7 @@ public class GaborNoise extends Noise {
 
 	public GaborNoise(long seed) {
 		super(seed);
-		internalNoise = new InternalNoise(1.0f, 0.05f, 0.625f, (float) (Math.PI / 4.f), 64f, 256, System.currentTimeMillis());
+		internalNoise = new InternalNoise(1.0f, 0.05f, 0.625f, (float) (Math.PI / 4.f), 64f, 256, seed);
 	}
 
 	@Override
