@@ -47,8 +47,6 @@ import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
-	private static final ChunkRandom reuseableRandom = new ChunkRandom();
-
 	public static SimplexChunkGenerator THIS;
 
 	public final OctaveNoiseSampler baseNoise;
@@ -104,7 +102,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		noisePostProcesors.forEach(postProcessor -> postProcessor.init(this.seed));
 		carverPostProcesors.forEach(postProcessor -> postProcessor.init(this.seed));
 		featurePostProcesors.forEach(postProcessor -> postProcessor.init(this.seed));
-		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(this.seed, reuseableRandom));
+		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(this.seed));
 
 		THIS = this;
 	}
@@ -217,14 +215,6 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		return noise1 + noise2 > threshold;
     }
 
-    public int getGuidingHeight(int x, int z) {
-        return (int) (
-        		NoiseMath.sigmoid(baseNoise.sample(x, z) +
-						((1 - Math.abs(ridgedNoise.sample(x, z))) * 70) +
-						(Math.max(mountainNoise.sample(x, z), 0)) +
-						detailNoise.sample(x, z)));
-    }
-
     @Override
 	public int[] getHeightsInChunk(ChunkPos pos) {
 		//return cached values
@@ -274,7 +264,14 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	@Override
 	public int getHeight(int x, int z) {
-		return getGuidingHeight(x, z);
+
+		double currentVal = baseNoise.sample(x, z);
+
+		for (NoiseModifier modifier : noiseModifiers) {
+			currentVal = modifier.modify(x, z, currentVal);
+		}
+
+		return (int) (NoiseMath.sigmoid(currentVal));
 	}
 
 	@Override

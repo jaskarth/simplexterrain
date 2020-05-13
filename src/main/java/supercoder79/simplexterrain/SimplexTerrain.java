@@ -18,6 +18,7 @@ import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.api.biomes.SimplexNether;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
+import supercoder79.simplexterrain.compat.Compat;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.MainConfigData;
 import supercoder79.simplexterrain.noise.NoiseMath;
@@ -92,7 +93,10 @@ public class SimplexTerrain implements ModInitializer {
 
 		//Addition to the chunk generator
 		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> SimplexChunkGenerator.addTerrainPostProcessor(postProcessors.postProcessor));
-		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier));
+		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> {
+			System.out.println(noiseModifiers);
+			SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier);
+		});
 		SimplexChunkGenerator.addTerrainPostProcessor(new SimplexCavesFix());
 
 		WORLDGEN_TYPE = Registry.register(Registry.CHUNK_GENERATOR_TYPE, new Identifier("simplexterrain", "simplex"), new WorldGeneratorType(false, OverworldChunkGeneratorConfig::new));
@@ -109,7 +113,7 @@ public class SimplexTerrain implements ModInitializer {
 			}
 
 			if (FabricLoader.getInstance().isModLoaded("traverse")) {
-				addTraverseBiomes();
+				Compat.addTraverseBiomes();
 				System.out.println("Traverse biomes registered!");
 			}
 
@@ -234,91 +238,6 @@ public class SimplexTerrain implements ModInitializer {
 		//replacements
 
 		SimplexBiomes.addReplacementBiome(biomeId(Biomes.JUNGLE), new Identifier("terrestria", "volcanic_island"), 10);
-	}
-
-	public static void addTraverseBiomes() {
-		double woodLandsWeight = 1.0;
-		double rollingHillsWeight = 0.6;
-		double plateauWeight = 0.5; //Both plateaus
-		double aridHighlandsWeight = 1.0;
-		double cliffsWeight = 1.0;
-		double coniferousForestWeight = 1.0;
-		double lushSwampWeight = 1.0;
-		double shrublandWeight = 1.0;
-		double miniJungleWeight = 1.0;
-
-		//Lowlands Biomes
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "woodlands"), SimplexClimate.TEMPERATE, woodLandsWeight*0.9);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "woodlands"), SimplexClimate.LUSH_TEMPERATE, woodLandsWeight*0.5);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "woodlands"), SimplexClimate.DRY_TEMPERATE, woodLandsWeight);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "desert_shrubland"), SimplexClimate.TEMPERATE, shrublandWeight*0.9);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "desert_shrubland"), SimplexClimate.DRY_TEMPERATE, shrublandWeight);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "rolling_hills"), SimplexClimate.TEMPERATE, rollingHillsWeight*0.75);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "rolling_hills"), SimplexClimate.LUSH_TEMPERATE, rollingHillsWeight*0.5);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "rolling_hills"), SimplexClimate.TROPICAL, rollingHillsWeight*1);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "rolling_hills"), SimplexClimate.LUSH_TROPICAL, rollingHillsWeight*1.25);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "meadow"), SimplexClimate.TEMPERATE, rollingHillsWeight*0.75);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "meadow"), SimplexClimate.LUSH_TEMPERATE, rollingHillsWeight*0.5);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "wooded_plateau"), SimplexClimate.TEMPERATE, plateauWeight*0.8);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "plains_plateau"), SimplexClimate.TEMPERATE, plateauWeight*0.8);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "wooded_plateau"), SimplexClimate.DRY_TEMPERATE, plateauWeight*0.65);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "plains_plateau"), SimplexClimate.DRY_TEMPERATE, plateauWeight*0.65);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "wooded_plateau"), SimplexClimate.LUSH_TEMPERATE, plateauWeight*0.65);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "plains_plateau"), SimplexClimate.LUSH_TEMPERATE, plateauWeight*0.65);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "arid_highlands"), SimplexClimate.DRY_TEMPERATE, aridHighlandsWeight);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "arid_highlands"), SimplexClimate.TEMPERATE, aridHighlandsWeight*0.8);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "arid_highlands"), SimplexClimate.LUSH_TEMPERATE, aridHighlandsWeight*0.6);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "lush_swamp"), SimplexClimate.TROPICAL, lushSwampWeight*1);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "lush_swamp"), SimplexClimate.LUSH_TROPICAL, lushSwampWeight*1.25);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "lush_swamp"), SimplexClimate.DRY_TROPICAL, lushSwampWeight*0.75);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "mini_jungle"), SimplexClimate.TROPICAL, miniJungleWeight*1);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "mini_jungle"), SimplexClimate.LUSH_TROPICAL, miniJungleWeight*1.25);
-		SimplexBiomes.addLowlandsBiome(new Identifier("traverse", "mini_jungle"), SimplexClimate.DRY_TROPICAL, miniJungleWeight*0.75);
-
-		//Midlands Biomes
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "woodlands"), SimplexClimate.TEMPERATE, woodLandsWeight);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "woodlands"), SimplexClimate.LUSH_TEMPERATE, woodLandsWeight*0.6);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "woodlands"), SimplexClimate.DRY_TEMPERATE, woodLandsWeight*1.2);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "rolling_hills"), SimplexClimate.TEMPERATE, rollingHillsWeight*0.8);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "rolling_hills"), SimplexClimate.LUSH_TEMPERATE, rollingHillsWeight*0.6);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "rolling_hills"), SimplexClimate.TROPICAL, rollingHillsWeight*1.2);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "rolling_hills"), SimplexClimate.LUSH_TROPICAL, rollingHillsWeight*1.4);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "meadow"), SimplexClimate.TEMPERATE, rollingHillsWeight*0.8);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "meadow"), SimplexClimate.LUSH_TEMPERATE, rollingHillsWeight*0.6);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "wooded_plateau"), SimplexClimate.TEMPERATE, plateauWeight*0.6);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "plains_plateau"), SimplexClimate.TEMPERATE, plateauWeight*0.6);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "wooded_plateau"), SimplexClimate.DRY_TEMPERATE, plateauWeight*0.55);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "plains_plateau"), SimplexClimate.DRY_TEMPERATE, plateauWeight*0.55);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "wooded_plateau"), SimplexClimate.LUSH_TEMPERATE, plateauWeight*0.65);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "plains_plateau"), SimplexClimate.LUSH_TEMPERATE, plateauWeight*0.65);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "coniferous_forest"), SimplexClimate.DRY_BOREAL, coniferousForestWeight*0.6);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "coniferous_forest"), SimplexClimate.BOREAL, coniferousForestWeight);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "coniferous_forest"), SimplexClimate.LUSH_BOREAL, coniferousForestWeight*1.3);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "lush_swamp"), SimplexClimate.TROPICAL, lushSwampWeight*0.5);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "lush_swamp"), SimplexClimate.LUSH_TROPICAL, lushSwampWeight*0.75);
-		SimplexBiomes.addMidlandsBiome(new Identifier("traverse", "lush_swamp"), SimplexClimate.DRY_TROPICAL, lushSwampWeight*0.25);
-
-		//Highlands Biomes
-		SimplexBiomes.addHighlandsBiome(new Identifier("traverse", "cliffs"), SimplexClimate.BOREAL, cliffsWeight);
-		SimplexBiomes.addHighlandsBiome(new Identifier("traverse", "cliffs"), SimplexClimate.DRY_BOREAL, cliffsWeight);
-
-		SimplexBiomes.addHighlandsBiome(new Identifier("traverse", "snowy_coniferous_forest"), SimplexClimate.DRY_BOREAL, coniferousForestWeight*0.6);
-		SimplexBiomes.addHighlandsBiome(new Identifier("traverse", "snowy_coniferous_forest"), SimplexClimate.BOREAL, coniferousForestWeight);
-		SimplexBiomes.addHighlandsBiome(new Identifier("traverse", "snowy_coniferous_forest"), SimplexClimate.LUSH_BOREAL, coniferousForestWeight*1.3);
 	}
 
 	public static void addWinterBiomes() {

@@ -29,7 +29,7 @@ public class MainConfigData {
 
 	public List<PostProcessors> postProcessors = new ArrayList<>();
 
-	public List<NoiseModifiers> noiseModifiers = Arrays.asList();
+	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.MOUNTAINS, NoiseModifiers.RIDGES, NoiseModifiers.DETAILS);
 
 	public int baseHeight = 100;
 
