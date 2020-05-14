@@ -6,7 +6,8 @@
     "optichunk.MixinChunkSection",
     "antibad.MixinLakeFeature",
     "MixinCavesChunkGenerator",
-    "MixinChunkStatus"
+    "MixinChunkStatus",
+    "MixinGeneratorOptions"
   ],
   "injectors": {
     "defaultRequire": 1
