@@ -1,6 +1,7 @@
 package supercoder79.simplexterrain.mixin;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.class_5284;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -9,10 +10,7 @@ import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.chunk.CavesChunkGenerator;
-import net.minecraft.world.gen.chunk.CavesChunkGeneratorConfig;
-import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
-import net.minecraft.world.gen.chunk.SurfaceChunkGenerator;
+import net.minecraft.world.gen.chunk.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,18 +24,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Mixin(CavesChunkGenerator.class)
-public class MixinCavesChunkGenerator extends SurfaceChunkGenerator {
+public abstract class MixinCavesChunkGenerator extends SurfaceChunkGenerator {
 
     @Shadow @Final private double[] noiseFalloff;
 
-    public MixinCavesChunkGenerator(IWorld world, BiomeSource biomeSource, int verticalNoiseResolution, int horizontalNoiseResolution, int worldHeight, ChunkGeneratorConfig config, boolean useSimplexNoise) {
-        super(world, biomeSource, verticalNoiseResolution, horizontalNoiseResolution, worldHeight, config, useSimplexNoise);
+    public MixinCavesChunkGenerator(BiomeSource biomeSource, long l, class_5284 arg, int i, int j, int k, boolean bl) {
+        super(biomeSource, l, arg, i, j, k, bl);
     }
 
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void constructor(IWorld world, BiomeSource biomeSource, CavesChunkGeneratorConfig config, CallbackInfo ci) {
-        SimplexNetherGeneration.init(world.getSeed());
+    private void constructor(BiomeSource biomeSource, long l, CavesChunkGeneratorConfig cavesChunkGeneratorConfig, CallbackInfo ci) {
+        SimplexNetherGeneration.init(l);
     }
 
     @Override

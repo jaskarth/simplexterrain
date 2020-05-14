@@ -12,21 +12,16 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.api.biomes.SimplexNether;
-import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.compat.Compat;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.MainConfigData;
 import supercoder79.simplexterrain.noise.NoiseMath;
-import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
-import supercoder79.simplexterrain.world.WorldType;
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
-import supercoder79.simplexterrain.world.gen.WorldGeneratorType;
 import supercoder79.simplexterrain.world.postprocessor.SimplexCavesFix;
 
 import java.util.Random;
@@ -35,12 +30,7 @@ import java.util.concurrent.*;
 public class SimplexTerrain implements ModInitializer {
 	public static final String VERSION = "0.5.1";
 
-	public static WorldGeneratorType WORLDGEN_TYPE;
-
 	public static MainConfigData CONFIG;
-
-	private static WorldType<?> loadMeOnClientPls; // make sure world types are loaded on client by referencing a field in onInitialize()
-
 	public static ForkJoinPool globalThreadPool;
 
 	private static Identifier SWAMP;
@@ -75,8 +65,6 @@ public class SimplexTerrain implements ModInitializer {
 		globalThreadPool = new ForkJoinPool(CONFIG.noiseGenerationThreads,
 						ForkJoinPool.defaultForkJoinWorkerThreadFactory,
 						null, true);
-
-		loadMeOnClientPls = WorldType.SIMPLEX;
 		addDefaultBiomes();
 		SimplexBiomes.addReplacementBiome(FOREST, biomeId(Biomes.FLOWER_FOREST), 15);
 		SimplexBiomes.addReplacementBiome(BIRCH_FOREST, biomeId(Biomes.TALL_BIRCH_FOREST), 6);
@@ -98,8 +86,6 @@ public class SimplexTerrain implements ModInitializer {
 			SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier);
 		});
 		SimplexChunkGenerator.addTerrainPostProcessor(new SimplexCavesFix());
-
-		WORLDGEN_TYPE = Registry.register(Registry.CHUNK_GENERATOR_TYPE, new Identifier("simplexterrain", "simplex"), new WorldGeneratorType(false, OverworldChunkGeneratorConfig::new));
 	}
 
 	private static void addDefaultBiomes() {

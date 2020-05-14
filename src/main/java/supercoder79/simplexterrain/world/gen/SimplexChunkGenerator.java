@@ -34,6 +34,7 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import supercoder79.simplexterrain.SimplexTerrain;
@@ -46,7 +47,7 @@ import supercoder79.simplexterrain.noise.NoiseMath;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 
-public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGeneratorConfig> implements Heightmap {
+public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	public static SimplexChunkGenerator THIS;
 
 	public final OctaveNoiseSampler baseNoise;
@@ -71,9 +72,11 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 
 	private final CompletableFuture[] futures;
 
-	public SimplexChunkGenerator(IWorld world, BiomeSource biomeSource, OverworldChunkGeneratorConfig config) {
-		super(world, biomeSource, config);
-		this.random = new ChunkRandom(world.getSeed());
+	private final long seed;
+
+	public SimplexChunkGenerator(BiomeSource biomeSource, ChunkGeneratorConfig config, long seed) {
+		super(biomeSource, config);
+		this.random = new ChunkRandom(seed);
 
 		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
 
@@ -81,8 +84,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		mountainNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 2800, 256, 64);
 		ridgedNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 512, 1, 1);
 		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 2, 32, 2, 2);
-		newNoise2 = new OpenSimplexNoise(world.getSeed() - 30);
-		newNoise3 = new OpenSimplexNoise(world.getSeed() + 30);
+		newNoise2 = new OpenSimplexNoise(seed - 30);
+		newNoise3 = new OpenSimplexNoise(seed + 30);
 
 		futures = new CompletableFuture[SimplexTerrain.CONFIG.noiseGenerationThreads];
 
@@ -99,11 +102,14 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 			e.printStackTrace();
 		}
 
-		noisePostProcesors.forEach(postProcessor -> postProcessor.init(this.seed));
-		carverPostProcesors.forEach(postProcessor -> postProcessor.init(this.seed));
-		featurePostProcesors.forEach(postProcessor -> postProcessor.init(this.seed));
-		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(this.seed));
+		noisePostProcesors.forEach(postProcessor -> postProcessor.init(seed));
+		carverPostProcesors.forEach(postProcessor -> postProcessor.init(seed));
+		featurePostProcesors.forEach(postProcessor -> postProcessor.init(seed));
+		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(seed));
 
+		this.seed = seed;
+
+		//TODO remove
 		THIS = this;
 	}
 
@@ -139,6 +145,11 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		ChunkRandom chunkRandom = new ChunkRandom();
 		chunkRandom.setPopulationSeed(region.getSeed(), i << 4, j << 4);
 		SpawnHelper.populateEntities(region, biome, i, j, chunkRandom);
+	}
+
+	@Override
+	public ChunkGenerator method_27997(long l) {
+		return new SimplexChunkGenerator(new SimplexBiomeSource(l), new ChunkGeneratorConfig(), l);
 	}
 
 	@Override
@@ -292,7 +303,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				int z = startZ + localZ;
 				int height = chunk.sampleHeightmap(net.minecraft.world.Heightmap.Type.WORLD_SURFACE_WG, localX, localZ) + 1;
 				double noise = this.surfaceDepthNoise.sample((double)x * 0.0625D, (double)z * 0.0625D, 0.0625D, (double)localX * 0.0625D);
-				chunkRegion.getBiome(mutable.set(startX + localX, height, startZ + localZ)).buildSurface(chunkRandom, chunk, x, z, height, noise, this.getConfig().getDefaultBlock(), this.getConfig().getDefaultFluid(), this.getSeaLevel(), this.world.getSeed());
+				chunkRegion.getBiome(mutable.set(startX + localX, height, startZ + localZ)).buildSurface(chunkRandom, chunk, x, z, height, noise, Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), this.getSeaLevel(), seed);
 			}
 		}
 
@@ -303,9 +314,8 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		int i = chunk.getPos().getStartX();
 		int j = chunk.getPos().getStartZ();
-		OverworldChunkGeneratorConfig chunkGeneratorConfig = this.getConfig();
-		int k = chunkGeneratorConfig.getBedrockFloorY();
-		int l = chunkGeneratorConfig.getBedrockCeilingY();
+		int k = 0; //bedrock floor y
+		int l = 0; //bedrock ceiling y
 		Iterator<BlockPos> var9 = BlockPos.iterate(i, 0, j, i + 15, 0, j + 15).iterator();
 
 		while(true) {
@@ -340,6 +350,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 		int chunkZ = region.getCenterChunkZ();
 		ChunkRandom rand = new ChunkRandom();
 		//TODO: add world seed
+		//update: i'm super fucking glad i didn't add the world seed here
 		rand.setTerrainSeed(chunkX, chunkZ);
 		featurePostProcesors.forEach(postProcessor -> postProcessor.process(region, rand, chunkX, chunkZ, this));
 
@@ -368,7 +379,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 	}
 
 	@Override
-	public void carve(BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
+	public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
 		ChunkRandom chunkRandom = new ChunkRandom();
 		ChunkPos chunkPos = chunk.getPos();
 		int j = chunkPos.x;
@@ -385,7 +396,7 @@ public class SimplexChunkGenerator extends ChunkGenerator<OverworldChunkGenerato
 				while(listIterator.hasNext()) {
 					int n = listIterator.nextIndex();
 					ConfiguredCarver<?> configuredCarver = (ConfiguredCarver)listIterator.next();
-					chunkRandom.setCarverSeed(this.seed + (long)n, l, m);
+					chunkRandom.setCarverSeed(seed + (long)n, l, m);
 					if (configuredCarver.shouldCarve(chunkRandom, l, m)) {
 						configuredCarver.carve(chunk, (blockPos) -> this.getDecorationBiome(biomeAccess, blockPos), chunkRandom, this.getSeaLevel(), l, m, j, k, bitSet);
 					}

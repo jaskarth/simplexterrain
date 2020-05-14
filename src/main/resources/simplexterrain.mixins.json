@@ -3,17 +3,10 @@
   "package": "supercoder79.simplexterrain.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinOverworldDimension",
     "optichunk.MixinChunkSection",
     "antibad.MixinLakeFeature",
     "MixinCavesChunkGenerator",
     "MixinChunkStatus"
-  ],
-  "client": [
-    "MixinLevelGeneratorTypeClient"
-  ],
-  "server": [
-    "MixinLevelGeneratorTypeServer"
   ],
   "injectors": {
     "defaultRequire": 1

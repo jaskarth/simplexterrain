@@ -11,7 +11,6 @@ import net.minecraft.world.biome.layer.util.LayerFactory;
 import net.minecraft.world.biome.layer.util.LayerSampleContext;
 import net.minecraft.world.biome.layer.util.LayerSampler;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
-import net.minecraft.world.level.LevelGeneratorType;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.world.biomelayers.layers.*;
 
@@ -26,7 +25,7 @@ public class LandBiomeLayers {
 		return result;
 	}
 
-	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T>[] stackFactories(LevelGeneratorType levelGeneratorType, long worldSeed, LongFunction<C> contextProvider) {
+	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T>[] stackFactories(long worldSeed, LongFunction<C> contextProvider) {
 		LayerFactory<T> climateLayer = new SimplexClimateLayer(worldSeed).create(contextProvider.apply(1L));
 
 		//lowlands (y67 - y90)
@@ -77,8 +76,15 @@ public class LandBiomeLayers {
 		return new LayerFactory[]{lowlandsBiomeLayer, midlandsBiomeLayer, highlandsBiomeLayer, mountainPeaksBiomePassLayer, shoreSampler, oceanSampler, deepOceanSampler};
 	}
 
-	public static BiomeLayerSampler[] build(long l, LevelGeneratorType levelGeneratorType) {
-		LayerFactory<CachingLayerSampler>[] arr = stackFactories(levelGeneratorType, l, (salt) -> new CachingLayerContext(5, l, salt));
-		return new BiomeLayerSampler[]{new BiomeLayerSampler(arr[0]), new BiomeLayerSampler(arr[1]), new BiomeLayerSampler(arr[2]), new BiomeLayerSampler(arr[3]), new BiomeLayerSampler(arr[4]), new BiomeLayerSampler(arr[5]), new BiomeLayerSampler(arr[6])};
+	public static BiomeLayerSampler[] build(long l) {
+		LayerFactory<CachingLayerSampler>[] arr = stackFactories(l, (salt) -> new CachingLayerContext(5, l, salt));
+		return new BiomeLayerSampler[]{
+				new BiomeLayerSampler(arr[0]),
+				new BiomeLayerSampler(arr[1]),
+				new BiomeLayerSampler(arr[2]),
+				new BiomeLayerSampler(arr[3]),
+				new BiomeLayerSampler(arr[4]),
+				new BiomeLayerSampler(arr[5]),
+				new BiomeLayerSampler(arr[6])};
 	}
 }

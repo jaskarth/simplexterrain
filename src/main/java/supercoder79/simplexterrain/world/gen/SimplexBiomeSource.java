@@ -30,11 +30,10 @@ public class SimplexBiomeSource extends BiomeSource {
 
 	private Heightmap heightmap = Heightmap.NONE;
 
-	public SimplexBiomeSource(SimplexBiomeSourceConfig config) {
+	public SimplexBiomeSource(long seed) {
 		super(biomes);
-		long seed = config.getSeed();
 
-		BiomeLayerSampler[] biomeLayerSamplers = LandBiomeLayers.build(seed, config.getGeneratorType());
+		BiomeLayerSampler[] biomeLayerSamplers = LandBiomeLayers.build(seed);
 
 		this.lowlandsSampler = biomeLayerSamplers[0];
 		this.midlandsSampler = biomeLayerSamplers[1];
@@ -72,5 +71,10 @@ public class SimplexBiomeSource extends BiomeSource {
 		if (height < SimplexTerrain.CONFIG.highlandStartHeight) return this.midlandsSampler.sample(x, z);
 		if (height < SimplexTerrain.CONFIG.toplandStartHeight) return this.highlandsSampler.sample(x, z);
 		return this.toplandsSampler.sample(x, z);
+	}
+
+	@Override
+	public BiomeSource method_27985(long l) {
+		return new SimplexBiomeSource(l);
 	}
 }

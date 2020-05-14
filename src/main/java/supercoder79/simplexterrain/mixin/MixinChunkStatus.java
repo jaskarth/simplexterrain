@@ -18,7 +18,7 @@ import java.util.List;
 public class MixinChunkStatus {
 
     @Inject(method = "method_16563", at = @At("HEAD"), remap = false)
-    private static void carveSanely(ServerWorld world, ChunkGenerator<?> generator, List<Chunk> list, Chunk chunk, CallbackInfo info) {
+    private static void carveSanely(ServerWorld world, ChunkGenerator generator, List<Chunk> list, Chunk chunk, CallbackInfo info) {
         if (generator instanceof SimplexChunkGenerator) {
             ((SimplexChunkGenerator)generator).carvePostProcessors(new ChunkRegion(world, list), chunk);
         }

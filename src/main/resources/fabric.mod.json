@@ -17,6 +17,8 @@
   "license": "LGPLv3",
   "icon": "assets/simplexterrain/icon.png",
 
+  "accessWidener" : "simplexterrain.aw",
+
   "environment": "*",
   "entrypoints": {
     "main": [
