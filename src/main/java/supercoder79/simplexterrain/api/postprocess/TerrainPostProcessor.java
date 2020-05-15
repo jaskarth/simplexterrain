@@ -2,7 +2,7 @@ package supercoder79.simplexterrain.api.postprocess;
 
 import java.util.Random;
 
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import supercoder79.simplexterrain.api.Heightmap;
 
 public interface TerrainPostProcessor {
@@ -21,7 +21,7 @@ public interface TerrainPostProcessor {
 	/**
 	 * This function executes for every chunk being generated.
 	 */
-	void process(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap);
+	void process(WorldAccess world, Random rand, int chunkX, int chunkZ, Heightmap heightmap);
 
 	/**
 	 * Returns the specified time for the post processor to be run.

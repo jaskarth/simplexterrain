@@ -6,7 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 
@@ -32,7 +32,7 @@ public class StrataPostProcessor implements TerrainPostProcessor {
 	}
 
 	@Override
-	public void process(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
+	public void process(WorldAccess world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
 		int[] heights = heightmap.getHeightsInChunk(new ChunkPos(chunkX, chunkZ));
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int x = 0; x < 16; x++) {

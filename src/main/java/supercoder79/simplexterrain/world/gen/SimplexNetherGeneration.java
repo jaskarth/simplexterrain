@@ -2,7 +2,7 @@ package supercoder79.simplexterrain.world.gen;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -31,7 +31,7 @@ public class SimplexNetherGeneration {
         threshold = new SimplexStyleNoise(seed - 20);
     }
     
-    public static void generate(IWorld world, Chunk chunk, BiomeSource biomeSource, int seaLevel) {
+    public static void generate(WorldAccess world, Chunk chunk, BiomeSource biomeSource, int seaLevel) {
         BlockPos.Mutable posMutable = new BlockPos.Mutable();
 
         for (int x = 0; x < 16; x++) {

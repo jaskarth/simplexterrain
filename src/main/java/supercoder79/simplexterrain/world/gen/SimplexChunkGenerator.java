@@ -20,7 +20,7 @@ import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
@@ -35,7 +35,6 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
-import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
@@ -148,7 +147,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	}
 
 	@Override
-	public ChunkGenerator method_27997(long l) {
+	public ChunkGenerator create(long l) {
 		return new SimplexChunkGenerator(new SimplexBiomeSource(l), new ChunkGeneratorConfig(), l);
 	}
 
@@ -160,7 +159,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	}
 
 	@Override
-	public void populateNoise(IWorld world, StructureAccessor accessor, Chunk chunk) {
+	public void populateNoise(WorldAccess world, StructureAccessor accessor, Chunk chunk) {
 		BlockPos.Mutable pos = new BlockPos.Mutable();
 
 		int[] requestedVals = getHeightsInChunk(chunk.getPos()); // attempt to retrieve the values from the cache

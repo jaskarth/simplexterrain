@@ -26,12 +26,12 @@ dependencies {
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
-//	modRuntime ("com.github.SuperCoder7979:databreaker:1ad39e9bf4fa8435010c9587c1b6960b57501c81") {
-//		exclude module : "fabric-loader"
-//	}
+	modRuntime ("com.github.SuperCoder7979:databreaker:ef3990e5a797e160b211dab223a8195c5f071739") {
+		exclude module : "fabric-loader"
+	}
 
-//	modRuntime ("com.github.mrmangohands:sodium-fabric:4ba93ad1aa3b18b8284e4c455004da722bdd883e")
-//	modRuntime ("com.github.SuperCoder7979:phosphor-fabric:11d964bf07d44bdf6cbdbb7cce25ed9da81d9f78")
+	modRuntime ("com.github.mrmangohands:sodium-fabric:b97f167e2e36677f498e3e3301707f07e7b2a3f2")
+	modRuntime ("com.github.SuperCoder7979:phosphor-fabric:11d964bf07d44bdf6cbdbb7cce25ed9da81d9f78")
 ////	modRuntime ("com.github.SuperCoder7979:lithium-fabric:084e95f5db18404cae388eb35d7ef87f181b650a")
 //	modRuntime ("com.github.TerraformersMC:Traverse:01f9e10b88251b70cfecf83695f4cc652ddef805")
 

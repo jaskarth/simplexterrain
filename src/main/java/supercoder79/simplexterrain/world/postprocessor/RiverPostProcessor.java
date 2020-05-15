@@ -7,7 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.api.Coordinate2Function;
 import supercoder79.simplexterrain.api.Heightmap;
@@ -36,7 +36,7 @@ public final class RiverPostProcessor implements TerrainPostProcessor {
 	}
 
 	@Override
-	public void process(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
+	public void process(WorldAccess world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
 		BlockPos.Mutable pos = new BlockPos.Mutable();
 		int startX = (chunkX << 4);
 		int startZ = (chunkZ << 4);
@@ -55,7 +55,7 @@ public final class RiverPostProcessor implements TerrainPostProcessor {
 		}
 	}
 
-	private void addRiverInChunk(IWorld world, Coordinate2Function<Integer> heightFunction, final int x, final int z, BlockPos.Mutable pos, double depthNoise) {
+	private void addRiverInChunk(WorldAccess world, Coordinate2Function<Integer> heightFunction, final int x, final int z, BlockPos.Mutable pos, double depthNoise) {
 		int y = heightFunction.apply(x, z) + 1;
 		int seaLevel = world.getSeaLevel();
 

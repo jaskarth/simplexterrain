@@ -74,7 +74,7 @@ public class SimplexBiomeSource extends BiomeSource {
 	}
 
 	@Override
-	public BiomeSource method_27985(long l) {
+	public BiomeSource create(long l) {
 		return new SimplexBiomeSource(l);
 	}
 }

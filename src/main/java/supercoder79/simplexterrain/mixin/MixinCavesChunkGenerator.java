@@ -3,7 +3,7 @@ package supercoder79.simplexterrain.mixin;
 import net.minecraft.block.Blocks;
 import net.minecraft.class_5284;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
@@ -39,7 +39,7 @@ public abstract class MixinCavesChunkGenerator extends SurfaceChunkGenerator {
     }
 
     @Override
-    public void populateNoise(IWorld world, StructureAccessor structureAccessor, Chunk chunk) {
+    public void populateNoise(WorldAccess world, StructureAccessor structureAccessor, Chunk chunk) {
         SimplexNetherGeneration.generate(world, chunk, this.biomeSource, getSeaLevel());
     }
 

@@ -3,7 +3,7 @@ package supercoder79.simplexterrain.world.postprocessor;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.postprocess.PostProcessorTarget;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
@@ -35,7 +35,7 @@ public class SimplexCavesFix implements TerrainPostProcessor {
     }
 
     @Override
-    public void process(IWorld world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
+    public void process(WorldAccess world, Random rand, int chunkX, int chunkZ, Heightmap heightmap) {
         int[] heights = heightmap.getHeightsInChunk(new ChunkPos(chunkX, chunkZ));
 
         double[] values = new double[multiEvalInstances.length];
