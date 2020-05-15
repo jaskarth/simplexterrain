@@ -23,14 +23,15 @@ import supercoder79.simplexterrain.configs.MainConfigData;
 import supercoder79.simplexterrain.noise.NoiseMath;
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
-import supercoder79.simplexterrain.world.postprocessor.SimplexCavesFix;
 
 import java.lang.reflect.Constructor;
-import java.util.Random;
 import java.util.concurrent.*;
 
 public class SimplexTerrain implements ModInitializer {
-	public static final String VERSION = "0.5.1";
+	public static final String VERSION = "0.6.0";
+
+	//if the current world is a Simplex Terrain world. Has no meaning when outside of a world.
+	public static boolean isSimplexEnabled = false;
 
 	public static MainConfigData CONFIG;
 	public static ForkJoinPool globalThreadPool;
@@ -105,7 +106,6 @@ public class SimplexTerrain implements ModInitializer {
 			System.out.println(noiseModifiers);
 			SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier);
 		});
-		SimplexChunkGenerator.addTerrainPostProcessor(new SimplexCavesFix());
 	}
 
 	private static void addDefaultBiomes() {
@@ -150,6 +150,7 @@ public class SimplexTerrain implements ModInitializer {
 		SimplexNether.setBiomeExpansiveness(Biomes.CRIMSON_FOREST, 1.2);
 		SimplexNether.setBiomeExpansiveness(Biomes.WARPED_FOREST, 0.8);
 		SimplexNether.setBiomeExpansiveness(Biomes.SOUL_SAND_VALLEY, -0.25);
+		SimplexNether.setBiomeExpansiveness(Biomes.BASALT_DELTAS, -0.5);
 	}
 
 	public static void addTerrestriaBiomes() {

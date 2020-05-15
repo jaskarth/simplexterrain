@@ -32,6 +32,8 @@ public class SimplexNetherGeneration {
     }
     
     public static void generate(WorldAccess world, Chunk chunk, BiomeSource biomeSource, int seaLevel) {
+        //TODO: threading
+
         BlockPos.Mutable posMutable = new BlockPos.Mutable();
 
         for (int x = 0; x < 16; x++) {

@@ -1,70 +1,37 @@
 package supercoder79.simplexterrain.mixin;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.class_5284;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldAccess;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.*;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import supercoder79.simplexterrain.noise.gradient.SimplexStyleNoise;
+import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.world.gen.SimplexNetherGeneration;
 
-import java.util.HashMap;
-import java.util.Map;
+@Mixin(SurfaceChunkGenerator.class)
+public abstract class MixinCavesChunkGenerator extends ChunkGenerator {
 
-@Mixin(CavesChunkGenerator.class)
-public abstract class MixinCavesChunkGenerator extends SurfaceChunkGenerator {
-
-    @Shadow @Final private double[] noiseFalloff;
-
-    public MixinCavesChunkGenerator(BiomeSource biomeSource, long l, class_5284 arg, int i, int j, int k, boolean bl) {
-        super(biomeSource, l, arg, i, j, k, bl);
+    public MixinCavesChunkGenerator(BiomeSource biomeSource, ChunkGeneratorConfig config) {
+        super(biomeSource, config);
     }
-
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void constructor(BiomeSource biomeSource, long l, CavesChunkGeneratorConfig cavesChunkGeneratorConfig, CallbackInfo ci) {
-        SimplexNetherGeneration.init(l);
+    private void constructor(BiomeSource biomeSource, long seed, class_5284 config, int horizontalNoiseResolution, int verticalNoiseResolution, int worldHeight, boolean useSimplexNoise, CallbackInfo ci) {
+        SimplexNetherGeneration.init(seed);
     }
 
-    @Override
-    public void populateNoise(WorldAccess world, StructureAccessor structureAccessor, Chunk chunk) {
-        SimplexNetherGeneration.generate(world, chunk, this.biomeSource, getSeaLevel());
-    }
-
-    @Override
-    public double[] computeNoiseRange(int x, int z) {
-        return new double[]{0.0D, 0.0D};
-    }
-
-    @Override
-    public double computeNoiseFalloff(double depth, double scale, int y) {
-        return this.noiseFalloff[y];
-    }
-
-    @Override
-    public void sampleNoiseColumn(double[] buffer, int x, int z) {
-
-    }
-
-    @Override
-    public int getSpawnHeight() {
-        return 0;
-    }
-
-    @Override
-    public int getSeaLevel() {
-        return 32;
+    @Inject(method = "populateNoise", at = @At("HEAD"), cancellable = true)
+    public void populateNoise(WorldAccess world, StructureAccessor accessor, Chunk chunk, CallbackInfo ci) {
+        if (SimplexTerrain.isSimplexEnabled && (ChunkGenerator)this instanceof CavesChunkGenerator && world.getDimension().getType() == DimensionType.THE_NETHER) {
+            System.out.println("");
+            SimplexNetherGeneration.generate(world, chunk, this.biomeSource, getSeaLevel());
+            ci.cancel();
+        }
     }
 }

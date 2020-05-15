@@ -7,7 +7,8 @@
     "antibad.MixinLakeFeature",
     "MixinCavesChunkGenerator",
     "MixinChunkStatus",
-    "MixinGeneratorOptions"
+    "MixinGeneratorOptions",
+    "MixinMinecraftServer"
   ],
   "injectors": {
     "defaultRequire": 1

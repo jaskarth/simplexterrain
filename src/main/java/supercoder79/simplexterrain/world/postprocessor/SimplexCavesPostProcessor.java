@@ -13,7 +13,7 @@ import supercoder79.simplexterrain.noise.gradient.SimplexStyleNoise;
 import java.util.Arrays;
 import java.util.Random;
 
-public class SimplexCavesFix implements TerrainPostProcessor {
+public class SimplexCavesPostProcessor implements TerrainPostProcessor {
     private SimplexStyleNoise sampler1;
     private SimplexStyleNoise sampler2;
     private SimplexStyleNoise threshold;
