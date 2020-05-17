@@ -12,13 +12,10 @@ import supercoder79.simplexterrain.world.noisemodifier.NoiseModifiers;
 import supercoder79.simplexterrain.world.postprocessor.PostProcessors;
 
 public class MainConfigData {
-	@SerializedName("configVersion") public String configVersion = SimplexTerrain.VERSION;
-	@SerializedName("doModCompat") public boolean doModCompat = true;
-	@SerializedName("addDetailNoise") public boolean addDetailNoise = true;
-
-	@SerializedName("reloadConfigCommand") public boolean reloadConfigCommand = false;
+	public String configVersion = SimplexTerrain.VERSION;
+	public boolean doModCompat = true;
+	public boolean reloadConfigCommand = false;
 	public boolean threadedNoiseGeneration = true;
-	public boolean simplexIsDefault = false;
 	public boolean deleteLakes = false;
 	public boolean optimizeForRamUsage = false;
 	public boolean generateVanillaCaves = true;
