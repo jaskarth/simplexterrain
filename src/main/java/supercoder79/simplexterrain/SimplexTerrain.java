@@ -134,17 +134,17 @@ public class SimplexTerrain implements ModInitializer {
 		addVanillaHighlands();
 		addVanillaMountainPeaks();
 
-		CommandRegistry.INSTANCE.register(false, dispatcher -> {
-			LiteralArgumentBuilder<ServerCommandSource> lab = CommandManager.literal("sdebug").requires(executor -> executor.hasPermissionLevel(2)).executes(cmd -> {
-				ServerCommandSource source = cmd.getSource();
-				source.sendFeedback(new LiteralText(Formatting.DARK_GREEN.toString() + Formatting.BOLD.toString() +
-						"Derivative (quad): " + NoiseMath.derivative(SimplexChunkGenerator.THIS.baseNoise, source.getPlayer().getX(), source.getPlayer().getZ())), true);
-//				source.sendFeedback(new LiteralText(Formatting.GREEN.toString() + Formatting.BOLD.toString() +
-//						"Derivative (tri): " + NoiseMath.derivative2(SimplexChunkGenerator.THIS.newNoise, source.getPlayer().getX(), source.getPlayer().getZ())), true);
-				return 1;
-			});
-			dispatcher.register(lab);
-		});
+//		CommandRegistry.INSTANCE.register(false, dispatcher -> {
+//			LiteralArgumentBuilder<ServerCommandSource> lab = CommandManager.literal("sdebug").requires(executor -> executor.hasPermissionLevel(2)).executes(cmd -> {
+//				ServerCommandSource source = cmd.getSource();
+//				source.sendFeedback(new LiteralText(Formatting.DARK_GREEN.toString() + Formatting.BOLD.toString() +
+//						"Derivative (quad): " + NoiseMath.derivative(SimplexChunkGenerator.THIS.baseNoise, source.getPlayer().getX(), source.getPlayer().getZ())), true);
+////				source.sendFeedback(new LiteralText(Formatting.GREEN.toString() + Formatting.BOLD.toString() +
+////						"Derivative (tri): " + NoiseMath.derivative2(SimplexChunkGenerator.THIS.newNoise, source.getPlayer().getX(), source.getPlayer().getZ())), true);
+//				return 1;
+//			});
+//			dispatcher.register(lab);
+//		});
 
 		//Add nether biome data
 		SimplexNether.setBiomeExpansiveness(Biomes.CRIMSON_FOREST, 1.2);
