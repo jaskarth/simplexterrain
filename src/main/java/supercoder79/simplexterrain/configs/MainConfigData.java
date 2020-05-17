@@ -31,30 +31,14 @@ public class MainConfigData {
 
 	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.MOUNTAINS, NoiseModifiers.RIDGES, NoiseModifiers.DETAILS);
 
-	public int baseHeight = 100;
-
-	public int baseOctaveAmount = 11;
-	public int detailOctaveAmount = 2;
-	public int scaleOctaveAmount = 2;
-	public int peaksOctaveAmount = 2;
-
-	public double baseNoiseFrequencyCoefficient = 0.75;
-	public double baseNoiseSamplingFrequency = 1;
-
-	public double detailAmplitudeHigh = 2;
-	public double detailAmplitudeLow = 4;
-	public double detailFrequency = 20;
-
-	public double scaleAmplitudeHigh = 0.2;
-	public double scaleAmplitudeLow = 0.09;
-	public double scaleFrequencyExponent = 10;
-
-	public double peaksFrequency = 750.0;
-	public double peaksSampleOffset = -0.33;
-	public double peaksAmplitude = 280.0;
-
-	public double detailNoiseThreshold = 0.0;
-	public double scaleNoiseThreshold  = -0.02;
+	public int mainOctaveAmount = 3;
+	public double mainFrequency = 3200.0;
+	public double mainAmplitudeHigh = 144.0;
+	public double mainAmplitudeLow = 32.0;
+	public double mainNetherScale = 70.0;
+	public double netherThresholdScale = 28;
+	public double netherThresholdAmplitude = 0.125;
+	public double netherThresholdBase = 0.25;
 
 	public int lowlandStartHeight = 66;
 	public int midlandStartHeight = 90;

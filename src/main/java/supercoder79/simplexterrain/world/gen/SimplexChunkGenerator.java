@@ -49,25 +49,21 @@ import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	public static SimplexChunkGenerator THIS;
 
-	public final OctaveNoiseSampler baseNoise;
-	public final OctaveNoiseSampler mountainNoise;
-	public final OctaveNoiseSampler ridgedNoise;
-	public final OctaveNoiseSampler detailNoise;
+	public final OctaveNoiseSampler<? extends Noise> baseNoise;
 	private final OpenSimplexNoise newNoise2;
 	private final OpenSimplexNoise newNoise3;
-	private final ChunkRandom random;
 
 	private NoiseSampler surfaceDepthNoise;
 
-	private ConcurrentHashMap<Long, int[]> noiseCache = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<Long, int[]> noiseCache = new ConcurrentHashMap<>();
 
-	private static ArrayList<TerrainPostProcessor> noisePostProcesors = new ArrayList<>();
-	private static ArrayList<TerrainPostProcessor> carverPostProcesors = new ArrayList<>();
-	private static ArrayList<TerrainPostProcessor> featurePostProcesors = new ArrayList<>();
+	private static final ArrayList<TerrainPostProcessor> noisePostProcesors = new ArrayList<>();
+	private static final ArrayList<TerrainPostProcessor> carverPostProcesors = new ArrayList<>();
+	private static final ArrayList<TerrainPostProcessor> featurePostProcesors = new ArrayList<>();
 
-	private static Map<Biome, Double> biome2FalloffMap = new HashMap<>();
+	private static final Map<Biome, Double> biome2FalloffMap = new HashMap<>();
 
-	private static Map<Biome, Double> biome2ThresholdMap = new HashMap<>();
+	private static final Map<Biome, Double> biome2ThresholdMap = new HashMap<>();
 
 	private final CompletableFuture[] futures;
 
@@ -75,14 +71,11 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 	public SimplexChunkGenerator(BiomeSource biomeSource, ChunkGeneratorConfig config, long seed) {
 		super(biomeSource, config);
-		this.random = new ChunkRandom(seed);
+		ChunkRandom random = new ChunkRandom(seed);
 
 		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
 
-		baseNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 3200, 144, 32);
-		mountainNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 2800, 256, 64);
-		ridgedNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 3, 512, 1, 1);
-		detailNoise = new OctaveNoiseSampler<>(noiseClass, this.random, 2, 32, 2, 2);
+		baseNoise = new OctaveNoiseSampler<>(noiseClass, random, SimplexTerrain.CONFIG.mainOctaveAmount, SimplexTerrain.CONFIG.mainFrequency, SimplexTerrain.CONFIG.mainAmplitudeHigh, SimplexTerrain.CONFIG.mainAmplitudeLow);
 		newNoise2 = new OpenSimplexNoise(seed - 30);
 		newNoise3 = new OpenSimplexNoise(seed + 30);
 

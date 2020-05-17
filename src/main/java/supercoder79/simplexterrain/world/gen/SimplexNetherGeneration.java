@@ -7,6 +7,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
+import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.noise.gradient.SimplexStyleNoise;
 
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class SimplexNetherGeneration {
     private static SimplexStyleNoise threshold;
     
     public static void init(long seed) {
-        noise = new SimplexStyleNoise(seed);
+        noise = new SimplexStyleNoise(seed + 12);
         noise2 = new SimplexStyleNoise(seed + 20);
         lowerResolution = new SimplexStyleNoise(seed + 21);
         higherResolution = new SimplexStyleNoise(seed - 21);
@@ -67,17 +68,23 @@ public class SimplexNetherGeneration {
 
     private static double getNoiseAt(double expansiveness, int x, int y, int z) {
 
-        double baseline = noise.sample(x / 70f, y / 35f, z / 70f);
-        double addition = noise2.sample(x / 70f, y / 35f, z / 70f);
-        double addition2 = lowerResolution.sample(x / 35f, y / 20f, z / 35f);
-        double addition3 = higherResolution.sample(x / 150f, y / 75f, z / 150f);
-        double verticalNoise = vertical.sample(x / 70f, y / 7.5f, z / 70f);
+        double scale = SimplexTerrain.CONFIG.mainNetherScale;
+        double scaleLow = scale / 2;
+        double scaleHigh = scale * 2;
+
+        double baseline = noise.sample(x / scale, y / scaleLow, z / scale);
+        double addition = noise2.sample(x / scale, y / scaleLow, z / scale);
+        double addition2 = lowerResolution.sample(x / scaleLow, y / scale / 1.5, z / scaleLow);
+        double addition3 = higherResolution.sample(x / scaleHigh, y / scale, z / scaleHigh);
+        double verticalNoise = vertical.sample(x / scale, y / scale / 10, z / scale);
         baseline += (15 / (float)y); //lower bound
         baseline += (-15 / ((float)(y - 130))); //upper bound
         return (baseline*0.55) + (addition*0.3*expansiveness) + (addition2*0.25*expansiveness) + (addition3*0.175*expansiveness) + (verticalNoise*0.1*expansiveness);
     }
 
     private static double getThreshold(int x, int y, int z) {
-        return 0.25 + (threshold.sample(x / 28f, y / 12f, z / 28f) * 0.125);
+        double scale = SimplexTerrain.CONFIG.netherThresholdScale;
+
+        return SimplexTerrain.CONFIG.netherThresholdBase + (threshold.sample(x / scale, y / scale / 2, z / scale) * SimplexTerrain.CONFIG.netherThresholdAmplitude);
     }
 }
