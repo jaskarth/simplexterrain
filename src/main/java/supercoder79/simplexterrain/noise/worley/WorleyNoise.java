@@ -60,7 +60,7 @@ public class WorleyNoise extends Noise {
 		private final double z;
 
 		/**
-		 * Creates a point at location (x, y, z).
+		 * Creates a point at location (x, z).
 		 *
 		 * @param x
 		 *            the x coordinate of the point.
@@ -181,7 +181,7 @@ public class WorleyNoise extends Noise {
 		// provide minimum. be sure to square root it to get the
 		// true distance.
 
-		return fastSqrt(s);
+		return Math.sqrt(s);
 	}
 
 	/**

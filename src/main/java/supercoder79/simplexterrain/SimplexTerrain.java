@@ -1,14 +1,8 @@
 package supercoder79.simplexterrain;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.class_5285;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -20,11 +14,11 @@ import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.compat.Compat;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.MainConfigData;
-import supercoder79.simplexterrain.noise.NoiseMath;
+import supercoder79.simplexterrain.world.SimplexGenType;
 import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
+import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 
-import java.lang.reflect.Constructor;
 import java.util.concurrent.*;
 
 public class SimplexTerrain implements ModInitializer {
@@ -36,8 +30,7 @@ public class SimplexTerrain implements ModInitializer {
 	public static MainConfigData CONFIG;
 	public static ForkJoinPool globalThreadPool;
 
-	public static class_5285.class_5287 levelGeneratorType;
-	public static class_5285.class_5288 levelGeneratorOption;
+	public static SimplexGenType levelGeneratorType;
 
 	private static Identifier SWAMP;
 	private static Identifier PLAINS;
@@ -54,20 +47,11 @@ public class SimplexTerrain implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		//reflect into the level generator type
-		try {
-			Constructor<class_5285.class_5287> lgtConstructor = class_5285.class_5287.class.getDeclaredConstructor(String.class);
-			lgtConstructor.setAccessible(true);
-			levelGeneratorType = lgtConstructor.newInstance("simplex");
-			Constructor<class_5285.class_5288> lgoConstructor = class_5285.class_5288.class.getDeclaredConstructor(class_5285.class_5287.class);
-			lgoConstructor.setAccessible(true);
-			levelGeneratorOption = lgoConstructor.newInstance(levelGeneratorType);
-			class_5285.class_5288.field_24556.add(levelGeneratorOption);
-		} catch (Exception e) {
-			System.out.println("Simplex Terrain reflection failed");
-			e.printStackTrace();
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+			levelGeneratorType = new SimplexGenType();
 		}
-
+		Registry.register(Registry.CHUNK_GENERATOR, new Identifier("simplexterrain:simplex"), SimplexChunkGenerator.CODEC);
+		Registry.register(Registry.BIOME_SOURCE, new Identifier("simplexterrain:simplex"), SimplexBiomeSource.CODEC);
 
 		SWAMP = biomeId(Biomes.SWAMP);
 		PLAINS = biomeId(Biomes.PLAINS);
@@ -103,7 +87,6 @@ public class SimplexTerrain implements ModInitializer {
 		//Addition to the chunk generator
 		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> SimplexChunkGenerator.addTerrainPostProcessor(postProcessors.postProcessor));
 		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> {
-			System.out.println(noiseModifiers);
 			SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier);
 		});
 	}

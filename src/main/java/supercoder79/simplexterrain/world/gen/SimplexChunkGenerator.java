@@ -7,10 +7,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.IntStream;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.class_5311;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
@@ -34,7 +38,6 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
@@ -47,6 +50,9 @@ import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
+	public static final Codec<SimplexChunkGenerator> CODEC = RecordCodecBuilder.create((instance) -> instance.group(BiomeSource.field_24713.fieldOf("biome_source")
+					.forGetter((generator) -> generator.biomeSource), Codec.LONG.fieldOf("seed").stable()
+			.forGetter((generator) -> generator.seed)).apply(instance, instance.stable(SimplexChunkGenerator::new)));
 	public static SimplexChunkGenerator THIS;
 
 	public final OctaveNoiseSampler<? extends Noise> baseNoise;
@@ -68,10 +74,12 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	private final CompletableFuture[] futures;
 
 	private final long seed;
+	private final BiomeSource biomeSource;
 
-	public SimplexChunkGenerator(BiomeSource biomeSource, ChunkGeneratorConfig config, long seed) {
-		super(biomeSource, config);
+	public SimplexChunkGenerator(BiomeSource biomeSource, long seed) {
+		super(biomeSource, new class_5311(true));
 		ChunkRandom random = new ChunkRandom(seed);
+		this.biomeSource = biomeSource;
 
 		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
 
@@ -140,8 +148,13 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	}
 
 	@Override
-	public ChunkGenerator create(long l) {
-		return new SimplexChunkGenerator(new SimplexBiomeSource(l), new ChunkGeneratorConfig(), l);
+	protected Codec<? extends ChunkGenerator> method_28506() {
+		return CODEC;
+	}
+
+	@Override
+	public ChunkGenerator withSeed(long l) {
+		return new SimplexChunkGenerator(new SimplexBiomeSource(l), l);
 	}
 
 	@Override
@@ -154,7 +167,6 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	@Override
 	public void populateNoise(WorldAccess world, StructureAccessor accessor, Chunk chunk) {
 		BlockPos.Mutable pos = new BlockPos.Mutable();
-
 		int[] requestedVals = getHeightsInChunk(chunk.getPos()); // attempt to retrieve the values from the cache
 
 		for (int x = 0; x < 16; ++x) {
@@ -351,7 +363,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 		int k = i * 16;
 		int l = j * 16;
 		BlockPos blockPos = new BlockPos(k, 0, l);
-		Biome biome = this.getDecorationBiome(region.getBiomeAccess(), blockPos.add(8, 8, 8));
+		Biome biome = this.biomeSource.getBiomeForNoiseGen((i << 2) + 2, 2, (j << 2) + 2);
 		ChunkRandom chunkRandom = new ChunkRandom();
 		long seed = chunkRandom.setPopulationSeed(region.getSeed(), k, l);
 		GenerationStep.Feature[] features = GenerationStep.Feature.values();
@@ -370,15 +382,44 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 		}
 	}
 
-	@Override
-	public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
+//	@Override
+//	public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
+//		System.out.println("carvers");
+//		ChunkRandom chunkRandom = new ChunkRandom();
+//		ChunkPos chunkPos = chunk.getPos();
+//		int j = chunkPos.x;
+//		int k = chunkPos.z;
+//		Biome biome = this.biomeSource.getBiomeForNoiseGen(chunkPos.x << 2, 0, chunkPos.z << 2);
+//		BitSet bitSet = ((ProtoChunk)chunk).method_28510(carver);
+//		if (!SimplexTerrain.CONFIG.generateVanillaCaves) return;
+//
+//		for(int l = j - 8; l <= j + 8; ++l) {
+//			for(int m = k - 8; m <= k + 8; ++m) {
+//				List<ConfiguredCarver<?>> list = biome.getCarversForStep(carver);
+//				ListIterator listIterator = list.listIterator();
+//
+//				while(listIterator.hasNext()) {
+//					int n = listIterator.nextIndex();
+//					ConfiguredCarver<?> configuredCarver = (ConfiguredCarver)listIterator.next();
+//					chunkRandom.setCarverSeed(seed + (long)n, l, m);
+//					if (configuredCarver.shouldCarve(chunkRandom, l, m)) {
+//						configuredCarver.carve(chunk, biomeAccess::getBiome, chunkRandom, this.getSeaLevel(), l, m, j, k, bitSet);
+//					}
+//				}
+//			}
+//		}
+//	}
+
+	public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver carver) {
+		if (!SimplexTerrain.CONFIG.generateVanillaCaves) return;
+
+		BiomeAccess biomeAccess = access.withSource(this.biomeSource);
 		ChunkRandom chunkRandom = new ChunkRandom();
 		ChunkPos chunkPos = chunk.getPos();
 		int j = chunkPos.x;
 		int k = chunkPos.z;
-		Biome biome = this.getDecorationBiome(biomeAccess, chunkPos.getCenterBlockPos());
-		BitSet bitSet = chunk.getCarvingMask(carver);
-		if (!SimplexTerrain.CONFIG.generateVanillaCaves) return;
+		Biome biome = this.biomeSource.getBiomeForNoiseGen(chunkPos.x << 2, 0, chunkPos.z << 2);
+		BitSet bitSet = ((ProtoChunk)chunk).method_28510(carver);
 
 		for(int l = j - 8; l <= j + 8; ++l) {
 			for(int m = k - 8; m <= k + 8; ++m) {
@@ -390,11 +431,12 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 					ConfiguredCarver<?> configuredCarver = (ConfiguredCarver)listIterator.next();
 					chunkRandom.setCarverSeed(seed + (long)n, l, m);
 					if (configuredCarver.shouldCarve(chunkRandom, l, m)) {
-						configuredCarver.carve(chunk, (blockPos) -> this.getDecorationBiome(biomeAccess, blockPos), chunkRandom, this.getSeaLevel(), l, m, j, k, bitSet);
+						configuredCarver.carve(chunk, biomeAccess::getBiome, chunkRandom, this.getSeaLevel(), l, m, j, k, bitSet);
 					}
 				}
 			}
 		}
+
 	}
 
 	// irritatered
