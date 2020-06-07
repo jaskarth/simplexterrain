@@ -11,6 +11,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.class_5311;
@@ -61,7 +62,8 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 	private NoiseSampler surfaceDepthNoise;
 
-	private final ConcurrentHashMap<Long, int[]> noiseCache = new ConcurrentHashMap<>();
+//	private final ConcurrentHashMap<Long, int[]> noiseCache = new ConcurrentHashMap<>();
+	private final ThreadLocal<Long2ObjectLinkedOpenHashMap<int[]>> noiseCache = new ThreadLocal<>();
 
 	private static final ArrayList<TerrainPostProcessor> noisePostProcesors = new ArrayList<>();
 	private static final ArrayList<TerrainPostProcessor> carverPostProcesors = new ArrayList<>();
@@ -71,7 +73,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 	private static final Map<Biome, Double> biome2ThresholdMap = new HashMap<>();
 
-	private final CompletableFuture[] futures;
+	private final CompletableFuture<Void>[] futures;
 
 	private final long seed;
 	private final BiomeSource biomeSource;
@@ -175,21 +177,21 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 			for (int z = 0; z < 16; ++z) {
 				pos.setZ(z);
 
-				double falloff = 0;
-				double threshold = 0;
-
-				for (int x1 = -1; x1 <= 1; x1++) {
-					for (int z1 = -1; z1 <= 1; z1++) {
-						falloff += biome2FalloffMap.getOrDefault(
-								biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), getSeaLevel(), (chunk.getPos().z*16) + (z + z1)), 5.0);
-
-						threshold += biome2ThresholdMap.getOrDefault(
-								biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), getSeaLevel(), (chunk.getPos().z*16) + (z + z1)), 0.2);
-					}
-				}
-
-				falloff /= 9;
-				threshold /= 9;
+//				double falloff = 0;
+//				double threshold = 0;
+//
+//				for (int x1 = -1; x1 <= 1; x1++) {
+//					for (int z1 = -1; z1 <= 1; z1++) {
+//						falloff += biome2FalloffMap.getOrDefault(
+//								biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), getSeaLevel(), (chunk.getPos().z*16) + (z + z1)), 5.0);
+//
+//						threshold += biome2ThresholdMap.getOrDefault(
+//								biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), getSeaLevel(), (chunk.getPos().z*16) + (z + z1)), 0.2);
+//					}
+//				}
+//
+//				falloff /= 9;
+//				threshold /= 9;
 
 				int height = requestedVals[(x*16) + z];
 
@@ -232,8 +234,10 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
     @Override
 	public int[] getHeightsInChunk(ChunkPos pos) {
+		if (noiseCache.get() == null) noiseCache.set(new Long2ObjectLinkedOpenHashMap<>());
+
 		//return cached values
-		int[] res = noiseCache.get(pos.toLong());
+		int[] res = noiseCache.get().get(pos.toLong());
 		if (res != null) return res;
 
 		int[] vals = new int[256];
@@ -253,13 +257,11 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 			generateNoise(vals, pos, 0, 16); //generate all noise on the main thread
 		}
 
-		synchronized (this) {
-			//cache the values
-			if (noiseCache.size() > 1000) {
-				noiseCache.clear();
-			}
-			noiseCache.put(pos.toLong(), vals);
+		//cache the values
+		if (noiseCache.get().size() > 16) {
+			noiseCache.get().removeFirst();
 		}
+		noiseCache.get().put(pos.toLong(), vals);
 
 		return vals;
 	}
@@ -279,7 +281,6 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 	@Override
 	public int getHeight(int x, int z) {
-
 		double currentVal = baseNoise.sample(x, z);
 
 		for (NoiseModifier modifier : noiseModifiers) {
@@ -381,34 +382,6 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 			}
 		}
 	}
-
-//	@Override
-//	public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
-//		System.out.println("carvers");
-//		ChunkRandom chunkRandom = new ChunkRandom();
-//		ChunkPos chunkPos = chunk.getPos();
-//		int j = chunkPos.x;
-//		int k = chunkPos.z;
-//		Biome biome = this.biomeSource.getBiomeForNoiseGen(chunkPos.x << 2, 0, chunkPos.z << 2);
-//		BitSet bitSet = ((ProtoChunk)chunk).method_28510(carver);
-//		if (!SimplexTerrain.CONFIG.generateVanillaCaves) return;
-//
-//		for(int l = j - 8; l <= j + 8; ++l) {
-//			for(int m = k - 8; m <= k + 8; ++m) {
-//				List<ConfiguredCarver<?>> list = biome.getCarversForStep(carver);
-//				ListIterator listIterator = list.listIterator();
-//
-//				while(listIterator.hasNext()) {
-//					int n = listIterator.nextIndex();
-//					ConfiguredCarver<?> configuredCarver = (ConfiguredCarver)listIterator.next();
-//					chunkRandom.setCarverSeed(seed + (long)n, l, m);
-//					if (configuredCarver.shouldCarve(chunkRandom, l, m)) {
-//						configuredCarver.carve(chunk, biomeAccess::getBiome, chunkRandom, this.getSeaLevel(), l, m, j, k, bitSet);
-//					}
-//				}
-//			}
-//		}
-//	}
 
 	public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver carver) {
 		if (!SimplexTerrain.CONFIG.generateVanillaCaves) return;
