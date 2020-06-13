@@ -1,9 +1,9 @@
 package supercoder79.simplexterrain.mixin;
 
-import net.minecraft.class_5311;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +16,7 @@ import supercoder79.simplexterrain.world.gen.SimplexNetherGeneration;
 @Mixin(SurfaceChunkGenerator.class)
 public abstract class MixinCavesChunkGenerator extends ChunkGenerator {
 
-    public MixinCavesChunkGenerator(BiomeSource biomeSource, class_5311 config) {
+    public MixinCavesChunkGenerator(BiomeSource biomeSource, StructuresConfig config) {
         super(biomeSource, config);
     }
 
@@ -27,7 +27,7 @@ public abstract class MixinCavesChunkGenerator extends ChunkGenerator {
 
     @Inject(method = "populateNoise", at = @At("HEAD"), cancellable = true)
     public void populateNoise(WorldAccess world, StructureAccessor accessor, Chunk chunk, CallbackInfo ci) {
-        if (SimplexTerrain.isSimplexEnabled && world.getDimension().isNether()) {
+        if (SimplexTerrain.isSimplexEnabled && world.getWorld().getDimensionRegistryKey() == DimensionType.THE_NETHER_REGISTRY_KEY) {
             SimplexNetherGeneration.generate(world, chunk, this.biomeSource, getSeaLevel());
             ci.cancel();
         }

@@ -14,8 +14,6 @@ import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.class_5311;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
@@ -39,6 +37,7 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
@@ -79,7 +78,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	private final BiomeSource biomeSource;
 
 	public SimplexChunkGenerator(BiomeSource biomeSource, long seed) {
-		super(biomeSource, new class_5311(true));
+		super(biomeSource, new StructuresConfig(true));
 		ChunkRandom random = new ChunkRandom(seed);
 		this.biomeSource = biomeSource;
 

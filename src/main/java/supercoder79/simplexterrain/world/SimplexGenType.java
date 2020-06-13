@@ -1,14 +1,14 @@
 package supercoder79.simplexterrain.world;
 
-import net.minecraft.class_5317;
+import net.minecraft.client.world.GeneratorType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 
-public class SimplexGenType extends class_5317 {
+public class SimplexGenType extends GeneratorType {
     public SimplexGenType() {
         super("simplex");
-        class_5317.field_25052.add(this);
+        GeneratorType.VALUES.add(this);
     }
 
     @Override
