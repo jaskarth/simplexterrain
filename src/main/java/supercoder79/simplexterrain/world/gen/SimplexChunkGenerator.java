@@ -50,9 +50,10 @@ import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
-	public static final Codec<SimplexChunkGenerator> CODEC = RecordCodecBuilder.create((instance) -> instance.group(BiomeSource.field_24713.fieldOf("biome_source")
-					.forGetter((generator) -> generator.biomeSource), Codec.LONG.fieldOf("seed").stable()
-			.forGetter((generator) -> generator.seed)).apply(instance, instance.stable(SimplexChunkGenerator::new)));
+	public static final Codec<SimplexChunkGenerator> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+			BiomeSource.field_24713.fieldOf("biome_source").forGetter((generator) -> generator.biomeSource),
+			Codec.LONG.fieldOf("seed").stable().forGetter((generator) -> generator.seed))
+			.apply(instance, instance.stable(SimplexChunkGenerator::new)));
 	public static SimplexChunkGenerator THIS;
 
 	public final OctaveNoiseSampler<? extends Noise> baseNoise;
@@ -61,7 +62,6 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 	private NoiseSampler surfaceDepthNoise;
 
-//	private final ConcurrentHashMap<Long, int[]> noiseCache = new ConcurrentHashMap<>();
 	private final ThreadLocal<Long2ObjectLinkedOpenHashMap<int[]>> noiseCache = new ThreadLocal<>();
 
 	private static final ArrayList<TerrainPostProcessor> noisePostProcesors = new ArrayList<>();
