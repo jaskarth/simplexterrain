@@ -22,7 +22,7 @@ import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 import java.util.concurrent.*;
 
 public class SimplexTerrain implements ModInitializer {
-	public static final String VERSION = "0.6.0";
+	public static final String VERSION = "0.6.3";
 
 	//if the current world is a Simplex Terrain world. Has no meaning when outside of a world.
 	public static boolean isSimplexEnabled = false;
@@ -47,12 +47,6 @@ public class SimplexTerrain implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-			levelGeneratorType = new SimplexGenType();
-		}
-		Registry.register(Registry.CHUNK_GENERATOR, new Identifier("simplexterrain:simplex"), SimplexChunkGenerator.CODEC);
-		Registry.register(Registry.BIOME_SOURCE, new Identifier("simplexterrain:simplex"), SimplexBiomeSource.CODEC);
-
 		SWAMP = biomeId(Biomes.SWAMP);
 		PLAINS = biomeId(Biomes.PLAINS);
 		FOREST = biomeId(Biomes.FOREST);
@@ -65,6 +59,12 @@ public class SimplexTerrain implements ModInitializer {
 		GRAVELLY_MOUNTAINS = biomeId(Biomes.GRAVELLY_MOUNTAINS);
 
 		Config.init();
+
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+			levelGeneratorType = new SimplexGenType();
+		}
+		Registry.register(Registry.CHUNK_GENERATOR, new Identifier("simplexterrain:simplex"), SimplexChunkGenerator.CODEC);
+		Registry.register(Registry.BIOME_SOURCE, new Identifier("simplexterrain:simplex"), SimplexBiomeSource.CODEC);
 
 		//TODO: custom thread pool thing
 		globalThreadPool = new ForkJoinPool(CONFIG.noiseGenerationThreads,
@@ -84,9 +84,7 @@ public class SimplexTerrain implements ModInitializer {
 
 		//Addition to the chunk generator
 		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> SimplexChunkGenerator.addTerrainPostProcessor(postProcessors.postProcessor));
-		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> {
-			SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier);
-		});
+		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier));
 	}
 
 	private static void addDefaultBiomes() {

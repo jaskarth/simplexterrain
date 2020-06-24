@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 
@@ -19,7 +20,8 @@ import java.util.Random;
 public class MixinGeneratorOptions {
     @Inject(method = "fromProperties", at = @At("HEAD"), cancellable = true)
     private static void injectSimplex(Properties properties, CallbackInfoReturnable<GeneratorOptions> cir) {
-        if (properties.get("level-type") == "simplex") {
+        if (properties.get("level-type").toString().trim().toLowerCase().equals("simplex")) {
+            Config.init();
             String seed = (String) MoreObjects.firstNonNull(properties.get("level-seed"), "");
             long l = new Random().nextLong();
             if (!seed.isEmpty()) {

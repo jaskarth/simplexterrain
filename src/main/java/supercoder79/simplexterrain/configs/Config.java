@@ -42,10 +42,6 @@ public class Config {
 			configData.noiseGenerator = NoiseType.SIMPLEX;
 		}
 
-		if (SimplexTerrain.climateLayer != null) {
-			SimplexTerrain.climateLayer.initialiseNoise();
-		}
-
 		SimplexTerrain.CONFIG = configData;
 
 		Paths.get("", "config", "simplexterrain", "noisemodifiers").toFile().mkdirs();

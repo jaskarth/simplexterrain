@@ -62,7 +62,6 @@ public class SimplexBiomeSource extends BiomeSource {
 	@Override
 	public Biome getBiomeForNoiseGen(int x, int y, int z) {
 		if (heightmap == null) return Biomes.OCEAN;
-
 		Biome biome = sampleBiomeWithMathTM(x, z, heightmap.getHeight((x << 2), (z << 2)));
 		return biome == null ? Biomes.OCEAN : biome;
 	}

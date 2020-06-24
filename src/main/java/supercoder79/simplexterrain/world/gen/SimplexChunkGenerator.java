@@ -79,6 +79,12 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 	public SimplexChunkGenerator(BiomeSource biomeSource, long seed) {
 		super(biomeSource, new StructuresConfig(true));
+
+		noisePostProcesors.forEach(postProcessor -> postProcessor.init(seed));
+		carverPostProcesors.forEach(postProcessor -> postProcessor.init(seed));
+		featurePostProcesors.forEach(postProcessor -> postProcessor.init(seed));
+		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(seed));
+
 		ChunkRandom random = new ChunkRandom(seed);
 		this.biomeSource = biomeSource;
 
@@ -102,11 +108,6 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 		} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
-
-		noisePostProcesors.forEach(postProcessor -> postProcessor.init(seed));
-		carverPostProcesors.forEach(postProcessor -> postProcessor.init(seed));
-		featurePostProcesors.forEach(postProcessor -> postProcessor.init(seed));
-		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(seed));
 
 		this.seed = seed;
 
