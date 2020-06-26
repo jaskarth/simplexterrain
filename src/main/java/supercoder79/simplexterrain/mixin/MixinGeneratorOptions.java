@@ -20,6 +20,10 @@ import java.util.Random;
 public class MixinGeneratorOptions {
     @Inject(method = "fromProperties", at = @At("HEAD"), cancellable = true)
     private static void injectSimplex(Properties properties, CallbackInfoReturnable<GeneratorOptions> cir) {
+        if (properties.get("level-type") == null) {
+            return;
+        }
+
         if (properties.get("level-type").toString().trim().toLowerCase().equals("simplex")) {
             Config.init();
             String seed = (String) MoreObjects.firstNonNull(properties.get("level-seed"), "");
