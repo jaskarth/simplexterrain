@@ -55,4 +55,6 @@ public class MainConfigData {
 	public double humidityFrequency = 11.0;
 	public double temperatureAmplitude = 1.2;
 	public double humidityAmplitude = 1.2;
+	
+	public double cloudHeight = 192;
 }
