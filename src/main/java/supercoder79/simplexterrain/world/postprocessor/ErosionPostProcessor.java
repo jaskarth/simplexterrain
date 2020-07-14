@@ -10,8 +10,6 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
-import supercoder79.simplexterrain.api.cache.AbstractSampler;
-import supercoder79.simplexterrain.api.cache.CacheSampler;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.configs.ConfigUtil;

@@ -17,8 +17,8 @@ public class MainConfigData {
 	public boolean reloadConfigCommand = false;
 	public boolean threadedNoiseGeneration = true;
 	public boolean deleteLakes = false;
-	public boolean optimizeForRamUsage = false;
 	public boolean generateVanillaCaves = true;
+	public boolean simplexNetherGeneration = true;
 
 	public int noiseGenerationThreads = 2;
 

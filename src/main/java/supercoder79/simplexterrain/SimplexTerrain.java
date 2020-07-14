@@ -22,7 +22,7 @@ import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 import java.util.concurrent.*;
 
 public class SimplexTerrain implements ModInitializer {
-	public static final String VERSION = "0.6.4";
+	public static final String VERSION = "0.6.5";
 
 	//if the current world is a Simplex Terrain world. Has no meaning when outside of a world.
 	public static boolean isSimplexEnabled = false;
@@ -42,8 +42,6 @@ public class SimplexTerrain implements ModInitializer {
 	private static Identifier MOUNTAIN_EDGE;
 	private static Identifier WOODED_MOUNTAINS;
 	private static Identifier GRAVELLY_MOUNTAINS;
-
-	public static SimplexClimateLayer climateLayer;
 
 	@Override
 	public void onInitialize() {
@@ -70,6 +68,7 @@ public class SimplexTerrain implements ModInitializer {
 		globalThreadPool = new ForkJoinPool(CONFIG.noiseGenerationThreads,
 						ForkJoinPool.defaultForkJoinWorkerThreadFactory,
 						null, true);
+
 		addDefaultBiomes();
 		SimplexBiomes.addReplacementBiome(FOREST, biomeId(Biomes.FLOWER_FOREST), 15);
 		SimplexBiomes.addReplacementBiome(BIRCH_FOREST, biomeId(Biomes.TALL_BIRCH_FOREST), 6);
@@ -103,8 +102,13 @@ public class SimplexTerrain implements ModInitializer {
 			}
 
 			if (FabricLoader.getInstance().isModLoaded("terrestria")) {
-				addTerrestriaBiomes();
+				Compat.addTerrestriaBiomes();
 				System.out.println("Terrestria biomes registered!");
+			}
+
+			if (FabricLoader.getInstance().isModLoaded("byg")) {
+				Compat.addBYGBiomes();
+				System.out.println("Biomes You'll Go biomes registered!");
 			}
 		}
 
@@ -130,100 +134,6 @@ public class SimplexTerrain implements ModInitializer {
 		SimplexNether.setBiomeExpansiveness(Biomes.WARPED_FOREST, 0.8);
 		SimplexNether.setBiomeExpansiveness(Biomes.SOUL_SAND_VALLEY, -0.25);
 		SimplexNether.setBiomeExpansiveness(Biomes.BASALT_DELTAS, -0.5);
-	}
-
-	public static void addTerrestriaBiomes() {
-		double cypressForestWeight = 1.0;
-		double denseWoodlandsWeight = 0.8;
-		double cypressSwampWeight = 1.0;
-		double hemlockRainforestWeight = 0.7;
-		double mapleForestWeight = 0.9;
-		double sakuraForestWeight = 0.9;
-		double redwoodRainforestWeight = 0.85;
-		double rainbowRainforestWeight = 0.9;
-		double redwoodForestWeight = 1.0;
-		double snowyhemlockForestWeight = 1.0;
-
-		//Lowlands biomes
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "cypress_forest"), SimplexClimate.TEMPERATE, cypressForestWeight*0.9);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "cypress_forest"), SimplexClimate.LUSH_TEMPERATE, cypressForestWeight);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "cypress_forest"), SimplexClimate.DRY_TEMPERATE, cypressForestWeight*0.5);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "dense_woodlands"), SimplexClimate.TEMPERATE, denseWoodlandsWeight*0.9);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "dense_woodlands"), SimplexClimate.LUSH_TEMPERATE, denseWoodlandsWeight*0.65);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "dense_woodlands"), SimplexClimate.DRY_TEMPERATE, denseWoodlandsWeight*0.8);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "cypress_swamp"), SimplexClimate.TROPICAL, cypressSwampWeight*1);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "cypress_swamp"), SimplexClimate.LUSH_TROPICAL, cypressSwampWeight*1.25);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "cypress_swamp"), SimplexClimate.DRY_TROPICAL, cypressSwampWeight*0.75);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "hemlock_rainforest"), SimplexClimate.BOREAL, hemlockRainforestWeight*1);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "hemlock_rainforest"), SimplexClimate.LUSH_BOREAL, hemlockRainforestWeight*1.25);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "hemlock_rainforest"), SimplexClimate.DRY_BOREAL, hemlockRainforestWeight*0.75);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "lush_redwood_forest"), SimplexClimate.TEMPERATE, redwoodRainforestWeight*1);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "lush_redwood_forest"), SimplexClimate.LUSH_TEMPERATE, redwoodRainforestWeight*1.25);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "lush_redwood_forest"), SimplexClimate.DRY_TEMPERATE, redwoodRainforestWeight*0.75);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "rainbow_rainforest"), SimplexClimate.LUSH_TROPICAL, rainbowRainforestWeight*1.25);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "redwood_forest"), SimplexClimate.TEMPERATE, redwoodForestWeight*1);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "redwood_forest"), SimplexClimate.LUSH_TEMPERATE, redwoodForestWeight*1.25);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "redwood_forest"), SimplexClimate.DRY_TEMPERATE, redwoodForestWeight*0.75);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "japanese_maple_forest"), SimplexClimate.TEMPERATE, mapleForestWeight*0.9);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "japanese_maple_forest"), SimplexClimate.LUSH_TEMPERATE, mapleForestWeight*0.65);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "japanese_maple_forest"), SimplexClimate.DRY_TEMPERATE, mapleForestWeight*0.8);
-
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "sakura_forest"), SimplexClimate.TEMPERATE, sakuraForestWeight*0.9);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "sakura_forest"), SimplexClimate.LUSH_TEMPERATE, sakuraForestWeight*0.65);
-		SimplexBiomes.addLowlandsBiome(new Identifier("terrestria", "sakura_forest"), SimplexClimate.DRY_TEMPERATE, sakuraForestWeight*0.8);
-
-		//Midlands biomes
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "cypress_forest"), SimplexClimate.TEMPERATE, denseWoodlandsWeight*0.9);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "cypress_forest"), SimplexClimate.LUSH_TEMPERATE, denseWoodlandsWeight);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "cypress_forest"), SimplexClimate.DRY_TEMPERATE, denseWoodlandsWeight*0.5);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "dense_woodlands"), SimplexClimate.TEMPERATE, denseWoodlandsWeight*0.9);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "dense_woodlands"), SimplexClimate.LUSH_TEMPERATE, denseWoodlandsWeight*0.65);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "dense_woodlands"), SimplexClimate.DRY_TEMPERATE, denseWoodlandsWeight*0.8);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "cypress_swamp"), SimplexClimate.TROPICAL, cypressSwampWeight*0.5);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "cypress_swamp"), SimplexClimate.LUSH_TROPICAL, cypressSwampWeight*0.75);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "cypress_swamp"), SimplexClimate.DRY_TROPICAL, cypressSwampWeight*0.25);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "hemlock_rainforest"), SimplexClimate.BOREAL, hemlockRainforestWeight*0.75);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "hemlock_rainforest"), SimplexClimate.LUSH_BOREAL, hemlockRainforestWeight*1);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "hemlock_rainforest"), SimplexClimate.DRY_BOREAL, hemlockRainforestWeight*0.5);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "lush_redwood_forest"), SimplexClimate.TEMPERATE, redwoodRainforestWeight*0.75);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "lush_redwood_forest"), SimplexClimate.LUSH_TEMPERATE, redwoodRainforestWeight*1);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "lush_redwood_forest"), SimplexClimate.DRY_TEMPERATE, redwoodRainforestWeight*0.5);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "rainbow_rainforest"), SimplexClimate.LUSH_TROPICAL, rainbowRainforestWeight*1.25);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "redwood_forest"), SimplexClimate.TEMPERATE, redwoodForestWeight*0.75);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "redwood_forest"), SimplexClimate.LUSH_TEMPERATE, redwoodForestWeight*1);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "redwood_forest"), SimplexClimate.DRY_TEMPERATE, redwoodForestWeight*0.5);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "japanese_maple_forest"), SimplexClimate.TEMPERATE, mapleForestWeight*0.9);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "japanese_maple_forest"), SimplexClimate.LUSH_TEMPERATE, mapleForestWeight*0.65);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "japanese_maple_forest"), SimplexClimate.DRY_TEMPERATE, mapleForestWeight*0.8);
-
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "sakura_forest"), SimplexClimate.TEMPERATE, sakuraForestWeight*0.9);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "sakura_forest"), SimplexClimate.LUSH_TEMPERATE, sakuraForestWeight*0.65);
-		SimplexBiomes.addMidlandsBiome(new Identifier("terrestria", "sakura_forest"), SimplexClimate.DRY_TEMPERATE, sakuraForestWeight*0.8);
-
-		//Highlands biomes
-		SimplexBiomes.addHighlandsBiome(new Identifier("terrestria", "snowy_hemlock_forest"), SimplexClimate.TEMPERATE, snowyhemlockForestWeight*0.9);
-		SimplexBiomes.addHighlandsBiome(new Identifier("terrestria", "snowy_hemlock_forest"), SimplexClimate.LUSH_TEMPERATE, snowyhemlockForestWeight*0.65);
-		SimplexBiomes.addHighlandsBiome(new Identifier("terrestria", "snowy_hemlock_forest"), SimplexClimate.DRY_TEMPERATE, snowyhemlockForestWeight*0.8);
-
-		//replacements
-
-		SimplexBiomes.addReplacementBiome(biomeId(Biomes.JUNGLE), new Identifier("terrestria", "volcanic_island"), 10);
 	}
 
 	public static void addWinterBiomes() {

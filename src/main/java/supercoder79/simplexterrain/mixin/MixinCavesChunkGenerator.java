@@ -27,7 +27,8 @@ public abstract class MixinCavesChunkGenerator extends ChunkGenerator {
 
     @Inject(method = "populateNoise", at = @At("HEAD"), cancellable = true)
     public void populateNoise(WorldAccess world, StructureAccessor accessor, Chunk chunk, CallbackInfo ci) {
-        if (SimplexTerrain.isSimplexEnabled && world.getWorld().getDimensionRegistryKey() == DimensionType.THE_NETHER_REGISTRY_KEY) {
+        // replace the nether with ours if we're in a simplex terrain world and nether generation is enabled
+        if (SimplexTerrain.isSimplexEnabled && world.getWorld().getDimensionRegistryKey() == DimensionType.THE_NETHER_REGISTRY_KEY && SimplexTerrain.CONFIG.simplexNetherGeneration) {
             SimplexNetherGeneration.generate(world, chunk, this.biomeSource, getSeaLevel());
             ci.cancel();
         }
