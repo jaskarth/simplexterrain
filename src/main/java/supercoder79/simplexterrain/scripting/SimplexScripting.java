@@ -43,8 +43,12 @@ public class SimplexScripting {
 			// load script given
 			try (FileReader reader = new FileReader(new File(scriptsLoc, loc))) {
 				// Let scripters have access to noise generators and the config.
+				engine.eval("var NoiseGenerator = Java.type(\"supercoder79.simplexterrain.scripting.NoiseGenerator\");");
+				//ScriptContext context = engine.getContext();
+				//System.out.println(context.getAttribute("NoiseGenerator"));
+				//context.setAttribute("NoiseGenerator", NoiseGenerator.class, ScriptContext.ENGINE_SCOPE);
 				Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-				bindings.put("NoiseGenerator", NoiseGenerator.class);
+				//bindings.put("NoiseGenerator", NoiseGenerator.class);
 				bindings.put("config", SimplexTerrain.CONFIG);
 
 				// load functions
