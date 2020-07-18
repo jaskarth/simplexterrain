@@ -9,6 +9,10 @@ import java.util.function.Consumer;
 
 public class DefaultScripts {
 	public static void create(File scriptsLoc) {
+		// Yes it writes these every time
+		// If people want to actually mess with terrain gen they should go create their own files
+		// Thanks, Valo.
+
 		create(scriptsLoc, "baseShape.js", file -> {
 			file.println("var noiseGenerator;");
 			file.println();
@@ -17,7 +21,7 @@ public class DefaultScripts {
 			file.println("}");
 			file.println();
 			file.println("function getHeight(x, z, currentHeight) {");
-			file.println("  return noiseGenerator.sample(x, z) + 50;");
+			file.println("  return noiseGenerator.sample(x, z);");
 			file.println("}");
 		});
 
