@@ -59,20 +59,21 @@ public class SimplexScripting {
 			}
 		}
 
-		debugNoise();
+//		debugNoise();
 	}
 
 	private static void debugNoise() {
-		ChunkRandom cr = new ChunkRandom(490);
+		ChunkRandom cr = new ChunkRandom(109490);
 		for (Terrain t : terrain) {
-			t.init(490, cr);
+			t.init(109490, cr);
 		}
 
 		for (int i = 0; i < 10; ++i) {
 			System.out.println("Sample " + i);
 			double currentHeight = 0;
 			for (Terrain t : terrain) {
-				System.out.println(currentHeight = t.sample(40 + 30 * i, 200, currentHeight));
+				currentHeight = t.sample(40 + 30 * i, -200, currentHeight);
+				System.out.println(currentHeight);
 			}
 		}
 	}
