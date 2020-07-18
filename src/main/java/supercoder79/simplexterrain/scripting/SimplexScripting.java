@@ -2,6 +2,8 @@ package supercoder79.simplexterrain.scripting;
 
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.script.Bindings;
@@ -13,100 +15,77 @@ import javax.script.ScriptException;
 
 import com.google.common.base.Supplier;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.SimplexTerrain;
-import supercoder79.simplexterrain.api.noise.Noise2D;
 
 public class SimplexScripting {
 	private static final ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 	public static final Supplier<ScriptEngine> scriptEngine = () -> scriptEngineManager.getEngineByName("nashorn");
 	public static final File scriptsLoc = new File(FabricLoader.getInstance().getConfigDirectory(), "simplexterrain/scripts");
 	public static Random randomCache;
-	public static Terrain terrain;
+	public static List<Terrain> terrain = new ArrayList<>();
 
-	public static void loadScripts(String loc) {
+	public static void loadScripts(String[] algs) {
 		System.out.println("Loading Scripts!");
 		scriptsLoc.mkdirs();
 
+		DefaultScripts.create(scriptsLoc);
+
 		// Terrain Scripts
 
-		if (loc.equals("default")) {
-			System.out.println("Using default terrain.");
-			terrain = null;
-		} else {
-			System.out.println("Using custom terrain script: " + loc);
+		for (String loc : algs) {
+			System.out.println("Loading custom terrain script: " + loc);
 			ScriptEngine engine = scriptEngine.get();
 
 			// load script given
 			try (FileReader reader = new FileReader(new File(scriptsLoc, loc))) {
 				// Let scripters have access to noise generators and the config.
 				engine.eval("var NoiseGenerator = Java.type(\"supercoder79.simplexterrain.scripting.NoiseGenerator\");");
+				engine.eval("var NoiseMath = Java.type(\"supercoder79.simplexterrain.noise.NoiseMath\");");
 				//ScriptContext context = engine.getContext();
 				//System.out.println(context.getAttribute("NoiseGenerator"));
 				//context.setAttribute("NoiseGenerator", NoiseGenerator.class, ScriptContext.ENGINE_SCOPE);
 				Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
 				//bindings.put("NoiseGenerator", NoiseGenerator.class);
 				bindings.put("config", SimplexTerrain.CONFIG);
+				bindings.put("mountainConfig", SimplexTerrain.MOUNTAIN_CONFIG);
+				bindings.put("ridgesConfig", SimplexTerrain.RIDGES_CONFIG);
+				bindings.put("detailConfig", SimplexTerrain.DETAIL_CONFIG);
 
 				// load functions
 				engine.eval(reader);
-				terrain = new Terrain((Invocable) engine);
+				terrain.add(new Terrain((Invocable) engine));
 			} catch (Throwable t) {
 				throw new RuntimeException(t);
 			}
 		}
 	}
 
-	public static boolean isModifierAllowed(String modifier) {
-		if (terrain == null) {
-			return true;
-		} else {
-			return terrain.isModifierAllowed(modifier);
-		}
-	}
-
-	public static class Terrain implements Noise2D {
+	public static class Terrain {
 		private Terrain(Invocable engine) {
 			this.engine = engine;
 		}
 
 		private final Invocable engine;
-		private final Object2BooleanMap<String> allowedModifiers = new Object2BooleanArrayMap<>();
 
-		public boolean isModifierAllowed(String name) {
-			return this.allowedModifiers.computeBooleanIfAbsent(name, n -> {
-				try {
-					return (Boolean) engine.invokeFunction("isModifierAllowed", n);
-				} catch (NoSuchMethodException e) {
-					new SimplexScriptException("Missing <isModifierAllowed(noiseModifier) : boolean> function in script! Defaulting to false.", e).printStackTrace();
-					return false;
-				} catch (ScriptException e) {
-					throw new RuntimeException(e);
-				}
-			});
-		}
-
-		public void setup(long seed, ChunkRandom random) {
+		public void init(long seed, ChunkRandom random) {
 			randomCache = random;
 
 			try {
-				engine.invokeFunction("setup", seed);
+				engine.invokeFunction("init", seed);
 			} catch (NoSuchMethodException e) {
-				throw new SimplexScriptException("Missing <setup(seed) : void> function in script!", e);
+				throw new SimplexScriptException("Missing <init(seed) : void> function in script!", e);
 			} catch (ScriptException e) {
 				throw new RuntimeException(e);
 			}
 		}
 
-		@Override
-		public double sample(double x, double z) {
+		public double sample(double x, double z, double currentHeight) {
 			try {
-				return (Integer) engine.invokeFunction("getHeight", x, z);
+				return (Double) engine.invokeFunction("getHeight", x, z, currentHeight);
 			} catch (NoSuchMethodException e) {
-				throw new SimplexScriptException("Missing <getHeight(x, z) : double> function in script!", e);
+				throw new SimplexScriptException("Missing <getHeight(x, z, currentHeight) : double> function in script!", e);
 			} catch (ScriptException e) {
 				throw new RuntimeException(e);
 			}

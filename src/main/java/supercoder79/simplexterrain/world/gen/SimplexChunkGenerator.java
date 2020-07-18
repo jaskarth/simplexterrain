@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,13 +48,10 @@ import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
-import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.Noise2D;
-import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
-import supercoder79.simplexterrain.api.noisemodifier.NoiseModifier;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
-import supercoder79.simplexterrain.noise.NoiseMath;
 import supercoder79.simplexterrain.scripting.SimplexScripting;
+import supercoder79.simplexterrain.scripting.SimplexScripting.Terrain;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
@@ -95,17 +91,26 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 		noisePostProcesors.forEach(postProcessor -> postProcessor.init(seed));
 		carverPostProcesors.forEach(postProcessor -> postProcessor.init(seed));
 		featurePostProcesors.forEach(postProcessor -> postProcessor.init(seed));
-		noiseModifiers.forEach(noiseModifier -> noiseModifier.init(seed));
 
 		ChunkRandom random = new ChunkRandom(seed);
+		SimplexScripting.terrain.forEach(t -> t.init(seed, random));
+
 		this.biomeSource = biomeSource;
 
-		if (SimplexScripting.terrain == null) {
-			Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
-			this.heightFunction = new OctaveNoiseSampler<>(noiseClass, random, SimplexTerrain.CONFIG.mainOctaveAmount, SimplexTerrain.CONFIG.mainFrequency, SimplexTerrain.CONFIG.mainAmplitudeHigh, SimplexTerrain.CONFIG.mainAmplitudeLow);
+		if (SimplexScripting.terrain.isEmpty()) {
+			throw new RuntimeException("Muri Desu Yo! Terrain algorithm is EMPTY!");
+			//Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
+			//this.heightFunction = new OctaveNoiseSampler<>(noiseClass, random, SimplexTerrain.CONFIG.mainOctaveAmount, SimplexTerrain.CONFIG.mainFrequency, SimplexTerrain.CONFIG.mainAmplitudeHigh, SimplexTerrain.CONFIG.mainAmplitudeLow);
 		} else {
-			SimplexScripting.terrain.setup(seed, random);
-			this.heightFunction = SimplexScripting.terrain;
+			this.heightFunction = (x, z) -> {
+				double currentHeight = 0;
+
+				for (Terrain t : SimplexScripting.terrain) {
+					currentHeight = t.sample(x, z, currentHeight);
+				}
+
+				return currentHeight;
+			};
 		}
 
 		//newNoise2 = new OpenSimplexNoise(seed - 30);
@@ -144,12 +149,6 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 			featurePostProcesors.add(postProcessor);
 			break;
 		}
-	}
-
-	private static final Collection<NoiseModifier> noiseModifiers = new ArrayList<>();
-
-	public static void addNoiseModifier(NoiseModifier noiseModifier) {
-		noiseModifiers.add(noiseModifier);
 	}
 
 	@Override
@@ -299,20 +298,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 	@Override
 	public int getHeight(int x, int z) {
-		double currentVal = this.heightFunction.sample(x, z);
-
-		for (NoiseModifier modifier : noiseModifiers) {
-			if (SimplexScripting.isModifierAllowed(modifier.getName())) {
-				currentVal = modifier.modify(x, z, currentVal);
-			}
-		}
-
-		// make sigmoid optional for scripters. They may want to implement a custom sigmoid, or control height directly.
-		if (SimplexScripting.isModifierAllowed("SIGMOID")) {
-			currentVal = NoiseMath.sigmoid(currentVal);
-		}
-
-		return (int) (currentVal);
+		return (int) this.heightFunction.sample(x, z);
 	}
 
 	@Override

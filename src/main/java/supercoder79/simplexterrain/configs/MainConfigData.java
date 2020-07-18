@@ -1,12 +1,9 @@
 package supercoder79.simplexterrain.configs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import supercoder79.simplexterrain.SimplexTerrain;
-import supercoder79.simplexterrain.api.noise.NoiseType;
-import supercoder79.simplexterrain.world.noisemodifier.NoiseModifiers;
 import supercoder79.simplexterrain.world.postprocessor.PostProcessors;
 
 public class MainConfigData {
@@ -20,11 +17,11 @@ public class MainConfigData {
 
 	public int noiseGenerationThreads = 2;
 
-	public NoiseType noiseGenerator = NoiseType.SIMPLEX;
+	public String noiseGenerator = "SIMPLEX";
 
 	public List<PostProcessors> postProcessors = new ArrayList<>();
 
-	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.MOUNTAINS, NoiseModifiers.RIDGES, NoiseModifiers.DETAILS);
+//	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.MOUNTAINS, NoiseModifiers.RIDGES, NoiseModifiers.DETAILS);
 
 	public int mainOctaveAmount = 3;
 	public double mainFrequency = 3200.0;
@@ -54,5 +51,5 @@ public class MainConfigData {
 	public double temperatureAmplitude = 1.2;
 	public double humidityAmplitude = 1.2;
 
-	public String terrainAlgorithm = "default";
+	public String[] terrainShape = {"baseShape.js", "mountains.js", "ridges.js", "details.js", "sigmoid.js"};
 }

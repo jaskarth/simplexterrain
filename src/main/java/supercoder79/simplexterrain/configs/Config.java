@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import supercoder79.simplexterrain.SimplexTerrain;
-import supercoder79.simplexterrain.api.noise.NoiseType;
 
 public class Config {
 	public static void init() {
@@ -39,7 +38,7 @@ public class Config {
 		}
 		if (configData.noiseGenerator == null) {
 			System.out.println("[Simplex Terrain] The noise generator was null! Falling back to Simplex!");
-			configData.noiseGenerator = NoiseType.SIMPLEX;
+			configData.noiseGenerator = "SIMPLEX";
 		}
 
 		SimplexTerrain.CONFIG = configData;
@@ -49,6 +48,5 @@ public class Config {
 
 		// Setup (reading from configs and stuff like that)
 		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> postProcessors.postProcessor.setup());
-		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> noiseModifiers.noiseModifier.setup());
 	}
 }
