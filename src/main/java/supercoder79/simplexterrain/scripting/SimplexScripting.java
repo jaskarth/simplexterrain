@@ -40,14 +40,12 @@ public class SimplexScripting {
 
 			// load script given
 			try (FileReader reader = new FileReader(new File(scriptsLoc, loc))) {
-				// Let scripters have access to noise generators and the config.
+				// Let scripts have access to noise generators and noise math
 				engine.eval("var NoiseGenerator = Java.type(\"supercoder79.simplexterrain.scripting.NoiseGenerator\");");
 				engine.eval("var NoiseMath = Java.type(\"supercoder79.simplexterrain.noise.NoiseMath\");");
-				//ScriptContext context = engine.getContext();
-				//System.out.println(context.getAttribute("NoiseGenerator"));
-				//context.setAttribute("NoiseGenerator", NoiseGenerator.class, ScriptContext.ENGINE_SCOPE);
+
+				// Let scripts have access to the configs
 				Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-				//bindings.put("NoiseGenerator", NoiseGenerator.class);
 				bindings.put("config", SimplexTerrain.CONFIG);
 				bindings.put("mountainConfig", SimplexTerrain.MOUNTAIN_CONFIG);
 				bindings.put("ridgesConfig", SimplexTerrain.RIDGES_CONFIG);
@@ -58,6 +56,23 @@ public class SimplexScripting {
 				terrain.add(new Terrain((Invocable) engine));
 			} catch (Throwable t) {
 				throw new RuntimeException(t);
+			}
+		}
+
+		debugNoise();
+	}
+
+	private static void debugNoise() {
+		ChunkRandom cr = new ChunkRandom(490);
+		for (Terrain t : terrain) {
+			t.init(490, cr);
+		}
+
+		for (int i = 0; i < 10; ++i) {
+			System.out.println("Sample " + i);
+			double currentHeight = 0;
+			for (Terrain t : terrain) {
+				System.out.println(currentHeight = t.sample(40 + 30 * i, 200, currentHeight));
 			}
 		}
 	}
