@@ -14,14 +14,14 @@ public class DefaultScripts {
 		// Thanks, Valo.
 
 		create(scriptsLoc, "baseShape.js", file -> {
-			file.println("var noiseGenerator;");
+			file.println("var baseShapeNoise;");
 			file.println();
 			file.println("function init(seed) {");
-			file.println("  noiseGenerator = new NoiseGenerator(config.noiseGenerator, config.mainOctaveAmount, config.mainFrequency, config.mainAmplitudeHigh, config.mainAmplitudeLow);");
+			file.println("  baseShapeNoise = new NoiseGenerator(config.noiseGenerator, config.mainOctaveAmount, config.mainFrequency, config.mainAmplitudeHigh, config.mainAmplitudeLow);");
 			file.println("}");
 			file.println();
 			file.println("function getHeight(x, z, currentHeight) {");
-			file.println("  return noiseGenerator.sample(x, z);");
+			file.println("  return baseShapeNoise.sample(x, z);");
 			file.println("}");
 		});
 

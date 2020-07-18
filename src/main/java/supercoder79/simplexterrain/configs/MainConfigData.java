@@ -17,6 +17,8 @@ public class MainConfigData {
 
 	public int noiseGenerationThreads = 2;
 
+	// Noise type is resolved later
+	// It's a string so javascript can go brr
 	public String noiseGenerator = "SIMPLEX";
 
 	public List<PostProcessors> postProcessors = new ArrayList<>();
