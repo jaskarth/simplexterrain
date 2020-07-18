@@ -28,4 +28,9 @@ public class DetailNoiseModifier implements NoiseModifier {
     public double modify(int x, int z, double currentNoiseValue) {
         return currentNoiseValue + detailNoise.sample(x, z);
     }
+
+    @Override
+    public String getName() {
+    	return "DETAIL";
+    }
 }

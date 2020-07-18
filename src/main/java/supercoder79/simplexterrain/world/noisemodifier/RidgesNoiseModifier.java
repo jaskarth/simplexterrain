@@ -28,4 +28,9 @@ public class RidgesNoiseModifier implements NoiseModifier {
     public double modify(int x, int z, double currentNoiseValue) {
         return currentNoiseValue + ((1 - Math.abs(ridgedNoise.sample(x, z))) * config.amplitude);
     }
+
+    @Override
+    public String getName() {
+    	return "RIDGES";
+    }
 }

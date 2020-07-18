@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.gson.annotations.SerializedName;
-
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.NoiseType;
 import supercoder79.simplexterrain.world.noisemodifier.NoiseModifiers;
@@ -48,11 +46,13 @@ public class MainConfigData {
 	public double humidityOffset = 0.0;
 
 	public int seaLevel = 63;
-	
+
 	public int temperatureOctaveAmount = 1;
 	public int humidityOctaveAmount = 2;
 	public double temperatureFrequency = 15.0;
 	public double humidityFrequency = 11.0;
 	public double temperatureAmplitude = 1.2;
 	public double humidityAmplitude = 1.2;
+
+	public String terrainAlgorithm = "default";
 }

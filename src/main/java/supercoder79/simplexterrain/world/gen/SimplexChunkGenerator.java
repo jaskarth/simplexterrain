@@ -2,13 +2,21 @@ package supercoder79.simplexterrain.world.gen;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.IntStream;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
@@ -23,8 +31,8 @@ import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.SpawnHelper;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeAccess;
@@ -42,11 +50,12 @@ import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.Noise;
-import supercoder79.simplexterrain.api.noisemodifier.NoiseModifier;
+import supercoder79.simplexterrain.api.noise.Noise2D;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
+import supercoder79.simplexterrain.api.noisemodifier.NoiseModifier;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.noise.NoiseMath;
-import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
+import supercoder79.simplexterrain.scripting.SimplexScripting;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
@@ -56,10 +65,14 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 			.apply(instance, instance.stable(SimplexChunkGenerator::new)));
 	public static SimplexChunkGenerator THIS;
 
-	public final OctaveNoiseSampler<? extends Noise> baseNoise;
-	private final OpenSimplexNoise newNoise2;
-	private final OpenSimplexNoise newNoise3;
+	//public final OctaveNoiseSampler<? extends Noise> baseNoise; REPLACED
+	//private final OpenSimplexNoise newNoise2;
+	//private final OpenSimplexNoise newNoise3;
+	public final Noise2D heightFunction;
 
+	/**
+	 * Block noise used by the surface builder.
+	 */
 	private NoiseSampler surfaceDepthNoise;
 
 	private final ThreadLocal<Long2ObjectLinkedOpenHashMap<int[]>> noiseCache = new ThreadLocal<>();
@@ -69,7 +82,6 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	private static final ArrayList<TerrainPostProcessor> featurePostProcesors = new ArrayList<>();
 
 	private static final Map<Biome, Double> biome2FalloffMap = new HashMap<>();
-
 	private static final Map<Biome, Double> biome2ThresholdMap = new HashMap<>();
 
 	private final CompletableFuture<Void>[] futures;
@@ -88,11 +100,16 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 		ChunkRandom random = new ChunkRandom(seed);
 		this.biomeSource = biomeSource;
 
-		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
+		if (SimplexScripting.terrain == null) {
+			Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
+			this.heightFunction = new OctaveNoiseSampler<>(noiseClass, random, SimplexTerrain.CONFIG.mainOctaveAmount, SimplexTerrain.CONFIG.mainFrequency, SimplexTerrain.CONFIG.mainAmplitudeHigh, SimplexTerrain.CONFIG.mainAmplitudeLow);
+		} else {
+			SimplexScripting.terrain.setup(seed, random);
+			this.heightFunction = SimplexScripting.terrain;
+		}
 
-		baseNoise = new OctaveNoiseSampler<>(noiseClass, random, SimplexTerrain.CONFIG.mainOctaveAmount, SimplexTerrain.CONFIG.mainFrequency, SimplexTerrain.CONFIG.mainAmplitudeHigh, SimplexTerrain.CONFIG.mainAmplitudeLow);
-		newNoise2 = new OpenSimplexNoise(seed - 30);
-		newNoise3 = new OpenSimplexNoise(seed + 30);
+		//newNoise2 = new OpenSimplexNoise(seed - 30);
+		//newNoise3 = new OpenSimplexNoise(seed + 30);
 
 		futures = new CompletableFuture[SimplexTerrain.CONFIG.noiseGenerationThreads];
 
@@ -117,15 +134,15 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 	public static void addTerrainPostProcessor(TerrainPostProcessor postProcessor) {
 		switch (postProcessor.getTarget()) {
-			case NOISE:
-				noisePostProcesors.add(postProcessor);
-				break;
-			case CARVERS:
-				carverPostProcesors.add(postProcessor);
-				break;
-			case FEATURES:
-				featurePostProcesors.add(postProcessor);
-				break;
+		case NOISE:
+			noisePostProcesors.add(postProcessor);
+			break;
+		case CARVERS:
+			carverPostProcesors.add(postProcessor);
+			break;
+		case FEATURES:
+			featurePostProcesors.add(postProcessor);
+			break;
 		}
 	}
 
@@ -162,7 +179,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	@Override
 	public void populateBiomes(Chunk chunk) {
 		ChunkPos chunkPos = chunk.getPos();
-//		((ProtoChunk)chunk).setBiomes(SimplexBiomeArray.makeNewBiomeArray(chunkPos, this.biomeSource));
+		//		((ProtoChunk)chunk).setBiomes(SimplexBiomeArray.makeNewBiomeArray(chunkPos, this.biomeSource));
 		((ProtoChunk)chunk).setBiomes(new BiomeArray(chunkPos, this.biomeSource));
 	}
 
@@ -177,21 +194,21 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 			for (int z = 0; z < 16; ++z) {
 				pos.setZ(z);
 
-//				double falloff = 0;
-//				double threshold = 0;
-//
-//				for (int x1 = -1; x1 <= 1; x1++) {
-//					for (int z1 = -1; z1 <= 1; z1++) {
-//						falloff += biome2FalloffMap.getOrDefault(
-//								biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), getSeaLevel(), (chunk.getPos().z*16) + (z + z1)), 5.0);
-//
-//						threshold += biome2ThresholdMap.getOrDefault(
-//								biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), getSeaLevel(), (chunk.getPos().z*16) + (z + z1)), 0.2);
-//					}
-//				}
-//
-//				falloff /= 9;
-//				threshold /= 9;
+				//				double falloff = 0;
+				//				double threshold = 0;
+				//
+				//				for (int x1 = -1; x1 <= 1; x1++) {
+				//					for (int z1 = -1; z1 <= 1; z1++) {
+				//						falloff += biome2FalloffMap.getOrDefault(
+				//								biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), getSeaLevel(), (chunk.getPos().z*16) + (z + z1)), 5.0);
+				//
+				//						threshold += biome2ThresholdMap.getOrDefault(
+				//								biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), getSeaLevel(), (chunk.getPos().z*16) + (z + z1)), 0.2);
+				//					}
+				//				}
+				//
+				//				falloff /= 9;
+				//				threshold /= 9;
 
 				int height = requestedVals[(x*16) + z];
 
@@ -203,36 +220,37 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 
 				//3D modification (Bunes)
-//				for (int y = height; y < 256; y++) {
-//					if (y - height > 40) break;
-//					if (place3DNoise(chunk.getPos(), height - 1, x, y, z, falloff, threshold)) {
-//						pos.setY(y);
-//						chunk.setBlockState(pos, Blocks.STONE.getDefaultState(), false);
-//					}
-//				}
+				//				for (int y = height; y < 256; y++) {
+				//					if (y - height > 40) break;
+				//					if (place3DNoise(chunk.getPos(), height - 1, x, y, z, falloff, threshold)) {
+				//						pos.setY(y);
+				//						chunk.setBlockState(pos, Blocks.STONE.getDefaultState(), false);
+				//					}
+				//				}
 
-                // water placement
-                for (int y = 0; y < getSeaLevel(); y++) {
-                    pos.setY(y);
-                    if (chunk.getBlockState(pos).isAir()) {
-                        chunk.setBlockState(pos, Blocks.WATER.getDefaultState(), false);
-                    }
-                }
+				// water placement
+				for (int y = 0; y < getSeaLevel(); y++) {
+					pos.setY(y);
+					if (chunk.getBlockState(pos).isAir()) {
+						chunk.setBlockState(pos, Blocks.WATER.getDefaultState(), false);
+					}
+				}
 			}
 		}
 		noisePostProcesors.forEach(postProcessor -> postProcessor.process(world, new ChunkRandom(), chunk.getPos().x, chunk.getPos().z, this));
 	}
 
-	public boolean place3DNoise(ChunkPos pos, int height, int x, int y, int z, double falloff, double threshold) {
+	/*
+	private boolean place3DNoise(ChunkPos pos, int height, int x, int y, int z, double falloff, double threshold) {
 	    double coefficient = falloff / ((y - height) + 6); //height falloff
 
 	    double noise1 = (newNoise2.sample(((pos.x*16) + x) / 90f, y / 30f, ((pos.z*16) + z) / 90f)*coefficient);
 	    double noise2 = (newNoise3.sample(((pos.x*16) + x) / 90f, y / 30f, ((pos.z*16) + z) / 90f)*coefficient);
 
 		return noise1 + noise2 > threshold;
-    }
+    }*/
 
-    @Override
+	@Override
 	public int[] getHeightsInChunk(ChunkPos pos) {
 		if (noiseCache.get() == null) noiseCache.set(new Long2ObjectLinkedOpenHashMap<>());
 
@@ -281,13 +299,20 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 	@Override
 	public int getHeight(int x, int z) {
-		double currentVal = baseNoise.sample(x, z);
+		double currentVal = this.heightFunction.sample(x, z);
 
 		for (NoiseModifier modifier : noiseModifiers) {
-			currentVal = modifier.modify(x, z, currentVal);
+			if (SimplexScripting.isModifierAllowed(modifier.getName())) {
+				currentVal = modifier.modify(x, z, currentVal);
+			}
 		}
 
-		return (int) (NoiseMath.sigmoid(currentVal));
+		// make sigmoid optional for scripters. They may want to implement a custom sigmoid, or control height directly.
+		if (SimplexScripting.isModifierAllowed("SIGMOID")) {
+			currentVal = NoiseMath.sigmoid(currentVal);
+		}
+
+		return (int) (currentVal);
 	}
 
 	@Override

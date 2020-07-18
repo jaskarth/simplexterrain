@@ -14,8 +14,8 @@ import supercoder79.simplexterrain.api.noise.NoiseType;
 public class Config {
 	public static void init() {
 		MainConfigData configData = null;
-		try {
 
+		try {
 			Path configDir = Paths.get("", "config", "simplexterrain.json");
 			if (Files.exists(configDir)) {
 				configData = ConfigUtil.gson.fromJson(new FileReader(configDir.toFile()), MainConfigData.class);
