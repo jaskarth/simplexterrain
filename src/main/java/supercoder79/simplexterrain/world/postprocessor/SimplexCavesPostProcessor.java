@@ -31,7 +31,7 @@ public class SimplexCavesPostProcessor implements TerrainPostProcessor {
 
     @Override
     public void setup() {
-        config = ConfigUtil.getFromConfig(ErosionConfigData.class, Paths.get("config", "simplexterrain", "postprocessors", "caves.json"));
+        config = ConfigUtil.getFromConfig(CaveConfigData.class, Paths.get("config", "simplexterrain", "postprocessors", "caves.json"));
     }
 
     @Override
