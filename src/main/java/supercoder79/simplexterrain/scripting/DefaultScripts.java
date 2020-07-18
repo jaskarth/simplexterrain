@@ -12,8 +12,9 @@ public class DefaultScripts {
 		// Yes it writes these every time
 		// If people want to actually mess with terrain gen they should go create their own files
 		// Thanks, Valo.
+		File terrain = new File(scriptsLoc, "terrain");
 
-		create(scriptsLoc, "baseShape.js", file -> {
+		create(terrain, "baseShape.js", file -> {
 			file.println("var baseShapeNoise;");
 			file.println();
 			file.println("function init(seed) {");
@@ -25,7 +26,7 @@ public class DefaultScripts {
 			file.println("}");
 		});
 
-		create(scriptsLoc, "mountains.js", file -> {
+		create(terrain, "mountains.js", file -> {
 			file.println("var mountainNoise;");
 			file.println();
 			file.println("function init(seed) {");
@@ -37,7 +38,7 @@ public class DefaultScripts {
 			file.println("}");
 		});
 
-		create(scriptsLoc, "ridges.js", file -> {
+		create(terrain, "ridges.js", file -> {
 			file.println("var ridgedNoise;");
 			file.println();
 			file.println("function init(seed) {");
@@ -49,7 +50,7 @@ public class DefaultScripts {
 			file.println("}");
 		});
 
-		create(scriptsLoc, "details.js", file -> {
+		create(terrain, "details.js", file -> {
 			file.println("var detailNoise;");
 			file.println();
 			file.println("function init(seed) {");
@@ -61,7 +62,7 @@ public class DefaultScripts {
 			file.println("}");
 		});
 
-		create(scriptsLoc, "sigmoid.js", file -> {
+		create(terrain, "sigmoid.js", file -> {
 			file.println("function init(seed) {");
 			file.println("}");
 			file.println();

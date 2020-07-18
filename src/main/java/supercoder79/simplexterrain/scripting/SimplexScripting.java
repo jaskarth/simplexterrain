@@ -34,12 +34,14 @@ public class SimplexScripting {
 
 		// Terrain Scripts
 
+		File terrainFile = new File(scriptsLoc, "terrain");
+
 		for (String loc : algs) {
 			System.out.println("Loading custom terrain script: " + loc);
 			ScriptEngine engine = scriptEngine.get();
 
 			// load script given
-			try (FileReader reader = new FileReader(new File(scriptsLoc, loc))) {
+			try (FileReader reader = new FileReader(new File(terrainFile, loc))) {
 				// Let scripts have access to noise generators and noise math
 				engine.eval("var NoiseGenerator = Java.type(\"supercoder79.simplexterrain.scripting.NoiseGenerator\");");
 				engine.eval("var NoiseMath = Java.type(\"supercoder79.simplexterrain.noise.NoiseMath\");");
@@ -59,7 +61,7 @@ public class SimplexScripting {
 			}
 		}
 
-//		debugNoise();
+		//		debugNoise();
 	}
 
 	private static void debugNoise() {
