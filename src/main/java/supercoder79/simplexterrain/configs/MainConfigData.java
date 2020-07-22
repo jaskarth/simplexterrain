@@ -1,14 +1,9 @@
 package supercoder79.simplexterrain.configs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import com.google.gson.annotations.SerializedName;
-
 import supercoder79.simplexterrain.SimplexTerrain;
-import supercoder79.simplexterrain.api.noise.NoiseType;
-import supercoder79.simplexterrain.world.noisemodifier.NoiseModifiers;
 import supercoder79.simplexterrain.world.postprocessor.PostProcessors;
 
 public class MainConfigData {
@@ -22,11 +17,13 @@ public class MainConfigData {
 
 	public int noiseGenerationThreads = 2;
 
-	public NoiseType noiseGenerator = NoiseType.SIMPLEX;
+	// Noise type is resolved later
+	// It's a string so javascript can go brr
+	public String noiseGenerator = "SIMPLEX";
 
 	public List<PostProcessors> postProcessors = new ArrayList<>();
 
-	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.MOUNTAINS, NoiseModifiers.RIDGES, NoiseModifiers.DETAILS);
+//	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.MOUNTAINS, NoiseModifiers.RIDGES, NoiseModifiers.DETAILS);
 
 	public int mainOctaveAmount = 3;
 	public double mainFrequency = 3200.0;
@@ -48,11 +45,13 @@ public class MainConfigData {
 	public double humidityOffset = 0.0;
 
 	public int seaLevel = 63;
-	
+
 	public int temperatureOctaveAmount = 1;
 	public int humidityOctaveAmount = 2;
 	public double temperatureFrequency = 15.0;
 	public double humidityFrequency = 11.0;
 	public double temperatureAmplitude = 1.2;
 	public double humidityAmplitude = 1.2;
+
+	public String[] terrainShape = {"baseShape.js", "mountains.js", "ridges.js", "details.js", "sigmoid.js"};
 }

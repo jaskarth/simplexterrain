@@ -49,6 +49,6 @@ public class NoiseMath {
     //Utilities
 
     public static double sigmoid(double val) {
-        return 256 / (Math.exp(7 / 3f - val / 64) + 1);
+    	return 256 / (Math.exp(7 / 3f - val / 64) + 1);
     }
 }

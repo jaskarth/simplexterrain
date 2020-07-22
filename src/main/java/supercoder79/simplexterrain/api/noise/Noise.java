@@ -7,11 +7,9 @@ package supercoder79.simplexterrain.api.noise;
  *
  * @author SuperCoder79
  */
-public abstract class Noise {
+public abstract class Noise implements Noise2D {
 	public Noise(long seed) {
 	}
-
-	public abstract double sample(double x, double z);
 
 	public abstract double sample(double x, double y, double z);
 

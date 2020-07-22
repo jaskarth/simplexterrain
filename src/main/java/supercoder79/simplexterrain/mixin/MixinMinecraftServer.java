@@ -44,6 +44,7 @@ public class MixinMinecraftServer {
         try {
             return biomeSource.locateBiome(x, y, z, radius, biomes, random);
         } catch (Exception e) {
+        	e.printStackTrace();
             System.out.println("[Simplex Terrain] If your server stalls here i'm really sorry but you're gonna have to kill it and restart it.");
             System.out.println("[Simplex Terrain] I have no clue why this happens but it does.");
             System.out.println("[Simplex Terrain] I'll try to get it fixed, but for now this is the workaround - SuperCoder79");

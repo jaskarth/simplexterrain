@@ -1,5 +1,8 @@
 package supercoder79.simplexterrain;
 
+import java.nio.file.Paths;
+import java.util.concurrent.ForkJoinPool;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -13,21 +16,27 @@ import supercoder79.simplexterrain.api.biomes.SimplexNether;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.compat.Compat;
 import supercoder79.simplexterrain.configs.Config;
+import supercoder79.simplexterrain.configs.ConfigUtil;
 import supercoder79.simplexterrain.configs.MainConfigData;
+import supercoder79.simplexterrain.configs.noisemodifiers.DetailsConfigData;
+import supercoder79.simplexterrain.configs.noisemodifiers.MountainConfigData;
+import supercoder79.simplexterrain.configs.noisemodifiers.RidgesConfigData;
+import supercoder79.simplexterrain.scripting.SimplexScripting;
 import supercoder79.simplexterrain.world.SimplexGenType;
-import supercoder79.simplexterrain.world.biomelayers.layers.SimplexClimateLayer;
 import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 
-import java.util.concurrent.*;
-
 public class SimplexTerrain implements ModInitializer {
-	public static final String VERSION = "0.6.5";
+	public static final String VERSION = "0.7.0";
 
 	//if the current world is a Simplex Terrain world. Has no meaning when outside of a world.
 	public static boolean isSimplexEnabled = false;
 
 	public static MainConfigData CONFIG;
+	public static MountainConfigData MOUNTAIN_CONFIG;
+	public static RidgesConfigData RIDGES_CONFIG;
+	public static DetailsConfigData DETAIL_CONFIG;
+
 	public static ForkJoinPool globalThreadPool;
 
 	public static SimplexGenType levelGeneratorType;
@@ -57,6 +66,10 @@ public class SimplexTerrain implements ModInitializer {
 		GRAVELLY_MOUNTAINS = biomeId(Biomes.GRAVELLY_MOUNTAINS);
 
 		Config.init();
+		MOUNTAIN_CONFIG = ConfigUtil.getFromConfig(MountainConfigData.class, Paths.get("config", "simplexterrain", "noisemodifiers", "mountains.json"));
+		RIDGES_CONFIG = ConfigUtil.getFromConfig(RidgesConfigData.class, Paths.get("config", "simplexterrain", "noisemodifiers", "ridges.json"));
+		DETAIL_CONFIG = ConfigUtil.getFromConfig(DetailsConfigData.class, Paths.get("config", "simplexterrain", "noisemodifiers", "details.json"));
+		SimplexScripting.loadScripts(CONFIG.terrainShape);
 
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 			levelGeneratorType = new SimplexGenType();
@@ -66,8 +79,8 @@ public class SimplexTerrain implements ModInitializer {
 
 		//TODO: custom thread pool thing
 		globalThreadPool = new ForkJoinPool(CONFIG.noiseGenerationThreads,
-						ForkJoinPool.defaultForkJoinWorkerThreadFactory,
-						null, true);
+				ForkJoinPool.defaultForkJoinWorkerThreadFactory,
+				null, true);
 
 		addDefaultBiomes();
 		SimplexBiomes.addReplacementBiome(FOREST, biomeId(Biomes.FLOWER_FOREST), 15);
@@ -83,7 +96,6 @@ public class SimplexTerrain implements ModInitializer {
 
 		//Addition to the chunk generator
 		SimplexTerrain.CONFIG.postProcessors.forEach(postProcessors -> SimplexChunkGenerator.addTerrainPostProcessor(postProcessors.postProcessor));
-		SimplexTerrain.CONFIG.noiseModifiers.forEach(noiseModifiers -> SimplexChunkGenerator.addNoiseModifier(noiseModifiers.noiseModifier));
 	}
 
 	private static void addDefaultBiomes() {
@@ -117,17 +129,17 @@ public class SimplexTerrain implements ModInitializer {
 		addVanillaHighlands();
 		addVanillaMountainPeaks();
 
-//		CommandRegistry.INSTANCE.register(false, dispatcher -> {
-//			LiteralArgumentBuilder<ServerCommandSource> lab = CommandManager.literal("sdebug").requires(executor -> executor.hasPermissionLevel(2)).executes(cmd -> {
-//				ServerCommandSource source = cmd.getSource();
-//				source.sendFeedback(new LiteralText(Formatting.DARK_GREEN.toString() + Formatting.BOLD.toString() +
-//						"Derivative (quad): " + NoiseMath.derivative(SimplexChunkGenerator.THIS.baseNoise, source.getPlayer().getX(), source.getPlayer().getZ())), true);
-////				source.sendFeedback(new LiteralText(Formatting.GREEN.toString() + Formatting.BOLD.toString() +
-////						"Derivative (tri): " + NoiseMath.derivative2(SimplexChunkGenerator.THIS.newNoise, source.getPlayer().getX(), source.getPlayer().getZ())), true);
-//				return 1;
-//			});
-//			dispatcher.register(lab);
-//		});
+		//		CommandRegistry.INSTANCE.register(false, dispatcher -> {
+		//			LiteralArgumentBuilder<ServerCommandSource> lab = CommandManager.literal("sdebug").requires(executor -> executor.hasPermissionLevel(2)).executes(cmd -> {
+		//				ServerCommandSource source = cmd.getSource();
+		//				source.sendFeedback(new LiteralText(Formatting.DARK_GREEN.toString() + Formatting.BOLD.toString() +
+		//						"Derivative (quad): " + NoiseMath.derivative(SimplexChunkGenerator.THIS.baseNoise, source.getPlayer().getX(), source.getPlayer().getZ())), true);
+		////				source.sendFeedback(new LiteralText(Formatting.GREEN.toString() + Formatting.BOLD.toString() +
+		////						"Derivative (tri): " + NoiseMath.derivative2(SimplexChunkGenerator.THIS.newNoise, source.getPlayer().getX(), source.getPlayer().getZ())), true);
+		//				return 1;
+		//			});
+		//			dispatcher.register(lab);
+		//		});
 
 		//Add nether biome data
 		SimplexNether.setBiomeExpansiveness(Biomes.CRIMSON_FOREST, 1.2);
