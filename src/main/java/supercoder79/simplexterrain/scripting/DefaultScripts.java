@@ -15,6 +15,9 @@ public class DefaultScripts {
 		File terrain = new File(scriptsLoc, "terrain");
 
 		create(terrain, "baseShape.js", file -> {
+			file.println("// Default Base Shape generator for simplex");
+			file.println("// Do not modify this file, as all changes are overwritten at runtime!");
+			file.println("// For custom generation, make a new script file, and add it to world gen via the simplexterrain.json config.");
 			file.println("var baseShapeNoise;");
 			file.println();
 			file.println("function init(seed) {");
@@ -27,6 +30,9 @@ public class DefaultScripts {
 		});
 
 		create(terrain, "mountains.js", file -> {
+			file.println("// Default Mountains generator for simplex");
+			file.println("// Do not modify this file, as all changes are overwritten at runtime!");
+			file.println("// For custom generation, make a new script file, and add it to world gen via the simplexterrain.json config.");
 			file.println("var mountainNoise;");
 			file.println();
 			file.println("function init(seed) {");
@@ -39,6 +45,9 @@ public class DefaultScripts {
 		});
 
 		create(terrain, "ridges.js", file -> {
+			file.println("// Default Ridges generator for simplex");
+			file.println("// Do not modify this file, as all changes are overwritten at runtime!");
+			file.println("// For custom generation, make a new script file, and add it to world gen via the simplexterrain.json config.");
 			file.println("var ridgedNoise;");
 			file.println();
 			file.println("function init(seed) {");
@@ -51,6 +60,9 @@ public class DefaultScripts {
 		});
 
 		create(terrain, "details.js", file -> {
+			file.println("// Default Details generator for simplex");
+			file.println("// Do not modify this file, as all changes are overwritten at runtime!");
+			file.println("// For custom generation, make a new script file, and add it to world gen via the simplexterrain.json config.");
 			file.println("var detailNoise;");
 			file.println();
 			file.println("function init(seed) {");
@@ -63,6 +75,10 @@ public class DefaultScripts {
 		});
 
 		create(terrain, "sigmoid.js", file -> {
+			file.println("// Default Sigmoid shape modifier for simplex");
+			file.println("// This script takes the terrain and forces it to fit in the vanilla 0-256 range.");
+			file.println("// Do not modify this file, as all changes are overwritten at runtime!");
+			file.println("// For custom generation, make a new script file, and add it to world gen via the simplexterrain.json config.");
 			file.println("function init(seed) {");
 			file.println("}");
 			file.println();
