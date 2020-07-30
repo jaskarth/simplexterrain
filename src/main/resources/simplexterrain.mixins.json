@@ -11,6 +11,9 @@
     "antibad.MixinLakeFeature",
     "optichunk.MixinChunkSection"
   ],
+  "client": [
+    "client.MixinSkyProperties"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
