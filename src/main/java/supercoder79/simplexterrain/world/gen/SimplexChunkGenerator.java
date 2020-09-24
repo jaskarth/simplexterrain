@@ -176,6 +176,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
                 }
 			}
 		}
+
 		noisePostProcesors.forEach(postProcessor -> postProcessor.process(world, new ChunkRandom(), chunk.getPos().x, chunk.getPos().z, this));
 	}
 
@@ -301,8 +302,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 		int chunkX = region.getCenterChunkX();
 		int chunkZ = region.getCenterChunkZ();
 		ChunkRandom rand = new ChunkRandom();
-		//TODO: add world seed
-		//update: i'm super fucking glad i didn't add the world seed here
+
 		rand.setTerrainSeed(chunkX, chunkZ);
 		featurePostProcesors.forEach(postProcessor -> postProcessor.process(region, rand, chunkX, chunkZ, this));
 

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "simplexterrain",
-  "version": "0.6.5",
+  "version": "0.6.6",
 
   "name": "Simplex Terrain",
   "description": "Creates worlds with terrain unlike anything else!",

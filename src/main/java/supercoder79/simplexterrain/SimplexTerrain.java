@@ -9,18 +9,19 @@ import net.minecraft.world.biome.BiomeKeys;
 import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.api.biomes.SimplexNether;
+import supercoder79.simplexterrain.client.GoVote;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.compat.Compat;
 import supercoder79.simplexterrain.configs.Config;
 import supercoder79.simplexterrain.configs.MainConfigData;
-import supercoder79.simplexterrain.world.SimplexGenType;
+import supercoder79.simplexterrain.world.SimplexWorldType;
 import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 
 import java.util.concurrent.*;
 
 public class SimplexTerrain implements ModInitializer {
-	public static final String VERSION = "0.6.5";
+	public static final String VERSION = "0.6.6";
 
 	//if the current world is a Simplex Terrain world. Has no meaning when outside of a world.
 	public static boolean isSimplexEnabled = false;
@@ -28,7 +29,7 @@ public class SimplexTerrain implements ModInitializer {
 	public static MainConfigData CONFIG;
 	public static ForkJoinPool globalThreadPool;
 
-	public static SimplexGenType levelGeneratorType;
+	public static SimplexWorldType levelGeneratorType;
 
 	private static Identifier SWAMP;
 	private static Identifier PLAINS;
@@ -65,8 +66,10 @@ public class SimplexTerrain implements ModInitializer {
 		Config.init();
 
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-			levelGeneratorType = new SimplexGenType();
+			GoVote.init();
+			levelGeneratorType = new SimplexWorldType();
 		}
+
 		Registry.register(Registry.CHUNK_GENERATOR, new Identifier("simplexterrain:simplex"), SimplexChunkGenerator.CODEC);
 		Registry.register(Registry.BIOME_SOURCE, new Identifier("simplexterrain:simplex"), SimplexBiomeSource.CODEC);
 

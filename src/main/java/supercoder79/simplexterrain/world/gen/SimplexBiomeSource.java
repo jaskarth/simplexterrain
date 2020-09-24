@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -16,13 +17,10 @@ import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.world.biomelayers.SimplexBiomeLayers;
 
 public class SimplexBiomeSource extends BiomeSource {
-	public static final Codec<SimplexBiomeSource> CODEC = RecordCodecBuilder.create((instance) -> {
-		return instance.group(RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter((theEndBiomeSource) -> {
-			return theEndBiomeSource.biomeRegistry;
-		}), Codec.LONG.fieldOf("seed").stable().forGetter((theEndBiomeSource) -> {
-			return theEndBiomeSource.seed;
-		})).apply(instance, instance.stable(SimplexBiomeSource::new));
-	});
+	public static final Codec<SimplexBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(source -> source.biomeRegistry),
+			Codec.LONG.fieldOf("seed").stable().forGetter(source -> source.seed))
+			.apply(instance, instance.stable(SimplexBiomeSource::new)));
 	private final BiomeLayerSampler lowlandsSampler;
 	private final BiomeLayerSampler midlandsSampler;
 	private final BiomeLayerSampler highlandsSampler;
@@ -53,7 +51,7 @@ public class SimplexBiomeSource extends BiomeSource {
 		this.oceanSampler = biomeLayerSamplers[5];
 		this.deepOceanSampler = biomeLayerSamplers[6];
 
-		beachStartSampler = new OpenSimplexNoise(seed + 12);
+		this.beachStartSampler = new OpenSimplexNoise(seed + 12);
 	}
 
 	public void setHeightmap(Heightmap heightmap) {
@@ -63,19 +61,23 @@ public class SimplexBiomeSource extends BiomeSource {
 	@Override
 	public Biome getBiomeForNoiseGen(int x, int y, int z) {
 		if (heightmap == null) return BuiltinBiomes.PLAINS;
-		Biome biome = sampleBiomeWithMathTM(x, z, heightmap.getHeight((x << 2), (z << 2)));
+		Biome biome = sampleBiomeWithMathTM(x, z, heightmap.getHeight(x << 2, z << 2));
 		return biome == null ? BuiltinBiomes.PLAINS : biome;
 	}
 
 	public Biome sampleBiomeWithMathTM(int x, int z, int height) {
 		Biome lowlands = this.lowlandsSampler.sample(this.biomeRegistry, x, z);
+
 		if (height < SimplexTerrain.CONFIG.seaLevel - 20) return this.deepOceanSampler.sample(this.biomeRegistry, x, z);
 		if (height < SimplexTerrain.CONFIG.seaLevel - 4) return this.oceanSampler.sample(this.biomeRegistry, x, z);
 		if (height < SimplexTerrain.CONFIG.lowlandStartHeight + (beachStartSampler.sample(x / 128.0, z / 128.0) * 6)) {
-//			if (lowlands == Biomes.BADLANDS) return lowlands;
-//			if (lowlands == Biomes.SWAMP) return lowlands;
+			//TODO: unhardcode
+			if (this.biomeRegistry.getId(lowlands) == BiomeKeys.BADLANDS.getValue()) return lowlands;
+			if (this.biomeRegistry.getId(lowlands) == BiomeKeys.BADLANDS_PLATEAU.getValue()) return lowlands;
+			if (this.biomeRegistry.getId(lowlands) == BiomeKeys.SWAMP.getValue()) return lowlands;
 			return this.beachSampler.sample(this.biomeRegistry, x, z);
 		}
+
 		if (height < SimplexTerrain.CONFIG.midlandStartHeight) return this.lowlandsSampler.sample(this.biomeRegistry, x, z);
 		if (height < SimplexTerrain.CONFIG.highlandStartHeight) return this.midlandsSampler.sample(this.biomeRegistry, x, z);
 		if (height < SimplexTerrain.CONFIG.toplandStartHeight) return this.highlandsSampler.sample(this.biomeRegistry, x, z);

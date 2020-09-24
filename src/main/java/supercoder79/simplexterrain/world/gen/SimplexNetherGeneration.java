@@ -71,7 +71,6 @@ public class SimplexNetherGeneration {
     }
 
     private static double getNoiseAt(double expansiveness, int x, int y, int z) {
-
         double scale = SimplexTerrain.CONFIG.mainNetherScale;
         double scaleLow = scale / 2;
         double scaleHigh = scale * 2;
@@ -81,8 +80,8 @@ public class SimplexNetherGeneration {
         double addition2 = lowerResolution.sample(x / scaleLow, y / scale / 1.5, z / scaleLow);
         double addition3 = higherResolution.sample(x / scaleHigh, y / scale, z / scaleHigh);
         double verticalNoise = vertical.sample(x / scale, y / scale / 10, z / scale);
-        baseline += (15 / (float)y); //lower bound
-        baseline += (-15 / ((float)(y - 130))); //upper bound
+        baseline += (15.0 / y); //lower bound
+        baseline += (-15.0 / (y - 130)); //upper bound
         return (baseline*0.55) + (addition*0.3*expansiveness) + (addition2*0.25*expansiveness) + (addition3*0.175*expansiveness) + (verticalNoise*0.1*expansiveness);
     }
 

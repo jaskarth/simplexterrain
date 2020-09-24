@@ -17,9 +17,9 @@ public class SimplexStyleNoise extends Noise {
     private static final int PSIZE = 2048;
     private static final int PMASK = 2047;
 
-    private short[] perm;
-    private Grad2[] permGrad2;
-    private Grad3[] permGrad3;
+    private final short[] perm;
+    private final Grad2[] permGrad2;
+    private final Grad3[] permGrad3;
 
     public SimplexStyleNoise(long seed) {
         super(seed);

@@ -8,8 +8,8 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 
-public class SimplexGenType extends GeneratorType {
-    public SimplexGenType() {
+public class SimplexWorldType extends GeneratorType {
+    public SimplexWorldType() {
         super("simplex");
         GeneratorType.VALUES.add(this);
     }
