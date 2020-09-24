@@ -10,8 +10,8 @@ import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 public class SimplexClimateLayer implements InitLayer {
-	private OctaveNoiseSampler temperatureNoise;
-	private OctaveNoiseSampler humidityNoise;
+	private OctaveNoiseSampler<?> temperatureNoise;
+	private OctaveNoiseSampler<?> humidityNoise;
 
 	private final long worldSeed;
 

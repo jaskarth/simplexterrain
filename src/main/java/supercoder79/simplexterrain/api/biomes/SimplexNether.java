@@ -1,5 +1,6 @@
 package supercoder79.simplexterrain.api.biomes;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import supercoder79.simplexterrain.world.gen.SimplexNetherGeneration;
 
@@ -22,9 +23,9 @@ public final class SimplexNether {
      * @param biome The biome to add.
      * @param value The biome's expansiveness.
      *
-     * @author SuperCoder79.
+     * @author SuperCoder79
      */
-    public static void setBiomeExpansiveness(Biome biome, double value) {
+    public static void setBiomeExpansiveness(Identifier biome, double value) {
         SimplexNetherGeneration.biomeToExpansivenessMap.put(biome, value);
     }
 }

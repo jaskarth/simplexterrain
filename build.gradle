@@ -26,13 +26,13 @@ dependencies {
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	modRuntime ("com.github.SuperCoder7979:databreaker:67716e92f689cf19afc88ab3d7fb0d0c061958ad") {
+	modRuntime ("com.github.SuperCoder7979:databreaker:0.2.6") {
 		exclude module : "fabric-loader"
 	}
 
-	modRuntime ("com.github.mrmangohands:sodium-fabric:88bdab9e72bde91580715a82d2e523f58a3ba6b0")
-	modRuntime ("com.github.jellysquid3:phosphor-fabric:0749029a498e8f6574643285bae7aecb2eda76b8")
-	modRuntime ("com.github.jellysquid3:lithium-fabric:fa7e919133d6dd9f1166a054aab3ff275fc4de4d")
+//	modRuntime ("com.github.mrmangohands:sodium-fabric:88bdab9e72bde91580715a82d2e523f58a3ba6b0")
+//	modRuntime ("com.github.jellysquid3:phosphor-fabric:0749029a498e8f6574643285bae7aecb2eda76b8")
+//	modRuntime ("com.github.jellysquid3:lithium-fabric:fa7e919133d6dd9f1166a054aab3ff275fc4de4d")
 //	modRuntime ("com.github.TerraformersMC:Traverse:01f9e10b88251b70cfecf83695f4cc652ddef805")
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.

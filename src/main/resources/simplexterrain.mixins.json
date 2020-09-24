@@ -3,7 +3,7 @@
   "package": "supercoder79.simplexterrain.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinCavesChunkGenerator",
+    "MixinNoiseChunkGenerator",
     "MixinChunkStatus",
     "MixinGeneratorOptions",
     "MixinMinecraftServer",

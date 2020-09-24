@@ -34,7 +34,7 @@ public final class SimplexBiomesImpl {
 	}
 
 	public static void addReplacementBiome(Identifier biomeToReplace, Identifier replacement, int chance) {
-		replacementBiomes.put(Registry.BIOME.get(biomeToReplace), new Pair<>(Registry.BIOME.get(replacement), chance));
+//		replacementBiomes.put(Registry.BIOME.get(biomeToReplace), new Pair<>(Registry.BIOME.get(replacement), chance));
 	}
 	
 	public static BiomePicker getLowlandsBiomePicker(SimplexClimate climate) {

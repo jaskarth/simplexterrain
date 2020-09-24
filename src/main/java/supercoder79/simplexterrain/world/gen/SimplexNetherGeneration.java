@@ -1,10 +1,12 @@
 package supercoder79.simplexterrain.world.gen;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import supercoder79.simplexterrain.SimplexTerrain;
@@ -14,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SimplexNetherGeneration {
-    public static Map<Biome, Double> biomeToExpansivenessMap = new HashMap<>();
+    public static Map<Identifier, Double> biomeToExpansivenessMap = new HashMap<>();
 
     private static SimplexStyleNoise noise;
     private static SimplexStyleNoise noise2;
@@ -33,6 +35,8 @@ public class SimplexNetherGeneration {
     }
     
     public static void generate(WorldAccess world, Chunk chunk, BiomeSource biomeSource, int seaLevel) {
+        Registry<Biome> biomes = ((ChunkRegion)world).toServerWorld().getRegistryManager().get(Registry.BIOME_KEY);
+
         //TODO: threading
 
         BlockPos.Mutable posMutable = new BlockPos.Mutable();
@@ -48,7 +52,7 @@ public class SimplexNetherGeneration {
                 for (int x1 = -1; x1 <= 1; x1++) {
                     for (int z1 = -1; z1 <= 1; z1++) {
                         expansiveness += biomeToExpansivenessMap.getOrDefault(
-                                biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), 32, (chunk.getPos().z*16) + (z + z1)), 1.0);
+                                biomes.getId(biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), 32, (chunk.getPos().z*16) + (z + z1))), 1.0);
                     }
                 }
 
