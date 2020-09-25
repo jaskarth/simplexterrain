@@ -12,7 +12,7 @@ import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
-import supercoder79.simplexterrain.configs.ConfigUtil;
+import supercoder79.simplexterrain.configs.ConfigHelper;
 import supercoder79.simplexterrain.configs.postprocessors.ErosionConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
@@ -27,7 +27,7 @@ public class ErosionPostProcessor implements TerrainPostProcessor {
 
 	@Override
 	public void setup() {
-		config = ConfigUtil.getFromConfig(ErosionConfigData.class, Paths.get("config", "simplexterrain", "postprocessors", "erosion.json"));
+		config = ConfigHelper.getFromConfig(ErosionConfigData.class, Paths.get("config", "simplexterrain", "postprocessors", "erosion.json"));
 	}
 
 	@Override

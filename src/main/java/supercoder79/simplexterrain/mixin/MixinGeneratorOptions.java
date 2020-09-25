@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import supercoder79.simplexterrain.configs.Config;
+import supercoder79.simplexterrain.configs.ConfigHelper;
 import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 
@@ -29,7 +29,7 @@ public class MixinGeneratorOptions {
         }
 
         if (properties.get("level-type").toString().trim().toLowerCase().equals("simplex")) {
-            Config.init();
+            ConfigHelper.init();
             String seed = (String) MoreObjects.firstNonNull(properties.get("level-seed"), "");
             long l = new Random().nextLong();
             if (!seed.isEmpty()) {

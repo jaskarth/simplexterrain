@@ -11,7 +11,7 @@ import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
-import supercoder79.simplexterrain.configs.ConfigUtil;
+import supercoder79.simplexterrain.configs.ConfigHelper;
 import supercoder79.simplexterrain.configs.postprocessors.SoilConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
@@ -28,7 +28,7 @@ public class SoilPostProcessor implements TerrainPostProcessor {
 
 	@Override
 	public void setup() {
-		config = ConfigUtil.getFromConfig(SoilConfigData.class, Paths.get("config", "simplexterrain", "postprocessors", "soil.json"));
+		config = ConfigHelper.getFromConfig(SoilConfigData.class, Paths.get("config", "simplexterrain", "postprocessors", "soil.json"));
 	}
 
 	@Override

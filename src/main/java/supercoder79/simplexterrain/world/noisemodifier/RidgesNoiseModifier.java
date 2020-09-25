@@ -5,7 +5,7 @@ import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.noisemodifier.NoiseModifier;
-import supercoder79.simplexterrain.configs.ConfigUtil;
+import supercoder79.simplexterrain.configs.ConfigHelper;
 import supercoder79.simplexterrain.configs.noisemodifiers.RidgesConfigData;
 
 import java.nio.file.Paths;
@@ -21,7 +21,7 @@ public class RidgesNoiseModifier implements NoiseModifier {
 
     @Override
     public void setup() {
-        config = ConfigUtil.getFromConfig(RidgesConfigData.class, Paths.get("config", "simplexterrain", "noisemodifiers", "ridges.json"));
+        config = ConfigHelper.getFromConfig(RidgesConfigData.class, Paths.get("config", "simplexterrain", "noisemodifiers", "ridges.json"));
     }
 
     @Override

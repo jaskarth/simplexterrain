@@ -19,6 +19,6 @@ import java.util.Random;
 public class MixinLakeFeature {
     @Inject(method = "generate", at = @At("HEAD"), cancellable = true)
     public void noLakesPls(StructureWorldAccess structureWorldAccess, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos, SingleStateFeatureConfig singleStateFeatureConfig, CallbackInfoReturnable<Boolean> cir) {
-        if (SimplexTerrain.CONFIG.deleteLakes) cir.setReturnValue(false);
+        if (SimplexTerrain.CONFIG.deleteLakes && SimplexTerrain.isSimplexEnabled) cir.setReturnValue(false);
     }
 }

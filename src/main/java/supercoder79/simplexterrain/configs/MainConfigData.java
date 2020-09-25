@@ -33,7 +33,7 @@ public class MainConfigData {
 	public double mainAmplitudeHigh = 144.0;
 	public double mainAmplitudeLow = 32.0;
 	public double mainNetherScale = 70.0;
-	public double netherThresholdScale = 28;
+	public double netherThresholdScale = 28.0;
 	public double netherThresholdAmplitude = 0.125;
 	public double netherThresholdBase = 0.25;
 

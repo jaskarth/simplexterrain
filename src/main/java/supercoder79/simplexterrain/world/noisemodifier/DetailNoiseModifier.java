@@ -5,7 +5,7 @@ import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.noisemodifier.NoiseModifier;
-import supercoder79.simplexterrain.configs.ConfigUtil;
+import supercoder79.simplexterrain.configs.ConfigHelper;
 import supercoder79.simplexterrain.configs.noisemodifiers.DetailsConfigData;
 
 import java.nio.file.Paths;
@@ -21,7 +21,7 @@ public class DetailNoiseModifier implements NoiseModifier {
 
     @Override
     public void setup() {
-        config = ConfigUtil.getFromConfig(DetailsConfigData.class, Paths.get("config", "simplexterrain", "noisemodifiers", "details.json"));
+        config = ConfigHelper.getFromConfig(DetailsConfigData.class, Paths.get("config", "simplexterrain", "noisemodifiers", "details.json"));
     }
 
     @Override

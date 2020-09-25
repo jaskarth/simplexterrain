@@ -12,7 +12,7 @@ import supercoder79.simplexterrain.api.biomes.SimplexNether;
 import supercoder79.simplexterrain.client.GoVote;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.compat.Compat;
-import supercoder79.simplexterrain.configs.Config;
+import supercoder79.simplexterrain.configs.ConfigHelper;
 import supercoder79.simplexterrain.configs.MainConfigData;
 import supercoder79.simplexterrain.world.SimplexWorldType;
 import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
@@ -63,7 +63,7 @@ public class SimplexTerrain implements ModInitializer {
 		BAMBOO_JUNGLE = BiomeKeys.BAMBOO_JUNGLE.getValue();
 		BADLANDS_PLATEAU = BiomeKeys.BADLANDS_PLATEAU.getValue();
 
-		Config.init();
+		ConfigHelper.init();
 
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 			GoVote.init();
