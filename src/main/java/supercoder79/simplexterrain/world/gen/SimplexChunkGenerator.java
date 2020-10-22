@@ -217,7 +217,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	public void generateNoise(int[] noise, ChunkPos pos, int start, int size) {
 		for (int x = start; x < start + size; x++) {
 			for (int z = 0; z < 16; z++) {
-				noise[(x*16) + z] = getHeight((pos.x * 16) + x, (pos.z * 16) + z);
+				noise[(x * 16) + z] = getHeight((pos.x * 16) + x, (pos.z * 16) + z);
 			}
 		}
 	}

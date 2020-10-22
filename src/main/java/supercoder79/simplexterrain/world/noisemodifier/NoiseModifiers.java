@@ -6,7 +6,8 @@ public enum NoiseModifiers {
 	MOUNTAINS(new MountainsNoiseModifier()),
 	RIDGES(new RidgesNoiseModifier()),
 	DETAILS(new DetailNoiseModifier()),
-	PLATEAUS(new PlateausNoiseModifier());
+	PLATEAUS(new PlateausNoiseModifier()),
+	RIVERS(new RiversNoiseModifier());
 
 	public NoiseModifier noiseModifier;
 

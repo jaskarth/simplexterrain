@@ -17,6 +17,7 @@ import supercoder79.simplexterrain.configs.MainConfigData;
 import supercoder79.simplexterrain.world.SimplexWorldType;
 import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
+import supercoder79.simplexterrain.world.noisemodifier.RiversNoiseModifier;
 
 import java.util.concurrent.*;
 
@@ -73,7 +74,6 @@ public class SimplexTerrain implements ModInitializer {
 		Registry.register(Registry.CHUNK_GENERATOR, new Identifier("simplexterrain:simplex"), SimplexChunkGenerator.CODEC);
 		Registry.register(Registry.BIOME_SOURCE, new Identifier("simplexterrain:simplex"), SimplexBiomeSource.CODEC);
 
-		//TODO: custom thread pool thing
 		globalThreadPool = new ForkJoinPool(CONFIG.noiseGenerationThreads,
 						ForkJoinPool.defaultForkJoinWorkerThreadFactory,
 						null, true);

@@ -26,7 +26,7 @@ public class MainConfigData {
 
 	public List<PostProcessors> postProcessors = new ArrayList<>();
 
-	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.MOUNTAINS, NoiseModifiers.RIDGES, NoiseModifiers.DETAILS);
+	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.MOUNTAINS, NoiseModifiers.RIDGES, NoiseModifiers.DETAILS, NoiseModifiers.RIVERS);
 
 	public int mainOctaveAmount = 3;
 	public double mainFrequency = 3200.0;

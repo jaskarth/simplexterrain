@@ -17,7 +17,7 @@ import supercoder79.simplexterrain.configs.ConfigHelper;
 import supercoder79.simplexterrain.configs.postprocessors.RiverConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
-public final class RiverPostProcessor implements TerrainPostProcessor {
+public final class OldRiverPostProcessor implements TerrainPostProcessor {
 	private RiverConfigData config;
 	private OpenSimplexNoise noiseSampler;
 	private OctaveNoiseSampler sandNoise;
