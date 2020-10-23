@@ -138,11 +138,6 @@ public class SimplexTerrain implements ModInitializer {
 //			dispatcher.register(lab);
 //		});
 
-		//Add nether biome data
-		SimplexNether.setBiomeExpansiveness(BiomeKeys.CRIMSON_FOREST.getValue(), 1.2);
-		SimplexNether.setBiomeExpansiveness(BiomeKeys.WARPED_FOREST.getValue(), 0.8);
-		SimplexNether.setBiomeExpansiveness(BiomeKeys.SOUL_SAND_VALLEY.getValue(), -0.25);
-		SimplexNether.setBiomeExpansiveness(BiomeKeys.BASALT_DELTAS.getValue(), -0.5);
 	}
 
 	public static void addWinterBiomes() {

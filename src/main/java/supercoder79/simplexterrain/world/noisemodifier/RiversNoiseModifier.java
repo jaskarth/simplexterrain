@@ -34,7 +34,7 @@ public class RiversNoiseModifier implements NoiseModifier {
         double dist = Math.abs(noise - 0.13);
 
         //TODO: reverse sigmoid
-        if (NoiseMath.sigmoid(currentNoiseValue) > SimplexTerrain.CONFIG.seaLevel - 1) { // TODO: this creates a small crease where it meets the ocean
+        if (NoiseMath.sigmoid(currentNoiseValue) > SimplexTerrain.CONFIG.seaLevel - 4) { // TODO: this creates a small crease where it meets the ocean
             if (dist <= config.size) {
                 currentNoiseValue = MathHelper.lerp(smoothstep(dist / config.size), config.depth, currentNoiseValue);
             }
