@@ -2,8 +2,6 @@ package supercoder79.simplexterrain.world.gen;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -23,13 +21,13 @@ public class SimplexNetherGeneration {
     public static void generate(WorldAccess world, Chunk chunk, BiomeSource biomeSource, int seaLevel) {
         //TODO: threading
 
-        BlockPos.Mutable posMutable = new BlockPos.Mutable();
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
 
         for (int x = 0; x < 16; x++) {
-            posMutable.setX(x);
+            mutable.setX(x);
 
             for (int z = 0; z < 16; z++) {
-                posMutable.setZ(z);
+                mutable.setZ(z);
 
                 double depth = 0;
                 double scale = 0;
@@ -47,11 +45,11 @@ public class SimplexNetherGeneration {
                 scale /= 9;
 
                 for (int y = 0; y < 127; y++) {
-                    posMutable.setY(y);
+                    mutable.setY(y);
                     if (getNoiseAt(depth, scale, (chunk.getPos().x*16) + x, y, (chunk.getPos().z*16) + z) > 0) {
-                        chunk.setBlockState(posMutable, Blocks.NETHERRACK.getDefaultState(), false);
+                        chunk.setBlockState(mutable, Blocks.NETHERRACK.getDefaultState(), false);
                     } else if (y < seaLevel) {
-                        chunk.setBlockState(posMutable, Blocks.LAVA.getDefaultState(), false);
+                        chunk.setBlockState(mutable, Blocks.LAVA.getDefaultState(), false);
                     }
                 }
             }

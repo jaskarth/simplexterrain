@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.noise.NoiseSampler;
 import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
+import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.WorldAccess;
@@ -44,6 +45,7 @@ import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.noise.NoiseMath;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
+import supercoder79.simplexterrain.world.BiomeData;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
@@ -89,14 +91,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
 		}
 
-		//TODO: remove this reflection fuckery
-		try {
-			Constructor<OctavePerlinNoiseSampler> constructor = OctavePerlinNoiseSampler.class.getDeclaredConstructor(ChunkRandom.class, IntSortedSet.class);
-			constructor.setAccessible(true);
-			surfaceDepthNoise = constructor.newInstance(random, new IntRBTreeSet(IntStream.rangeClosed(-3, 0).toArray()));
-		} catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
+		this.surfaceDepthNoise = new OctaveSimplexNoiseSampler(random, IntStream.rangeClosed(-3, 0));
 
 		this.seed = seed;
 
@@ -229,13 +224,30 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 	@Override
 	public int getHeight(int x, int z) {
+		BiomeData data = new BiomeData();
+
 		double currentVal = baseNoise.sample(x, z);
 
 		for (NoiseModifier modifier : noiseModifiers) {
-			currentVal = modifier.modify(x, z, currentVal);
+			currentVal = modifier.modify(x, z, currentVal, data);
 		}
 
 		return (int) (NoiseMath.sigmoid(currentVal));
+	}
+
+	@Override
+	public BiomeData getBiomeData(int x, int z) {
+		BiomeData data = new BiomeData();
+
+		double currentVal = baseNoise.sample(x, z);
+
+		for (NoiseModifier modifier : noiseModifiers) {
+			currentVal = modifier.modify(x, z, currentVal, data);
+		}
+
+		data.setHeight((int) (NoiseMath.sigmoid(currentVal)));
+
+		return data;
 	}
 
 	@Override

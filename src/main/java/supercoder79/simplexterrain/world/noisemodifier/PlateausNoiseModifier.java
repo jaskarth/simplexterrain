@@ -8,6 +8,7 @@ import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.noisemodifier.NoiseModifier;
 import supercoder79.simplexterrain.configs.ConfigHelper;
 import supercoder79.simplexterrain.configs.noisemodifiers.PlateausConfigData;
+import supercoder79.simplexterrain.world.BiomeData;
 
 import java.nio.file.Paths;
 
@@ -26,7 +27,7 @@ public class PlateausNoiseModifier implements NoiseModifier {
     }
 
     @Override
-    public double modify(int x, int z, double currentNoiseValue) {
+    public double modify(int x, int z, double currentNoiseValue, BiomeData data) {
         double noise = plateauNoise.sample(x, z);
 
         if (noise > config.threshold) {

@@ -1,6 +1,7 @@
 package supercoder79.simplexterrain.api;
 
 import net.minecraft.util.math.ChunkPos;
+import supercoder79.simplexterrain.world.BiomeData;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 
 /**
@@ -38,6 +39,13 @@ public interface Heightmap {
             }
         }
         return heights;
+    }
+
+    default BiomeData getBiomeData(int x, int z) {
+        BiomeData data = new BiomeData();
+        data.setHeight(this.getHeight(x, z));
+
+        return data;
     }
 
     /**

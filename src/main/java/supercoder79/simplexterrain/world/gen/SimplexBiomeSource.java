@@ -14,6 +14,7 @@ import net.minecraft.world.biome.source.BiomeSource;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
+import supercoder79.simplexterrain.world.BiomeData;
 import supercoder79.simplexterrain.world.biomelayers.SimplexBiomeLayers;
 
 public class SimplexBiomeSource extends BiomeSource {
@@ -61,20 +62,39 @@ public class SimplexBiomeSource extends BiomeSource {
 	@Override
 	public Biome getBiomeForNoiseGen(int x, int y, int z) {
 		if (heightmap == null) return BuiltinBiomes.PLAINS;
-		Biome biome = sampleBiomeWithMathTM(x, z, heightmap.getHeight(x << 2, z << 2));
+		Biome biome = getBiomeAt(x, z, heightmap.getBiomeData(x << 2, z << 2));
 		return biome == null ? BuiltinBiomes.PLAINS : biome;
 	}
 
-	public Biome sampleBiomeWithMathTM(int x, int z, int height) {
+	public Biome getBiomeAt(int x, int z, BiomeData data) {
+		int height = data.getHeight();
+
 		Biome lowlands = this.lowlandsSampler.sample(this.biomeRegistry, x, z);
+		boolean isSwamp = this.biomeRegistry.getId(lowlands) == BiomeKeys.SWAMP.getValue();
+
+		if (data.isRiver()) {
+			if (isSwamp) {
+				return biomeRegistry.get(BiomeKeys.SWAMP);
+			}
+
+			if (lowlands.getPrecipitation() == Biome.Precipitation.SNOW) {
+				return biomeRegistry.get(BiomeKeys.FROZEN_RIVER);
+			}
+
+			return biomeRegistry.get(BiomeKeys.RIVER);
+		}
+
+		if (data.isForcedLowlands()) {
+			return lowlands;
+		}
 
 		if (height < SimplexTerrain.CONFIG.seaLevel - 20) return this.deepOceanSampler.sample(this.biomeRegistry, x, z);
 		if (height < SimplexTerrain.CONFIG.seaLevel - 4) return this.oceanSampler.sample(this.biomeRegistry, x, z);
-		if (height < SimplexTerrain.CONFIG.lowlandStartHeight + (beachStartSampler.sample(x / 128.0, z / 128.0) * 6)) {
+		if (height < SimplexTerrain.CONFIG.lowlandStartHeight + (beachStartSampler.sample(x / 128.0, z / 128.0) * 4)) {
 			//TODO: unhardcode
 			if (this.biomeRegistry.getId(lowlands) == BiomeKeys.BADLANDS.getValue()) return lowlands;
 			if (this.biomeRegistry.getId(lowlands) == BiomeKeys.BADLANDS_PLATEAU.getValue()) return lowlands;
-			if (this.biomeRegistry.getId(lowlands) == BiomeKeys.SWAMP.getValue()) return lowlands;
+			if (isSwamp) return lowlands;
 			return this.beachSampler.sample(this.biomeRegistry, x, z);
 		}
 
