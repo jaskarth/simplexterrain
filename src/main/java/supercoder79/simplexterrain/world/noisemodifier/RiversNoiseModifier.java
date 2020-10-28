@@ -36,17 +36,16 @@ public class RiversNoiseModifier implements NoiseModifier {
 
     @Override
     public double modify(int x, int z, double currentNoiseValue, BiomeData data) {
-        double noise = this.noise.sample(x / config.scale, z / config.scale) + (detailNoise.sample(x / config.scale * 5.0, z / config.scale * 5.0) * 0.05);
+        double noise = this.noise.sample(x / config.scale, z / config.scale) + (detailNoise.sample(x / config.scale * 5.0, z / config.scale * 5.0) * 0.2);
 
-        double dist = Math.abs(noise - 0.13);
 
         double depth = config.depth + depthNoise.sample(x, z);
         double size = config.size + (sizeNoise.sample(x / config.scale * 3.0, z / config.scale * 3.0) * 0.025);
 
         if (currentNoiseValue > depth) {
-            if (dist <= size) {
+            if (noise < size && noise > -size) {
                 // Interpolate downwards
-                currentNoiseValue = MathHelper.lerp(smoothstep(dist / size), depth, currentNoiseValue);
+                currentNoiseValue = MathHelper.lerp(smoothstep(noise / size), currentNoiseValue, depth);
 
                 double realY = NoiseMath.sigmoid(currentNoiseValue);
 
@@ -61,8 +60,7 @@ public class RiversNoiseModifier implements NoiseModifier {
 
         return currentNoiseValue;
     }
-
-    public static double smoothstep(double d) {
-        return d * d * d * (d * (d * 6.0 - 15.0) + 10.0);
+    public static double smoothstep(double t) {
+        return (1 - t*t)*(1 - t*t)*(1 - t*t);
     }
 }

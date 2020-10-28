@@ -72,4 +72,16 @@ public abstract class Noise {
 	protected static double sigmoid(double x) {
 		return (1/( 1 + Math.exp(-x)));
 	}
+
+	public static double smoothstep(double d) {
+		return d * d * d * (d * (d * 6.0 - 15.0) + 10.0);
+	}
+
+	public static double smootherstep(double t) {
+		return (1 - t*t)*(1 - t*t);
+	}
+
+	public static double smootheststep(double t) {
+		return (1 - t*t)*(1 - t*t)*(1 - t*t);
+	}
 }

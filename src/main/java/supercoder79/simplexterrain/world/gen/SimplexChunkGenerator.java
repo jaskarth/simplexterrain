@@ -1,7 +1,5 @@
 package supercoder79.simplexterrain.world.gen;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -9,8 +7,6 @@ import java.util.stream.IntStream;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -19,7 +15,6 @@ import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.noise.NoiseSampler;
-import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
@@ -44,7 +39,6 @@ import supercoder79.simplexterrain.api.noisemodifier.NoiseModifier;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.noise.NoiseMath;
-import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.world.BiomeData;
 
 
@@ -125,12 +119,14 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	}
 
 	public void populateEntities(ChunkRegion region) {
-		int i = region.getCenterChunkX();
-		int j = region.getCenterChunkZ();
-		Biome biome = region.getBiome((new ChunkPos(i, j)).getStartPos());
+		int chunkX = region.getCenterChunkX();
+		int chunkZ = region.getCenterChunkZ();
+		region.getChunk(chunkX, chunkZ).getSectionArray();
+
+		Biome biome = region.getBiome((new ChunkPos(chunkX, chunkZ)).getStartPos());
 		ChunkRandom chunkRandom = new ChunkRandom();
-		chunkRandom.setPopulationSeed(region.getSeed(), i << 4, j << 4);
-		SpawnHelper.populateEntities(region, biome, i, j, chunkRandom);
+		chunkRandom.setPopulationSeed(region.getSeed(), chunkX << 4, chunkZ << 4);
+		SpawnHelper.populateEntities(region, biome, chunkX, chunkZ, chunkRandom);
 	}
 
 	@Override
