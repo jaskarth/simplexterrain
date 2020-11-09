@@ -61,6 +61,6 @@ public class RiversNoiseModifier implements NoiseModifier {
         return currentNoiseValue;
     }
     public static double smoothstep(double t) {
-        return (1 - t*t)*(1 - t*t)*(1 - t*t);
+        return (1 - t * t) * (1 - t * t) * (1 - t * t);
     }
 }

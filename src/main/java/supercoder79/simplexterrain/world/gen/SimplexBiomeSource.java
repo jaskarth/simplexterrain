@@ -11,6 +11,7 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
@@ -38,7 +39,7 @@ public class SimplexBiomeSource extends BiomeSource {
 	private Heightmap heightmap = Heightmap.NONE;
 
 	public SimplexBiomeSource(Registry<Biome> biomeRegistry, long seed) {
-		super(ImmutableList.of());
+		super(VanillaLayeredBiomeSource.BIOMES.stream().map((registryKey) -> () -> (Biome)biomeRegistry.getOrThrow(registryKey)));
 		this.biomeRegistry = biomeRegistry;
 		this.seed = seed;
 
