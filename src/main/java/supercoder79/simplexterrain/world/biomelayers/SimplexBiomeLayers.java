@@ -5,7 +5,7 @@ import java.util.function.LongFunction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.ScaleLayer;
-import net.minecraft.world.biome.layer.SmoothenShorelineLayer;
+import net.minecraft.world.biome.layer.SmoothLayer;
 import net.minecraft.world.biome.layer.type.ParentedLayer;
 import net.minecraft.world.biome.layer.util.CachingLayerContext;
 import net.minecraft.world.biome.layer.util.CachingLayerSampler;
@@ -34,29 +34,29 @@ public class SimplexBiomeLayers {
 		LayerFactory<T> lowlandsBiomeLayer = new LowlandsBiomeLayer(biomes).create(contextProvider.apply(100L), climateLayer);
 		lowlandsBiomeLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000), lowlandsBiomeLayer);
 		lowlandsBiomeLayer = repeat(1000L, ScaleLayer.NORMAL, lowlandsBiomeLayer, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
-		lowlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(20L), lowlandsBiomeLayer);
-		lowlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25L), lowlandsBiomeLayer);
+		lowlandsBiomeLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(20), lowlandsBiomeLayer);
+		lowlandsBiomeLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(25), lowlandsBiomeLayer);
 
 		//midlands (y91-y140)
 		LayerFactory<T> midlandsBiomeLayer = new MidlandsBiomeLayer(biomes).create(contextProvider.apply(100L), climateLayer);
 		midlandsBiomeLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000), midlandsBiomeLayer);
 		midlandsBiomeLayer = repeat(1000L, ScaleLayer.NORMAL, midlandsBiomeLayer, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
-		midlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(20), midlandsBiomeLayer);
-		midlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25), midlandsBiomeLayer);
+		midlandsBiomeLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(20), midlandsBiomeLayer);
+		midlandsBiomeLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(25), midlandsBiomeLayer);
 
 		//highlands (y141-y190)
 		LayerFactory<T> highlandsBiomeLayer = new HighlandsBiomeLayer(biomes).create(contextProvider.apply(100L), climateLayer);
 		highlandsBiomeLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000), highlandsBiomeLayer);
 		highlandsBiomeLayer = repeat(1000L, ScaleLayer.NORMAL, highlandsBiomeLayer, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
-		highlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(20), highlandsBiomeLayer);
-		highlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25), highlandsBiomeLayer);
+		highlandsBiomeLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(20), highlandsBiomeLayer);
+		highlandsBiomeLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(25), highlandsBiomeLayer);
 
 		//mountain peaks (y191+)
 		LayerFactory<T> mountainPeaksBiomePassLayer = new MountainPeaksBiomeLayer(biomes).create(contextProvider.apply(100L), climateLayer);
 		mountainPeaksBiomePassLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000), mountainPeaksBiomePassLayer);
 		mountainPeaksBiomePassLayer = repeat(1000L, ScaleLayer.NORMAL, mountainPeaksBiomePassLayer, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
-		mountainPeaksBiomePassLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(20), mountainPeaksBiomePassLayer);
-		mountainPeaksBiomePassLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25), mountainPeaksBiomePassLayer);
+		mountainPeaksBiomePassLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(20), mountainPeaksBiomePassLayer);
+		mountainPeaksBiomePassLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(25), mountainPeaksBiomePassLayer);
 		
 		LayerFactory<T> shoreSampler = ClimateTransformerLayer.shore(biomes).create(contextProvider.apply(0), climateLayer);
 		shoreSampler = repeat(1000L, ScaleLayer.NORMAL, shoreSampler, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);

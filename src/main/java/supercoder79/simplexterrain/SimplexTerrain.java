@@ -10,6 +10,7 @@ import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
 import supercoder79.simplexterrain.api.biomes.SimplexNether;
 import supercoder79.simplexterrain.client.GoVote;
+import supercoder79.simplexterrain.command.MapHeightmapCommand;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.compat.Compat;
 import supercoder79.simplexterrain.configs.ConfigHelper;
@@ -22,7 +23,7 @@ import supercoder79.simplexterrain.world.noisemodifier.RiversNoiseModifier;
 import java.util.concurrent.*;
 
 public class SimplexTerrain implements ModInitializer {
-	public static final String VERSION = "0.7.1";
+	public static final String VERSION = "0.7.2";
 
 	//if the current world is a Simplex Terrain world. Has no meaning when outside of a world.
 	public static boolean isSimplexEnabled = false;
@@ -88,6 +89,11 @@ public class SimplexTerrain implements ModInitializer {
 
 		if (CONFIG.reloadConfigCommand) {
 			ReloadConfigCommand.init();
+		}
+
+		// Dev only commands
+		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+			MapHeightmapCommand.init();
 		}
 
 		//Addition to the chunk generator
