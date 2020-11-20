@@ -85,6 +85,10 @@ public class SimplexBiomeSource extends BiomeSource {
 			return biomeRegistry.get(BiomeKeys.RIVER);
 		}
 
+		if (data.isMushroomIsland()) {
+			return biomeRegistry.get(BiomeKeys.MUSHROOM_FIELDS);
+		}
+
 		if (data.isForcedLowlands()) {
 			return lowlands;
 		}

@@ -7,6 +7,7 @@ package supercoder79.simplexterrain.world;
 public class BiomeData {
     private int height = 0;
     private boolean river = false;
+    private boolean mushroomIsland = false;
     private boolean forcedLowlands = false;
 
     public void setHeight(int height) {
@@ -25,6 +26,14 @@ public class BiomeData {
         return river;
     }
 
+    public boolean isMushroomIsland() {
+        return mushroomIsland;
+    }
+
+    public void setMushroomIsland() {
+        this.mushroomIsland = true;
+    }
+
     public boolean isForcedLowlands() {
         return forcedLowlands;
     }
@@ -32,4 +41,6 @@ public class BiomeData {
     public void setForcedLowlands() {
         this.forcedLowlands = true;
     }
+
+
 }
