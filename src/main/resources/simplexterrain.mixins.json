@@ -3,17 +3,18 @@
   "package": "supercoder79.simplexterrain.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinNoiseChunkGenerator",
+    "BiomeLayerSamplerAccessor",
     "MixinChunkStatus",
     "MixinGeneratorOptions",
     "MixinMinecraftServer",
+    "MixinNoiseChunkGenerator",
     "MixinSpawnLocating",
     "antibad.MixinLakeFeature",
     "optichunk.MixinChunkSection"
   ],
   "client": [
-    "client.MixinSkyProperties",
-    "client.MixinMinecraftClient"
+    "client.MixinMinecraftClient",
+    "client.MixinSkyProperties"
   ],
   "injectors": {
     "defaultRequire": 1
