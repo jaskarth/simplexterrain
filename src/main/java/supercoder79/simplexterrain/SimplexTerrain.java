@@ -22,7 +22,7 @@ import supercoder79.simplexterrain.world.noisemodifier.RiversNoiseModifier;
 import java.util.concurrent.*;
 
 public class SimplexTerrain implements ModInitializer {
-	public static final String VERSION = "0.7.1";
+	public static final String VERSION = "0.7.2";
 
 	//if the current world is a Simplex Terrain world. Has no meaning when outside of a world.
 	public static boolean isSimplexEnabled = false;
