@@ -25,4 +25,5 @@ bin/
 
 # fabric
 
+logs/
 run/

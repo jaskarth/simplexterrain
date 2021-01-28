@@ -5,18 +5,20 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.Util;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.NoiseSampler;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.SpawnHelper;
@@ -40,6 +42,11 @@ import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.noise.NoiseMath;
 import supercoder79.simplexterrain.world.BiomeData;
+import supercoder79.simplexterrain.world.NoiseTypePicker;
+import supercoder79.simplexterrain.world.noisetype.LowLyingPlainsNoiseType;
+import supercoder79.simplexterrain.world.noisetype.MountainsNoiseType;
+import supercoder79.simplexterrain.world.noisetype.NoiseType;
+import supercoder79.simplexterrain.world.noisetype.PlainsNoiseType;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
@@ -48,6 +55,15 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 			Codec.LONG.fieldOf("seed").stable().forGetter((generator) -> generator.seed))
 			.apply(instance, instance.stable(SimplexChunkGenerator::new)));
 	public static SimplexChunkGenerator THIS;
+
+	private static final float[] NOISE_WEIGHT_TABLE = Util.make(new float[9 * 9], (array) -> {
+		for(int x = -4; x <= 4; ++x) {
+			for(int z = -4; z <= 4; ++z) {
+				float f = 10.0F / MathHelper.sqrt((float)(x * x + z * z) + 0.2F);
+				array[x + 4 + (z + 4) * 9] = f;
+			}
+		}
+	});
 
 	public final OctaveNoiseSampler<? extends Noise> baseNoise;
 
@@ -63,6 +79,12 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 	private final long seed;
 	private final BiomeSource biomeSource;
+	private final ContinentGenerator continentGenerator;
+
+	private final List<NoiseType> noiseTypes;
+	private final NoiseTypePicker picker;
+
+
 
 	public SimplexChunkGenerator(BiomeSource biomeSource, long seed) {
 		super(biomeSource, new StructuresConfig(true));
@@ -75,14 +97,27 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 		ChunkRandom random = new ChunkRandom(seed);
 		this.biomeSource = biomeSource;
 
+		PlainsNoiseType noiseType = new PlainsNoiseType();
+		noiseType.init(random);
+		MountainsNoiseType noiseType2 = new MountainsNoiseType();
+		noiseType2.init(random);
+		LowLyingPlainsNoiseType noiseType3 = new LowLyingPlainsNoiseType();
+		noiseType3.init(random);
+
+		this.noiseTypes = ImmutableList.of(noiseType);
+		this.picker = new NoiseTypePicker(random, ImmutableList.of(noiseType, noiseType2, noiseType3));
+
 		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
 
 		baseNoise = new OctaveNoiseSampler<>(noiseClass, random, SimplexTerrain.CONFIG.mainOctaveAmount, SimplexTerrain.CONFIG.mainFrequency, SimplexTerrain.CONFIG.mainAmplitudeHigh, SimplexTerrain.CONFIG.mainAmplitudeLow);
 
 		futures = new CompletableFuture[SimplexTerrain.CONFIG.noiseGenerationThreads];
 
+		this.continentGenerator = new ContinentGenerator(seed, this.getSeaLevel());
+
 		if (biomeSource instanceof SimplexBiomeSource) {
 			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
+			((SimplexBiomeSource)(this.biomeSource)).setContinentHeightmap(continentGenerator);
 		}
 
 		this.surfaceDepthNoise = new OctaveSimplexNoiseSampler(random, IntStream.rangeClosed(-3, 0));
@@ -151,9 +186,9 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 			for (int z = 0; z < 16; ++z) {
 				pos.setZ(z);
 
-				int height = requestedVals[(x*16) + z];
+				int height = requestedVals[(x * 16) + z];
 
-				for (int y = 0; y <= height; ++y) {
+				for (int y = 0; y < height; ++y) {
 					pos.setY(y);
 					chunk.setBlockState(pos, Blocks.STONE.getDefaultState(), false);
 				}
@@ -200,6 +235,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 		if (noiseCache.get().size() > 16) {
 			noiseCache.get().removeFirst();
 		}
+
 		noiseCache.get().put(pos.toLong(), vals);
 
 		return vals;
@@ -222,13 +258,43 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	public int getHeight(int x, int z) {
 		BiomeData data = new BiomeData();
 
-		double currentVal = baseNoise.sample(x, z);
+		double currentVal = this.continentGenerator.getHeight(x, z);
 
-		for (NoiseModifier modifier : noiseModifiers) {
-			currentVal = modifier.modify(x, z, currentVal, data);
+		currentVal = Math.min(currentVal, SimplexTerrain.CONFIG.seaLevel);
+
+		double continent = 0;
+		double weight = 0;
+
+		Map<NoiseType, Double> types = new HashMap<>();
+
+		for(int x1 = -12; x1 <= 12; x1++) {
+		    for(int z1 = -12; z1 <= 12; z1++) {
+				double weightHere = 1;
+
+		    	if (this.continentGenerator.getHeight(x + x1, z + z1) >= SimplexTerrain.CONFIG.seaLevel) {
+					continent += weightHere;
+				}
+
+		    	NoiseType here = picker.get(x + x1, z + z1);
+		    	if (types.containsKey(here)) {
+		    		types.put(here, types.get(here) + weightHere);
+				} else {
+		    		types.put(here, weightHere);
+				}
+
+				weight += weightHere;
+		    }
 		}
 
-		return (int) (NoiseMath.sigmoid(currentVal));
+		continent /= weight;
+		for (Map.Entry<NoiseType, Double> entry : types.entrySet()) {
+			double typeWeight = entry.getValue() / weight;
+			currentVal += entry.getKey().modify(x, z, currentVal, typeWeight, data) * continent * typeWeight;
+		}
+
+//		currentVal += picker.get(x, z).modify(x, z, currentVal, data) * continent;
+
+		return (int) currentVal;
 	}
 
 	@Override
@@ -365,6 +431,10 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 		carverPostProcesors.forEach(postProcessor -> postProcessor.process(world, new ChunkRandom(), chunk.getPos().x, chunk.getPos().z, this));
 	}
 
+	private static double getWeight(int x1, int z1) {
+		return NOISE_WEIGHT_TABLE[x1 + 4 + (z1 + 4) * 9];
+	}
+
 	@Override
 	public int getSeaLevel() {
 		return SimplexTerrain.CONFIG.seaLevel;
@@ -377,7 +447,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 
 	@Override
-	public BlockView getColumnSample(int x, int z) {
+	public VerticalBlockSample getColumnSample(int x, int z) {
 		int height = getHeight(x, z);
 		BlockState[] array = new BlockState[256];
 		for (int y = 255; y >= 0; y--) {
@@ -392,6 +462,6 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 			}
 		}
 
-		return new VerticalBlockSample(array);
+		return new VerticalBlockSample(0, array);
 	}
 }

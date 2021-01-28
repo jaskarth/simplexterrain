@@ -37,6 +37,7 @@ public class SimplexBiomeSource extends BiomeSource {
 	private final long seed;
 
 	private Heightmap heightmap = Heightmap.NONE;
+	private Heightmap continent = Heightmap.NONE;
 
 	public SimplexBiomeSource(Registry<Biome> biomeRegistry, long seed) {
 		super(VanillaLayeredBiomeSource.BIOMES.stream().map((registryKey) -> () -> (Biome)biomeRegistry.getOrThrow(registryKey)));
@@ -60,6 +61,10 @@ public class SimplexBiomeSource extends BiomeSource {
 		this.heightmap = heightmap;
 	}
 
+	public void setContinentHeightmap(Heightmap heightmap) {
+		this.continent = heightmap;
+	}
+
 	@Override
 	public Biome getBiomeForNoiseGen(int x, int y, int z) {
 		if (heightmap == null) return BuiltinBiomes.PLAINS;
@@ -70,43 +75,13 @@ public class SimplexBiomeSource extends BiomeSource {
 	public Biome getBiomeAt(int x, int z, BiomeData data) {
 		int height = data.getHeight();
 
-		Biome lowlands = this.lowlandsSampler.sample(this.biomeRegistry, x, z);
-		boolean isSwamp = this.biomeRegistry.getId(lowlands) == BiomeKeys.SWAMP.getValue();
+		int continent = this.continent.getHeight(x << 2, z << 2);
 
-		if (data.isRiver()) {
-			if (isSwamp) {
-				return biomeRegistry.get(BiomeKeys.SWAMP);
-			}
-
-			if (lowlands.getPrecipitation() == Biome.Precipitation.SNOW) {
-				return biomeRegistry.get(BiomeKeys.FROZEN_RIVER);
-			}
-
-			return biomeRegistry.get(BiomeKeys.RIVER);
+		if (continent < SimplexTerrain.CONFIG.seaLevel) {
+			return this.biomeRegistry.get(BiomeKeys.OCEAN);
 		}
 
-		if (data.isMushroomIsland()) {
-			return biomeRegistry.get(BiomeKeys.MUSHROOM_FIELDS);
-		}
-
-		if (data.isForcedLowlands()) {
-			return lowlands;
-		}
-
-		if (height < SimplexTerrain.CONFIG.seaLevel - 20) return this.deepOceanSampler.sample(this.biomeRegistry, x, z);
-		if (height < SimplexTerrain.CONFIG.seaLevel - 4) return this.oceanSampler.sample(this.biomeRegistry, x, z);
-		if (height < SimplexTerrain.CONFIG.lowlandStartHeight + (beachStartSampler.sample(x / 128.0, z / 128.0) * 4)) {
-			//TODO: unhardcode
-			if (this.biomeRegistry.getId(lowlands) == BiomeKeys.BADLANDS.getValue()) return lowlands;
-			if (this.biomeRegistry.getId(lowlands) == BiomeKeys.BADLANDS_PLATEAU.getValue()) return lowlands;
-			if (isSwamp) return lowlands;
-			return this.beachSampler.sample(this.biomeRegistry, x, z);
-		}
-
-		if (height < SimplexTerrain.CONFIG.midlandStartHeight) return this.lowlandsSampler.sample(this.biomeRegistry, x, z);
-		if (height < SimplexTerrain.CONFIG.highlandStartHeight) return this.midlandsSampler.sample(this.biomeRegistry, x, z);
-		if (height < SimplexTerrain.CONFIG.toplandStartHeight) return this.highlandsSampler.sample(this.biomeRegistry, x, z);
-		return this.toplandsSampler.sample(this.biomeRegistry, x, z);
+		return this.biomeRegistry.get(BiomeKeys.PLAINS);
 	}
 
 	@Override
