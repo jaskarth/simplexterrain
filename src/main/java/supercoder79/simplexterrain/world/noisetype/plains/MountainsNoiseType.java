@@ -1,10 +1,11 @@
-package supercoder79.simplexterrain.world.noisetype;
+package supercoder79.simplexterrain.world.noisetype.plains;
 
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.world.BiomeData;
+import supercoder79.simplexterrain.world.noisetype.NoiseType;
 
 public class MountainsNoiseType implements NoiseType {
     private OctaveNoiseSampler<OpenSimplexNoise> noise;

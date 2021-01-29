@@ -1,21 +1,21 @@
-package supercoder79.simplexterrain.world.noisetype;
+package supercoder79.simplexterrain.world.noisetype.forest;
 
 import net.minecraft.world.gen.ChunkRandom;
-import supercoder79.simplexterrain.SimplexTerrain;
-import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.world.BiomeData;
+import supercoder79.simplexterrain.world.noisetype.NoiseType;
 
-public class PlainsNoiseType implements NoiseType {
+public class HillsNoiseType implements NoiseType {
     private OctaveNoiseSampler<OpenSimplexNoise> noise;
+
     @Override
     public void init(ChunkRandom random) {
-        this.noise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, random, 4, 160, 8, 8);
+        this.noise = new OctaveNoiseSampler<>(OpenSimplexNoise.class, random, 4, 120, 28, 28);
     }
 
     @Override
     public double modify(int x, int z, double currentNoiseValue, double weight, BiomeData data) {
-        return 3 + this.noise.sample(x, z);
+        return 8 + noise.sample(x, z);
     }
 }

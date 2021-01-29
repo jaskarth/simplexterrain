@@ -13,6 +13,7 @@ import supercoder79.simplexterrain.client.GoVote;
 import supercoder79.simplexterrain.command.MapHeightmapCommand;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.compat.Compat;
+import supercoder79.simplexterrain.compat.VanillaBiomes;
 import supercoder79.simplexterrain.configs.ConfigHelper;
 import supercoder79.simplexterrain.configs.MainConfigData;
 import supercoder79.simplexterrain.world.SimplexWorldType;
@@ -80,6 +81,9 @@ public class SimplexTerrain implements ModInitializer {
 						null, true);
 
 		addDefaultBiomes();
+
+		VanillaBiomes.register();
+
 //		SimplexBiomes.addReplacementBiome(FOREST, biomeId(Biomes.FLOWER_FOREST), 15);
 //		SimplexBiomes.addReplacementBiome(BIRCH_FOREST, biomeId(Biomes.TALL_BIRCH_FOREST), 6);
 //		SimplexBiomes.addReplacementBiome(PLAINS, biomeId(Biomes.SUNFLOWER_PLAINS), 50);

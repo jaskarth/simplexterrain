@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -12,26 +13,22 @@ import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
+import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.SimplexTerrain;
+import supercoder79.simplexterrain.api.BackingBiomeSource;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.world.BiomeData;
 import supercoder79.simplexterrain.world.biomelayers.SimplexBiomeLayers;
+import supercoder79.simplexterrain.world.noisetype.NoiseTypeHolder;
 
-public class SimplexBiomeSource extends BiomeSource {
+public class SimplexBiomeSource extends BiomeSource implements BackingBiomeSource {
 	public static final Codec<SimplexBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(source -> source.biomeRegistry),
 			Codec.LONG.fieldOf("seed").stable().forGetter(source -> source.seed))
 			.apply(instance, instance.stable(SimplexBiomeSource::new)));
-	private final BiomeLayerSampler lowlandsSampler;
-	private final BiomeLayerSampler midlandsSampler;
-	private final BiomeLayerSampler highlandsSampler;
-	private final BiomeLayerSampler toplandsSampler;
-	private final BiomeLayerSampler beachSampler;
-	private final BiomeLayerSampler oceanSampler;
-	private final BiomeLayerSampler deepOceanSampler;
 
-	private final OpenSimplexNoise beachStartSampler;
+	private final BiomeLayerSampler backingSampler;
 
 	private final Registry<Biome> biomeRegistry;
 	private final long seed;
@@ -44,17 +41,8 @@ public class SimplexBiomeSource extends BiomeSource {
 		this.biomeRegistry = biomeRegistry;
 		this.seed = seed;
 
-		BiomeLayerSampler[] biomeLayerSamplers = SimplexBiomeLayers.build(biomeRegistry, seed);
-
-		this.lowlandsSampler = biomeLayerSamplers[0];
-		this.midlandsSampler = biomeLayerSamplers[1];
-		this.highlandsSampler = biomeLayerSamplers[2];
-		this.toplandsSampler = biomeLayerSamplers[3];
-		this.beachSampler = biomeLayerSamplers[4];
-		this.oceanSampler = biomeLayerSamplers[5];
-		this.deepOceanSampler = biomeLayerSamplers[6];
-
-		this.beachStartSampler = new OpenSimplexNoise(seed + 12);
+		this.backingSampler =  SimplexBiomeLayers.build(biomeRegistry, seed);
+		NoiseTypeHolder.initialize(new ChunkRandom(seed));
 	}
 
 	public void setHeightmap(Heightmap heightmap) {
@@ -81,7 +69,7 @@ public class SimplexBiomeSource extends BiomeSource {
 			return this.biomeRegistry.get(BiomeKeys.OCEAN);
 		}
 
-		return this.biomeRegistry.get(BiomeKeys.PLAINS);
+		return this.backingSampler.sample(this.biomeRegistry, x << 2, z << 2);
 	}
 
 	@Override
@@ -92,5 +80,10 @@ public class SimplexBiomeSource extends BiomeSource {
 	@Override
 	public BiomeSource withSeed(long l) {
 		return new SimplexBiomeSource(this.biomeRegistry, l);
+	}
+
+	@Override
+	public RegistryKey<Biome> getBacking(int x, int z) {
+		return this.biomeRegistry.getKey(this.backingSampler.sample(this.biomeRegistry, x, z)).get();
 	}
 }

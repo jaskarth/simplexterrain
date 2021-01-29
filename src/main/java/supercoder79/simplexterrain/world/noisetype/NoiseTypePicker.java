@@ -1,10 +1,7 @@
-package supercoder79.simplexterrain.world;
+package supercoder79.simplexterrain.world.noisetype;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.util.math.Vec3d;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
-import supercoder79.simplexterrain.world.noisetype.DefaultNoiseType;
-import supercoder79.simplexterrain.world.noisetype.NoiseType;
 
 import java.util.*;
 
@@ -28,7 +25,7 @@ public class NoiseTypePicker {
         this.points = points;
     }
 
-    public NoiseType get(double x, double z) {
+    public NoiseType get(int x, int z) {
         double ax = this.noise1.sample( x / 240.0, z / 240.0);
         double ay = this.noise2.sample( x / 240.0, z / 240.0);
         double az = this.noise3.sample(x / 240.0, z / 240.0);

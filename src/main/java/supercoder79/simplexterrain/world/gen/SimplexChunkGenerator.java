@@ -35,6 +35,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import supercoder79.simplexterrain.SimplexTerrain;
+import supercoder79.simplexterrain.api.BackingBiomeSource;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.Noise;
 import supercoder79.simplexterrain.api.noisemodifier.NoiseModifier;
@@ -42,11 +43,9 @@ import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
 import supercoder79.simplexterrain.noise.NoiseMath;
 import supercoder79.simplexterrain.world.BiomeData;
-import supercoder79.simplexterrain.world.NoiseTypePicker;
-import supercoder79.simplexterrain.world.noisetype.LowLyingPlainsNoiseType;
-import supercoder79.simplexterrain.world.noisetype.MountainsNoiseType;
-import supercoder79.simplexterrain.world.noisetype.NoiseType;
-import supercoder79.simplexterrain.world.noisetype.PlainsNoiseType;
+import supercoder79.simplexterrain.world.noisetype.*;
+import supercoder79.simplexterrain.world.noisetype.plains.LowLyingPlainsNoiseType;
+import supercoder79.simplexterrain.world.noisetype.plains.MountainsNoiseType;
 
 
 public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
@@ -81,9 +80,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 	private final BiomeSource biomeSource;
 	private final ContinentGenerator continentGenerator;
 
-	private final List<NoiseType> noiseTypes;
-	private final NoiseTypePicker picker;
-
+	private final BackingBiomeSource backing;
 
 
 	public SimplexChunkGenerator(BiomeSource biomeSource, long seed) {
@@ -97,15 +94,11 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 		ChunkRandom random = new ChunkRandom(seed);
 		this.biomeSource = biomeSource;
 
-		PlainsNoiseType noiseType = new PlainsNoiseType();
-		noiseType.init(random);
-		MountainsNoiseType noiseType2 = new MountainsNoiseType();
-		noiseType2.init(random);
-		LowLyingPlainsNoiseType noiseType3 = new LowLyingPlainsNoiseType();
-		noiseType3.init(random);
+		if (!(this.biomeSource instanceof BackingBiomeSource)) {
+			throw new IllegalStateException("Simplex terrain biome source must implement BackingBiomeSource");
+		}
 
-		this.noiseTypes = ImmutableList.of(noiseType);
-		this.picker = new NoiseTypePicker(random, ImmutableList.of(noiseType, noiseType2, noiseType3));
+		this.backing = (BackingBiomeSource) this.biomeSource;
 
 		Class<? extends Noise> noiseClass = SimplexTerrain.CONFIG.noiseGenerator.noiseClass;
 
@@ -275,7 +268,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 					continent += weightHere;
 				}
 
-		    	NoiseType here = picker.get(x + x1, z + z1);
+		    	NoiseType here = NoiseTypeHolder.get(this.backing.getBacking(x + x1, z + z1)).get(x + x1, z + z1);
 		    	if (types.containsKey(here)) {
 		    		types.put(here, types.get(here) + weightHere);
 				} else {
@@ -291,8 +284,6 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 			double typeWeight = entry.getValue() / weight;
 			currentVal += entry.getKey().modify(x, z, currentVal, typeWeight, data) * continent * typeWeight;
 		}
-
-//		currentVal += picker.get(x, z).modify(x, z, currentVal, data) * continent;
 
 		return (int) currentVal;
 	}
