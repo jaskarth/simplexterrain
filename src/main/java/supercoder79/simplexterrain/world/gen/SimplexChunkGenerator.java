@@ -260,6 +260,8 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 		Map<NoiseType, Double> types = new HashMap<>();
 
+
+
 		for(int x1 = -12; x1 <= 12; x1++) {
 		    for(int z1 = -12; z1 <= 12; z1++) {
 				double weightHere = 1;
@@ -280,6 +282,7 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 		}
 
 		continent /= weight;
+
 		for (Map.Entry<NoiseType, Double> entry : types.entrySet()) {
 			double typeWeight = entry.getValue() / weight;
 			currentVal += entry.getKey().modify(x, z, currentVal, typeWeight, data) * continent * typeWeight;

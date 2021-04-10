@@ -14,6 +14,10 @@ public class NoiseTypeCache {
         this.cache = ThreadLocal.withInitial(() -> new Cache(this.picker));
     }
 
+    public NoiseTypePicker getPicker() {
+        return picker;
+    }
+
     public NoiseType get(int x, int z) {
         return this.cache.get().get(x, z);
     }

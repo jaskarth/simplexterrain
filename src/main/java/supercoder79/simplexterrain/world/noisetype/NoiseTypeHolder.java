@@ -6,13 +6,14 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkRandom;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 public class NoiseTypeHolder {
-    public static final Map<RegistryKey<Biome>, Function<ChunkRandom, NoiseTypeCache>> BIOME_FACTORIES = new HashMap<>();
+    public static final Map<RegistryKey<Biome>, Function<ChunkRandom, NoiseTypeCache>> BIOME_FACTORIES = new LinkedHashMap<>();
 
-    private static final Map<RegistryKey<Biome>, NoiseTypeCache> FOR_BIOME = new HashMap<>();
+    private static final Map<RegistryKey<Biome>, NoiseTypeCache> FOR_BIOME = new LinkedHashMap<>();
 
     public static void initialize(ChunkRandom random) {
         FOR_BIOME.clear();

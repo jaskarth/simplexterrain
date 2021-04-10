@@ -56,7 +56,7 @@ public class SimplexBiomeSource extends BiomeSource implements BackingBiomeSourc
 	@Override
 	public Biome getBiomeForNoiseGen(int x, int y, int z) {
 		if (heightmap == null) return BuiltinBiomes.PLAINS;
-		Biome biome = getBiomeAt(x, z, heightmap.getBiomeData(x << 2, z << 2));
+		Biome biome = getBiomeAt(x, z, heightmap.getBiomeData(x, z));
 		return biome == null ? BuiltinBiomes.PLAINS : biome;
 	}
 

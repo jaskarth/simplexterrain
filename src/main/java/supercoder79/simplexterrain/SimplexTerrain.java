@@ -8,9 +8,9 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.BiomeKeys;
 import supercoder79.simplexterrain.api.biomes.SimplexBiomes;
 import supercoder79.simplexterrain.api.biomes.SimplexClimate;
-import supercoder79.simplexterrain.api.biomes.SimplexNether;
 import supercoder79.simplexterrain.client.GoVote;
 import supercoder79.simplexterrain.command.MapHeightmapCommand;
+import supercoder79.simplexterrain.command.MapNoiseTypeCommand;
 import supercoder79.simplexterrain.command.ReloadConfigCommand;
 import supercoder79.simplexterrain.compat.Compat;
 import supercoder79.simplexterrain.compat.VanillaBiomes;
@@ -19,7 +19,6 @@ import supercoder79.simplexterrain.configs.MainConfigData;
 import supercoder79.simplexterrain.world.SimplexWorldType;
 import supercoder79.simplexterrain.world.gen.SimplexBiomeSource;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
-import supercoder79.simplexterrain.world.noisemodifier.RiversNoiseModifier;
 
 import java.util.concurrent.*;
 
@@ -98,6 +97,7 @@ public class SimplexTerrain implements ModInitializer {
 		// Dev only commands
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			MapHeightmapCommand.init();
+			MapNoiseTypeCommand.init();
 		}
 
 		//Addition to the chunk generator
