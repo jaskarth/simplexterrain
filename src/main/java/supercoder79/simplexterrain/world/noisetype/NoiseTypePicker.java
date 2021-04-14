@@ -1,6 +1,7 @@
 package supercoder79.simplexterrain.world.noisetype;
 
 import net.minecraft.util.math.Vec3d;
+import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 import java.util.*;
@@ -9,12 +10,16 @@ public class NoiseTypePicker {
     private final OpenSimplexNoise noise1;
     private final OpenSimplexNoise noise2;
     private final OpenSimplexNoise noise3;
+    private final OpenSimplexNoise noise1a;
+    private final OpenSimplexNoise noise3a;
     private final Map<Vec3d, NoiseType> points;
 
     public NoiseTypePicker(Random random, List<NoiseType> types) {
         this.noise1 = new OpenSimplexNoise(random.nextLong());
         this.noise2 = new OpenSimplexNoise(random.nextLong());
         this.noise3 = new OpenSimplexNoise(random.nextLong());
+        this.noise1a = new OpenSimplexNoise(random.nextLong());
+        this.noise3a = new OpenSimplexNoise(random.nextLong());
 
 
         Map<Vec3d, NoiseType> points = new HashMap<>();
@@ -31,9 +36,9 @@ public class NoiseTypePicker {
     }
 
     public NoiseType get(int x, int z) {
-        double ax = this.noise1.sample( x / 600.0, z / 600.0);
+        double ax = this.noise1.sample( x / 600.0, z / 600.0) + (this.noise1a.sample(x / 200.0, z / 200.0) * 0.333);
         double ay = this.noise2.sample( x / 600.0, z / 600.0);
-        double az = this.noise3.sample(x / 600.0, z / 600.0);
+        double az = this.noise3.sample(x / 600.0, z / 600.0) + (this.noise3a.sample(x / 200.0, z / 200.0) * 0.333);
 
         Vec3d vec = new Vec3d(ax, ay, az);
         double minimumDist = Double.MAX_VALUE;

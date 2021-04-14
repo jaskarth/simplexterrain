@@ -20,6 +20,7 @@ import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.world.BiomeData;
 import supercoder79.simplexterrain.world.biomelayers.SimplexBiomeLayers;
+import supercoder79.simplexterrain.world.noisetype.NoiseType;
 import supercoder79.simplexterrain.world.noisetype.NoiseTypeHolder;
 
 public class SimplexBiomeSource extends BiomeSource implements BackingBiomeSource {
@@ -69,7 +70,14 @@ public class SimplexBiomeSource extends BiomeSource implements BackingBiomeSourc
 			return this.biomeRegistry.get(BiomeKeys.OCEAN);
 		}
 
-		return this.backingSampler.sample(this.biomeRegistry, x << 2, z << 2);
+		RegistryKey<Biome> key = this.biomeRegistry.getKey(this.backingSampler.sample(this.biomeRegistry, x << 2, z << 2)).get();;
+
+		NoiseType type = NoiseTypeHolder.get(key).get(x << 2, z << 2);
+
+		// TODO: provide a better way of doing this
+		int y = (int) type.modify(x << 2, z << 2, 0, 1, new BiomeData());
+
+		return this.biomeRegistry.get(type.modify(y, key));
 	}
 
 	@Override

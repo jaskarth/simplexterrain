@@ -1,6 +1,9 @@
 package supercoder79.simplexterrain.world.noisetype.plains;
 
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
@@ -19,10 +22,15 @@ public class MountainsNoiseType implements NoiseType {
 
     @Override
     public double modify(int x, int z, double currentNoiseValue, double weight, BiomeData data) {
-        double ridgedNoise = Math.abs(1 - this.ridged.sample(x / 60.0, z / 60.0)) * 12 * weight * weight;
+        double ridgedNoise = Math.abs(1 - this.ridged.sample(x / 60.0, z / 60.0)) * 12 * weight;
         double addition = MathHelper.lerp(MathHelper.perlinFade(weight), 0, 10);
         double noise = this.noise.sample(x, z) * weight;
 
         return 3 + addition + noise + ridgedNoise;
+    }
+
+    @Override
+    public RegistryKey<Biome> modify(int y, RegistryKey<Biome> existing) {
+        return y > (85 - 61) ? BiomeKeys.FOREST : existing;
     }
 }

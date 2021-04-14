@@ -109,8 +109,9 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 		this.continentGenerator = new ContinentGenerator(seed, this.getSeaLevel());
 
 		if (biomeSource instanceof SimplexBiomeSource) {
-			((SimplexBiomeSource)(this.biomeSource)).setHeightmap(this);
-			((SimplexBiomeSource)(this.biomeSource)).setContinentHeightmap(continentGenerator);
+			SimplexBiomeSource source = (SimplexBiomeSource)biomeSource;
+			source.setHeightmap(this);
+			source.setContinentHeightmap(continentGenerator);
 		}
 
 		this.surfaceDepthNoise = new OctaveSimplexNoiseSampler(random, IntStream.rangeClosed(-3, 0));

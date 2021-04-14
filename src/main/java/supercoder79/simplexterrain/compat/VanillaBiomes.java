@@ -35,8 +35,6 @@ public class VanillaBiomes {
         LowLyingPlainsNoiseType lakes = new LowLyingPlainsNoiseType();
         lakes.init(random);
 
-        System.out.println("plains " + random.nextLong());
-
         NoiseTypePicker picker = new NoiseTypePicker(random, ImmutableList.of(plains, mountains, lakes));
         return new NoiseTypeCache(picker);
     }
@@ -47,8 +45,6 @@ public class VanillaBiomes {
 
         HillsNoiseType hills = new HillsNoiseType();
         hills.init(random);
-
-        System.out.println("forest " + random.nextLong());
 
         NoiseTypePicker picker = new NoiseTypePicker(random, ImmutableList.of(plains, hills));
         return new NoiseTypeCache(picker);
