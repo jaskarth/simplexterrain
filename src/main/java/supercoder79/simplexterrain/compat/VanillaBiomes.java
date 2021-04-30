@@ -8,6 +8,8 @@ import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.world.noisetype.NoiseTypeCache;
 import supercoder79.simplexterrain.world.noisetype.NoiseTypeHolder;
 import supercoder79.simplexterrain.world.noisetype.NoiseTypePicker;
+import supercoder79.simplexterrain.world.noisetype.desert.DunesNoiseType;
+import supercoder79.simplexterrain.world.noisetype.desert.SavannaHillsNoiseType;
 import supercoder79.simplexterrain.world.noisetype.forest.HillsNoiseType;
 import supercoder79.simplexterrain.world.noisetype.plains.LowLyingPlainsNoiseType;
 import supercoder79.simplexterrain.world.noisetype.plains.ForestedHillsNoiseType;
@@ -20,6 +22,7 @@ public class VanillaBiomes {
     public static void register() {
         register(BiomeKeys.PLAINS, VanillaBiomes::createPlains);
         register(BiomeKeys.FOREST, VanillaBiomes::createForest);
+        register(BiomeKeys.DESERT, VanillaBiomes::createDesert);
     }
 
     private static void register(RegistryKey<Biome> key, Function<ChunkRandom, NoiseTypeCache> factory) {
@@ -51,6 +54,20 @@ public class VanillaBiomes {
         hills.init(random);
 
         NoiseTypePicker picker = new NoiseTypePicker(random, ImmutableList.of(plains, hills));
+        return new NoiseTypeCache(picker);
+    }
+
+    private static NoiseTypeCache createDesert(ChunkRandom random) {
+        HillsNoiseType hills = new HillsNoiseType();
+        hills.init(random);
+
+        DunesNoiseType dunes = new DunesNoiseType();
+        dunes.init(random);
+
+        SavannaHillsNoiseType savanna = new SavannaHillsNoiseType();
+        savanna.init(random);
+
+        NoiseTypePicker picker = new NoiseTypePicker(random, ImmutableList.of(dunes, hills, savanna));
         return new NoiseTypeCache(picker);
     }
 }

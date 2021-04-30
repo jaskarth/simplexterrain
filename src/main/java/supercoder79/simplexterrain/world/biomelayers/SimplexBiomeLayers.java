@@ -5,15 +5,12 @@ import java.util.function.LongFunction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.ScaleLayer;
-import net.minecraft.world.biome.layer.SmoothLayer;
 import net.minecraft.world.biome.layer.type.ParentedLayer;
 import net.minecraft.world.biome.layer.util.CachingLayerContext;
-import net.minecraft.world.biome.layer.util.CachingLayerSampler;
 import net.minecraft.world.biome.layer.util.LayerFactory;
 import net.minecraft.world.biome.layer.util.LayerSampleContext;
 import net.minecraft.world.biome.layer.util.LayerSampler;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
-import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.world.biomelayers.layers.*;
 
 public class SimplexBiomeLayers {
@@ -27,7 +24,7 @@ public class SimplexBiomeLayers {
 		return result;
 	}
 
-	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> stackFactories(Registry<Biome> biomes, long worldSeed, LongFunction<C> contextProvider) {
+	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> build(Registry<Biome> biomes, long worldSeed, LongFunction<C> contextProvider) {
 		LayerFactory<T> layer = new SimplexClimateLayer(worldSeed).create(contextProvider.apply(1L));
 		layer = new BaseBiomesLayer(biomes).create(contextProvider.apply(5L), layer);
 		layer = stack(1000, ScaleLayer.NORMAL, layer, 7, contextProvider);
@@ -36,6 +33,6 @@ public class SimplexBiomeLayers {
 	}
 
 	public static BiomeLayerSampler build(Registry<Biome> biomes, long seed) {
-		return new BiomeLayerSampler(stackFactories(biomes, seed, salt -> new CachingLayerContext(5, seed, salt)));
+		return new BiomeLayerSampler(build(biomes, seed, salt -> new CachingLayerContext(5, seed, salt)));
 	}
 }

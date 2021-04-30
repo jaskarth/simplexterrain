@@ -67,7 +67,7 @@ public class SimplexBiomeSource extends BiomeSource implements BackingBiomeSourc
 			return this.biomeRegistry.get(BiomeKeys.OCEAN);
 		}
 
-		RegistryKey<Biome> key = this.biomeRegistry.getKey(this.backingSampler.sample(this.biomeRegistry, x << 2, z << 2)).get();;
+		RegistryKey<Biome> key = this.biomeRegistry.getKey(this.backingSampler.sample(this.biomeRegistry, x << 2, z << 2)).get();
 
 		NoiseType type = NoiseTypeHolder.get(key).get(x << 2, z << 2);
 

@@ -16,6 +16,10 @@ public class BaseBiomesLayer implements IdentitySamplingLayer {
 
     @Override
     public int sample(LayerRandomnessSource context, int value) {
+        if (context.nextInt(4) == 0) {
+            return this.registry.getRawId(this.registry.get(BiomeKeys.DESERT));
+        }
+
         return this.registry.getRawId(context.nextInt(3) == 0 ? this.registry.get(BiomeKeys.FOREST) : this.registry.get(BiomeKeys.PLAINS));
     }
 }
