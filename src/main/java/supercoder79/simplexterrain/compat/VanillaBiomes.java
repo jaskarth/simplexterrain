@@ -10,6 +10,7 @@ import supercoder79.simplexterrain.world.noisetype.NoiseTypeHolder;
 import supercoder79.simplexterrain.world.noisetype.NoiseTypePicker;
 import supercoder79.simplexterrain.world.noisetype.forest.HillsNoiseType;
 import supercoder79.simplexterrain.world.noisetype.plains.LowLyingPlainsNoiseType;
+import supercoder79.simplexterrain.world.noisetype.plains.ForestedHillsNoiseType;
 import supercoder79.simplexterrain.world.noisetype.plains.MountainsNoiseType;
 import supercoder79.simplexterrain.world.noisetype.plains.PlainsNoiseType;
 
@@ -29,13 +30,16 @@ public class VanillaBiomes {
         PlainsNoiseType plains = new PlainsNoiseType();
         plains.init(random);
 
+        ForestedHillsNoiseType hills = new ForestedHillsNoiseType();
+        hills.init(random);
+
         MountainsNoiseType mountains = new MountainsNoiseType();
         mountains.init(random);
 
         LowLyingPlainsNoiseType lakes = new LowLyingPlainsNoiseType();
         lakes.init(random);
 
-        NoiseTypePicker picker = new NoiseTypePicker(random, ImmutableList.of(plains, mountains, lakes));
+        NoiseTypePicker picker = new NoiseTypePicker(random, ImmutableList.of(plains, hills, lakes, mountains));
         return new NoiseTypeCache(picker);
     }
 

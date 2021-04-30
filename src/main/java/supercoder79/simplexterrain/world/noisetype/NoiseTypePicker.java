@@ -1,7 +1,6 @@
 package supercoder79.simplexterrain.world.noisetype;
 
 import net.minecraft.util.math.Vec3d;
-import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
 import java.util.*;
@@ -24,8 +23,13 @@ public class NoiseTypePicker {
 
         Map<Vec3d, NoiseType> points = new HashMap<>();
         for (int i = 0; i < types.size(); i++) {
+            // Add to registry
+            NoiseTypeHolder.IDS.put(types.get(i), NoiseTypeHolder.currentId);
+            NoiseTypeHolder.IDS_REVERSE.put(NoiseTypeHolder.currentId, types.get(i));
+            NoiseTypeHolder.currentId++;
+
             double theta = (i / (double)types.size()) * Math.PI * 2;
-            points.put(new Vec3d(Math.cos(theta), 0, Math.sin(theta)), types.get(i));
+            types.get(i).addToPicker(points, theta);
         }
 
         this.points = points;

@@ -1,7 +1,5 @@
 package supercoder79.simplexterrain.world.gen;
 
-import com.google.common.collect.ImmutableList;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.registry.Registry;
@@ -17,7 +15,6 @@ import net.minecraft.world.gen.ChunkRandom;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.BackingBiomeSource;
 import supercoder79.simplexterrain.api.Heightmap;
-import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 import supercoder79.simplexterrain.world.BiomeData;
 import supercoder79.simplexterrain.world.biomelayers.SimplexBiomeLayers;
 import supercoder79.simplexterrain.world.noisetype.NoiseType;
@@ -77,7 +74,7 @@ public class SimplexBiomeSource extends BiomeSource implements BackingBiomeSourc
 		// TODO: provide a better way of doing this
 		int y = (int) type.modify(x << 2, z << 2, 0, 1, new BiomeData());
 
-		return this.biomeRegistry.get(type.modify(y, key));
+		return this.biomeRegistry.get(type.modifyBiome(y, key));
 	}
 
 	@Override
