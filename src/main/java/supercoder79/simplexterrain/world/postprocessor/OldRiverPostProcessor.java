@@ -13,11 +13,11 @@ import supercoder79.simplexterrain.api.Coordinate2Function;
 import supercoder79.simplexterrain.api.Heightmap;
 import supercoder79.simplexterrain.api.noise.OctaveNoiseSampler;
 import supercoder79.simplexterrain.api.postprocess.TerrainPostProcessor;
-import supercoder79.simplexterrain.configs.ConfigUtil;
+import supercoder79.simplexterrain.configs.ConfigHelper;
 import supercoder79.simplexterrain.configs.postprocessors.RiverConfigData;
 import supercoder79.simplexterrain.noise.gradient.OpenSimplexNoise;
 
-public final class RiverPostProcessor implements TerrainPostProcessor {
+public final class OldRiverPostProcessor implements TerrainPostProcessor {
 	private RiverConfigData config;
 	private OpenSimplexNoise noiseSampler;
 	private OctaveNoiseSampler sandNoise;
@@ -32,7 +32,7 @@ public final class RiverPostProcessor implements TerrainPostProcessor {
 
 	@Override
 	public void setup() {
-		config = ConfigUtil.getFromConfig(RiverConfigData.class, Paths.get("config", "simplexterrain", "postprocessors", "rivers.json"));
+		config = ConfigHelper.getFromConfig(RiverConfigData.class, Paths.get("config", "simplexterrain", "postprocessors", "rivers.json"));
 	}
 
 	@Override

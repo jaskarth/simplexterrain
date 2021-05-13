@@ -4,14 +4,13 @@ import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.datafixers.DataFixer;
 import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListenerFactory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryTracker;
+import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -26,13 +25,13 @@ import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.world.gen.SimplexChunkGenerator;
 
 import java.net.Proxy;
-import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void hookConstructor(Thread thread, RegistryTracker.Modifiable modifiable, LevelStorage.Session session, SaveProperties saveProperties, ResourcePackManager<ResourcePackProfile> resourcePackManager, Proxy proxy, DataFixer dataFixer, ServerResourceManager serverResourceManager, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo ci) {
+    private void hookConstructor(Thread thread, DynamicRegistryManager.Impl impl, LevelStorage.Session session, SaveProperties saveProperties, ResourcePackManager resourcePackManager, Proxy proxy, DataFixer dataFixer, ServerResourceManager serverResourceManager, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo ci) {
         if (saveProperties.getGeneratorOptions().getChunkGenerator() instanceof SimplexChunkGenerator) {
             SimplexTerrain.isSimplexEnabled = true;
         } else {

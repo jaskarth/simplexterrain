@@ -7,14 +7,14 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
-import supercoder79.simplexterrain.configs.Config;
+import supercoder79.simplexterrain.configs.ConfigHelper;
 
 public class ReloadConfigCommand {
 	public static void init() {
 		CommandRegistry.INSTANCE.register(false, dispatcher -> {
 			LiteralArgumentBuilder<ServerCommandSource> lab = CommandManager.literal("reloadterrainconfig").requires(executor -> executor.hasPermissionLevel(2)).executes(cmd -> {
 				ServerCommandSource source = cmd.getSource();
-				Config.init();
+				ConfigHelper.init();
 				source.sendFeedback(new LiteralText(Formatting.DARK_GREEN.toString() + Formatting.BOLD.toString() + "Reloaded Configs!"), true);
 				return 1;
 			});

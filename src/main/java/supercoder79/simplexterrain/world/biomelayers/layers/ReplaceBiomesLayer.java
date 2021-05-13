@@ -15,15 +15,15 @@ public enum ReplaceBiomesLayer implements IdentitySamplingLayer {
 
     @Override
     public int sample(LayerRandomnessSource layerRandomnessSource, int i) {
-        Set<Map.Entry<Biome, Pair<Biome, Integer>>> entries = SimplexBiomesImpl.getReplacementBiomes().entrySet();
-
-        for (Map.Entry<Biome, Pair<Biome, Integer>> entry : entries) {
-            if (i == Registry.BIOME.getRawId(entry.getKey())) {
-                if (layerRandomnessSource.nextInt(entry.getValue().getRight()) == 0) {
-                    return Registry.BIOME.getRawId(entry.getKey());
-                }
-            }
-        }
+//        Set<Map.Entry<Biome, Pair<Biome, Integer>>> entries = SimplexBiomesImpl.getReplacementBiomes().entrySet();
+//
+//        for (Map.Entry<Biome, Pair<Biome, Integer>> entry : entries) {
+//            if (i == Registry.BIOME.getRawId(entry.getKey())) {
+//                if (layerRandomnessSource.nextInt(entry.getValue().getRight()) == 0) {
+//                    return Registry.BIOME.getRawId(entry.getKey());
+//                }
+//            }
+//        }
         return i;
     }
 }

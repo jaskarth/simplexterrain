@@ -18,7 +18,7 @@ public class BiomePicker {
 	private final List<Entry> biomeEntries = Lists.newArrayList();
 	private double weightTotal;
 
-	public Biome pickBiome(LayerRandomnessSource rand) {
+	public Identifier pickBiome(LayerRandomnessSource rand) {
 		double randVal = target(rand);
 		int i = -1;
 
@@ -26,7 +26,8 @@ public class BiomePicker {
 			++i;
 			randVal -= biomeEntries.get(i).weight;
 		}
-		return biomeEntries.get(i).getBiome();
+
+		return biomeEntries.get(i).biomeId;
 	}
 
 	public void addBiome(Identifier biome, double weight) {
@@ -39,22 +40,12 @@ public class BiomePicker {
 	}
 
 	public static class Entry {
+		private final Identifier biomeId;
+		private final double weight;
 		public Entry(Identifier biome, double weight) {
 			this.biomeId = biome;
 			this.weight = weight;
 		}
-		
-		private Biome getBiome() {
-			return biome == null ? calculateBiome() : biome;
-		}
-		
-		private Biome calculateBiome() {
-			biome = Registry.BIOME.get(biomeId);
-			return biome;
-		}
 
-		private Biome biome = null;
-		private final Identifier biomeId;
-		private final double weight;
 	}
 }

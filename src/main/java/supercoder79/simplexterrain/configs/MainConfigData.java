@@ -26,14 +26,14 @@ public class MainConfigData {
 
 	public List<PostProcessors> postProcessors = new ArrayList<>();
 
-	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.MOUNTAINS, NoiseModifiers.RIDGES, NoiseModifiers.DETAILS);
+	public List<NoiseModifiers> noiseModifiers = Arrays.asList(NoiseModifiers.MOUNTAINS, NoiseModifiers.RIDGES, NoiseModifiers.DETAILS, NoiseModifiers.RIVERS, NoiseModifiers.MUSHROOM_ISLANDS);
 
 	public int mainOctaveAmount = 3;
 	public double mainFrequency = 3200.0;
 	public double mainAmplitudeHigh = 144.0;
 	public double mainAmplitudeLow = 32.0;
 	public double mainNetherScale = 70.0;
-	public double netherThresholdScale = 28;
+	public double netherThresholdScale = 28.0;
 	public double netherThresholdAmplitude = 0.125;
 	public double netherThresholdBase = 0.25;
 

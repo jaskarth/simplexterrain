@@ -3,7 +3,7 @@
   "package": "supercoder79.simplexterrain.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinCavesChunkGenerator",
+    "MixinNoiseChunkGenerator",
     "MixinChunkStatus",
     "MixinGeneratorOptions",
     "MixinMinecraftServer",
@@ -12,7 +12,8 @@
     "optichunk.MixinChunkSection"
   ],
   "client": [
-    "client.MixinSkyProperties"
+    "client.MixinSkyProperties",
+    "client.MixinMinecraftClient"
   ],
   "injectors": {
     "defaultRequire": 1

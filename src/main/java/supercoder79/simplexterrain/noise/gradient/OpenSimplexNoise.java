@@ -26,10 +26,9 @@ public class OpenSimplexNoise extends Noise {
     private static final double NORM_CONSTANT_2D = 47;
     private static final double NORM_CONSTANT_3D = 103;
 
-    private static final long DEFAULT_SEED = 0;
     //Gradients for 2D. They approximate the directions to the
     //vertices of an octagon from the center.
-    private static byte[] gradients2D = new byte[]{
+    private static final byte[] gradients2D = new byte[]{
             5, 2, 2, 5,
             -5, 2, -2, 5,
             5, -2, 2, -5,
@@ -39,7 +38,7 @@ public class OpenSimplexNoise extends Noise {
     //vertices of a rhombicuboctahedron from the center, skewed so
     //that the triangular and square facets can be inscribed inside
     //circles of the same radius.
-    private static byte[] gradients3D = new byte[]{
+    private static final byte[] gradients3D = new byte[]{
             -11, 4, 4, -4, 11, 4, -4, 4, 11,
             11, 4, 4, 4, 11, 4, 4, 4, 11,
             -11, -4, 4, -4, -11, 4, -4, -4, 11,
@@ -49,24 +48,9 @@ public class OpenSimplexNoise extends Noise {
             -11, -4, -4, -4, -11, -4, -4, -4, -11,
             11, -4, -4, 4, -11, -4, 4, -4, -11,
     };
-    private short[] perm;
-    private short[] permGradIndex3D;
-    private long seed = -1L;
-
-    public OpenSimplexNoise() {
-        this(DEFAULT_SEED);
-    }
-
-//    public OpenSimplexNoise(short[] perm) {
-//        super(seed);
-//        this.perm = perm;
-//        permGradIndex3D = new short[256];
-//
-//        for (int i = 0; i < 256; i++) {
-//            //Since 3D has 24 gradients, simple bitmask won't work, so precompute modulo array.
-//            permGradIndex3D[i] = (short) ((perm[i] % (gradients3D.length / 3)) * 3);
-//        }
-//    }
+    private final short[] perm;
+    private final short[] permGradIndex3D;
+    private final long seed;
 
     //Initializes the class using a permutation array generated from a 64-bit seed.
     //Generates a proper permutation (i.e. doesn't merely perform N successive pair swaps on a base array)

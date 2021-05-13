@@ -2,6 +2,7 @@ package supercoder79.simplexterrain.mixin.antibad;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ServerWorldAccess;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.LakeFeature;
@@ -17,7 +18,7 @@ import java.util.Random;
 @Mixin(LakeFeature.class)
 public class MixinLakeFeature {
     @Inject(method = "generate", at = @At("HEAD"), cancellable = true)
-    public void noLakesPls(ServerWorldAccess access, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos, SingleStateFeatureConfig singleStateFeatureConfig, CallbackInfoReturnable<Boolean> cir) {
-        if (SimplexTerrain.CONFIG.deleteLakes) cir.setReturnValue(false);
+    public void noLakesPls(StructureWorldAccess structureWorldAccess, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos, SingleStateFeatureConfig singleStateFeatureConfig, CallbackInfoReturnable<Boolean> cir) {
+        if (SimplexTerrain.CONFIG.deleteLakes && SimplexTerrain.isSimplexEnabled) cir.setReturnValue(false);
     }
 }

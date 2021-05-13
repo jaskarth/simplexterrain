@@ -2,8 +2,10 @@ package supercoder79.simplexterrain.world.biomelayers;
 
 import java.util.function.LongFunction;
 
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.ScaleLayer;
-import net.minecraft.world.biome.layer.SmoothenShorelineLayer;
+import net.minecraft.world.biome.layer.SmoothLayer;
 import net.minecraft.world.biome.layer.type.ParentedLayer;
 import net.minecraft.world.biome.layer.util.CachingLayerContext;
 import net.minecraft.world.biome.layer.util.CachingLayerSampler;
@@ -14,7 +16,7 @@ import net.minecraft.world.biome.source.BiomeLayerSampler;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.world.biomelayers.layers.*;
 
-public class LandBiomeLayers {
+public class SimplexBiomeLayers {
 	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> repeat(long l, ParentedLayer parentedLayer, LayerFactory<T> layerFactory, int i, LongFunction<C> longFunction) {
 		LayerFactory<T> result = layerFactory;
 
@@ -25,59 +27,51 @@ public class LandBiomeLayers {
 		return result;
 	}
 
-	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T>[] stackFactories(long worldSeed, LongFunction<C> contextProvider) {
+	private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T>[] stackFactories(Registry<Biome> biomes, long worldSeed, LongFunction<C> contextProvider) {
 		LayerFactory<T> climateLayer = new SimplexClimateLayer(worldSeed).create(contextProvider.apply(1L));
 
 		//lowlands (y67 - y90)
-		LayerFactory<T> lowlandsBiomeLayer = LowlandsBiomePassLayer.INSTANCE.create(contextProvider.apply(100L), climateLayer);
+		LayerFactory<T> lowlandsBiomeLayer = new LowlandsBiomeLayer(biomes).create(contextProvider.apply(100L), climateLayer);
 		lowlandsBiomeLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000), lowlandsBiomeLayer);
 		lowlandsBiomeLayer = repeat(1000L, ScaleLayer.NORMAL, lowlandsBiomeLayer, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
-		lowlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(20L), lowlandsBiomeLayer);
-		lowlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25L), lowlandsBiomeLayer);
-
-//		lowlandsBiomeLayer = PutBiomesOutOfTheirMiseryLayer.INSTANCE.create(contextProvider.apply(1), lowlandsBiomeLayer);
+		lowlandsBiomeLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(20), lowlandsBiomeLayer);
+		lowlandsBiomeLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(25), lowlandsBiomeLayer);
 
 		//midlands (y91-y140)
-		LayerFactory<T> midlandsBiomeLayer = MidlandsBiomePassLayer.INSTANCE.create(contextProvider.apply(100L), climateLayer);
+		LayerFactory<T> midlandsBiomeLayer = new MidlandsBiomeLayer(biomes).create(contextProvider.apply(100L), climateLayer);
 		midlandsBiomeLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000), midlandsBiomeLayer);
 		midlandsBiomeLayer = repeat(1000L, ScaleLayer.NORMAL, midlandsBiomeLayer, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
-		midlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(20), midlandsBiomeLayer);
-		midlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25), midlandsBiomeLayer);
-
-//		midlandsBiomeLayer = PutBiomesOutOfTheirMiseryLayer.INSTANCE.create(contextProvider.apply(1), midlandsBiomeLayer);
+		midlandsBiomeLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(20), midlandsBiomeLayer);
+		midlandsBiomeLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(25), midlandsBiomeLayer);
 
 		//highlands (y141-y190)
-		LayerFactory<T> highlandsBiomeLayer = HighlandsBiomePassLayer.INSTANCE.create(contextProvider.apply(100L), climateLayer);
+		LayerFactory<T> highlandsBiomeLayer = new HighlandsBiomeLayer(biomes).create(contextProvider.apply(100L), climateLayer);
 		highlandsBiomeLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000), highlandsBiomeLayer);
 		highlandsBiomeLayer = repeat(1000L, ScaleLayer.NORMAL, highlandsBiomeLayer, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
-		highlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(20), highlandsBiomeLayer);
-		highlandsBiomeLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25), highlandsBiomeLayer);
-
-//		highlandsBiomeLayer = PutBiomesOutOfTheirMiseryLayer.INSTANCE.create(contextProvider.apply(1), highlandsBiomeLayer);
+		highlandsBiomeLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(20), highlandsBiomeLayer);
+		highlandsBiomeLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(25), highlandsBiomeLayer);
 
 		//mountain peaks (y191+)
-		LayerFactory<T> mountainPeaksBiomePassLayer = MountainPeaksBiomePassLayer.INSTANCE.create(contextProvider.apply(100L), climateLayer);
+		LayerFactory<T> mountainPeaksBiomePassLayer = new MountainPeaksBiomeLayer(biomes).create(contextProvider.apply(100L), climateLayer);
 		mountainPeaksBiomePassLayer = ReplaceBiomesLayer.INSTANCE.create(contextProvider.apply(2000), mountainPeaksBiomePassLayer);
 		mountainPeaksBiomePassLayer = repeat(1000L, ScaleLayer.NORMAL, mountainPeaksBiomePassLayer, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
-		mountainPeaksBiomePassLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(20), mountainPeaksBiomePassLayer);
-		mountainPeaksBiomePassLayer = SmoothenShorelineLayer.INSTANCE.create(contextProvider.apply(25), mountainPeaksBiomePassLayer);
-
-//		mountainPeaksBiomePassLayer = PutBiomesOutOfTheirMiseryLayer.INSTANCE.create(contextProvider.apply(1), mountainPeaksBiomePassLayer);
+		mountainPeaksBiomePassLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(20), mountainPeaksBiomePassLayer);
+		mountainPeaksBiomePassLayer = SmoothLayer.INSTANCE.create(contextProvider.apply(25), mountainPeaksBiomePassLayer);
 		
-		LayerFactory<T> shoreSampler = ClimateTransformerLayer.SHORES.create(contextProvider.apply(0), climateLayer);
+		LayerFactory<T> shoreSampler = ClimateTransformerLayer.shore(biomes).create(contextProvider.apply(0), climateLayer);
 		shoreSampler = repeat(1000L, ScaleLayer.NORMAL, shoreSampler, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
 		
-		LayerFactory<T> oceanSampler = ClimateTransformerLayer.OCEAN.create(contextProvider.apply(0), climateLayer);
+		LayerFactory<T> oceanSampler = ClimateTransformerLayer.ocean(biomes).create(contextProvider.apply(0), climateLayer);
 		oceanSampler = repeat(1000L, ScaleLayer.NORMAL, oceanSampler, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
 
-		LayerFactory<T> deepOceanSampler = ClimateTransformerLayer.DEEP_OCEAN.create(contextProvider.apply(0), climateLayer);
+		LayerFactory<T> deepOceanSampler = ClimateTransformerLayer.deepOcean(biomes).create(contextProvider.apply(0), climateLayer);
 		deepOceanSampler = repeat(1000L, ScaleLayer.NORMAL, deepOceanSampler, SimplexTerrain.CONFIG.biomeScaleAmount, contextProvider);
 
 		return new LayerFactory[]{lowlandsBiomeLayer, midlandsBiomeLayer, highlandsBiomeLayer, mountainPeaksBiomePassLayer, shoreSampler, oceanSampler, deepOceanSampler};
 	}
 
-	public static BiomeLayerSampler[] build(long l) {
-		LayerFactory<CachingLayerSampler>[] arr = stackFactories(l, (salt) -> new CachingLayerContext(5, l, salt));
+	public static BiomeLayerSampler[] build(Registry<Biome> biomes, long l) {
+		LayerFactory<CachingLayerSampler>[] arr = stackFactories(biomes, l, (salt) -> new CachingLayerContext(5, l, salt));
 		return new BiomeLayerSampler[]{
 				new BiomeLayerSampler(arr[0]),
 				new BiomeLayerSampler(arr[1]),

@@ -4,87 +4,67 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
-import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.noise.gradient.SimplexStyleNoise;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class SimplexNetherGeneration {
-    public static Map<Biome, Double> biomeToExpansivenessMap = new HashMap<>();
 
-    private static SimplexStyleNoise noise;
-    private static SimplexStyleNoise noise2;
-    private static SimplexStyleNoise lowerResolution;
-    private static SimplexStyleNoise higherResolution;
-    private static SimplexStyleNoise vertical;
-    private static SimplexStyleNoise threshold;
+    private static SimplexStyleNoise mainNoise;
+    private static SimplexStyleNoise detailsNoise;
     
     public static void init(long seed) {
-        noise = new SimplexStyleNoise(seed + 12);
-        noise2 = new SimplexStyleNoise(seed + 20);
-        lowerResolution = new SimplexStyleNoise(seed + 21);
-        higherResolution = new SimplexStyleNoise(seed - 21);
-        vertical = new SimplexStyleNoise(seed + 22);
-        threshold = new SimplexStyleNoise(seed - 20);
+        mainNoise = new SimplexStyleNoise(seed + 12);
+        detailsNoise = new SimplexStyleNoise(seed + 20);
     }
     
     public static void generate(WorldAccess world, Chunk chunk, BiomeSource biomeSource, int seaLevel) {
         //TODO: threading
 
-        BlockPos.Mutable posMutable = new BlockPos.Mutable();
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
 
         for (int x = 0; x < 16; x++) {
-            posMutable.setX(x);
+            mutable.setX(x);
 
             for (int z = 0; z < 16; z++) {
-                posMutable.setZ(z);
+                mutable.setZ(z);
 
-                double expansiveness = 0;
+                double depth = 0;
+                double scale = 0;
 
                 for (int x1 = -1; x1 <= 1; x1++) {
                     for (int z1 = -1; z1 <= 1; z1++) {
-                        expansiveness += biomeToExpansivenessMap.getOrDefault(
-                                biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), 32, (chunk.getPos().z*16) + (z + z1)), 1.0);
+                        Biome biome = biomeSource.getBiomeForNoiseGen((chunk.getPos().x*16) + (x + x1), 32, (chunk.getPos().z*16) + (z + z1));
+
+                        depth += biome.getDepth();
+                        scale += biome.getScale();
                     }
                 }
 
-                expansiveness /= 9;
+                depth /= 9;
+                scale /= 9;
 
                 for (int y = 0; y < 127; y++) {
-                    posMutable.setY(y);
-                    if (getNoiseAt(expansiveness, (chunk.getPos().x*16) + x, y, (chunk.getPos().z*16) + z) > getThreshold((chunk.getPos().x*16) + x, y, (chunk.getPos().z*16) + z)) {
-                        chunk.setBlockState(posMutable, Blocks.NETHERRACK.getDefaultState(), false);
+                    mutable.setY(y);
+                    if (getNoiseAt(depth, scale, (chunk.getPos().x*16) + x, y, (chunk.getPos().z*16) + z) > 0) {
+                        chunk.setBlockState(mutable, Blocks.NETHERRACK.getDefaultState(), false);
                     } else if (y < seaLevel) {
-                        chunk.setBlockState(posMutable, Blocks.LAVA.getDefaultState(), false);
+                        chunk.setBlockState(mutable, Blocks.LAVA.getDefaultState(), false);
                     }
                 }
             }
         }
     }
 
-    private static double getNoiseAt(double expansiveness, int x, int y, int z) {
+    private static double getNoiseAt(double depth, double scale, int x, int y, int z) {
+        double noise = mainNoise.sample(x / 80.0, y / 60.0, z / 80.0) * (1 + depth);
+        noise += detailsNoise.sample(x / 24.0, y / 18.0, z / 24.0) * 0.125;
 
-        double scale = SimplexTerrain.CONFIG.mainNetherScale;
-        double scaleLow = scale / 2;
-        double scaleHigh = scale * 2;
+        noise /= (1 - scale);
 
-        double baseline = noise.sample(x / scale, y / scaleLow, z / scale);
-        double addition = noise2.sample(x / scale, y / scaleLow, z / scale);
-        double addition2 = lowerResolution.sample(x / scaleLow, y / scale / 1.5, z / scaleLow);
-        double addition3 = higherResolution.sample(x / scaleHigh, y / scale, z / scaleHigh);
-        double verticalNoise = vertical.sample(x / scale, y / scale / 10, z / scale);
-        baseline += (15 / (float)y); //lower bound
-        baseline += (-15 / ((float)(y - 130))); //upper bound
-        return (baseline*0.55) + (addition*0.3*expansiveness) + (addition2*0.25*expansiveness) + (addition3*0.175*expansiveness) + (verticalNoise*0.1*expansiveness);
-    }
+        noise += Math.max((22.0 / y) - 1, 0); // lower bound
+        noise += Math.max((-22.0 / (y - 130)) - 1, 0); // upper bound
 
-    private static double getThreshold(int x, int y, int z) {
-        double scale = SimplexTerrain.CONFIG.netherThresholdScale;
-
-        return SimplexTerrain.CONFIG.netherThresholdBase + (threshold.sample(x / scale, y / scale / 2, z / scale) * SimplexTerrain.CONFIG.netherThresholdAmplitude);
+        return noise;
     }
 }

@@ -48,6 +48,7 @@ public class NoiseMath {
 
     //Utilities
 
+    // \frac{256}{e^{\frac{7}{3}-\frac{x}{64}}+1}
     public static double sigmoid(double val) {
         return 256 / (Math.exp(7 / 3f - val / 64) + 1);
     }
