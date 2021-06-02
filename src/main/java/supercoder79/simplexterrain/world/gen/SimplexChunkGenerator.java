@@ -8,14 +8,18 @@ import java.util.stream.IntStream;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.structure.JigsawJunction;
+import net.minecraft.structure.PoolStructurePiece;
+import net.minecraft.structure.StructurePiece;
+import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.util.Util;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.noise.NoiseSampler;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.world.ChunkRegion;
@@ -33,6 +37,7 @@ import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
+import net.minecraft.world.gen.feature.StructureFeature;
 import supercoder79.simplexterrain.SimplexTerrain;
 import supercoder79.simplexterrain.api.BackingBiomeSource;
 import supercoder79.simplexterrain.api.Heightmap;
@@ -44,7 +49,6 @@ import supercoder79.simplexterrain.noise.NoiseMath;
 import supercoder79.simplexterrain.world.BiomeData;
 import supercoder79.simplexterrain.world.blend.CachingBlender;
 import supercoder79.simplexterrain.world.blend.LinkedBiomeWeightMap;
-import supercoder79.simplexterrain.world.blend.ScatteredBiomeBlender;
 import supercoder79.simplexterrain.world.noisetype.*;
 
 
@@ -174,8 +178,15 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 	@Override
 	public void populateNoise(WorldAccess world, StructureAccessor accessor, Chunk chunk) {
+		ObjectList<StructurePiece> pieces = new ObjectArrayList(10);
+		ObjectList<JigsawJunction> junctions = new ObjectArrayList(32);
+		findStructures(chunk, accessor, pieces, junctions);
+
 		BlockPos.Mutable pos = new BlockPos.Mutable();
 		int[] requestedVals = getHeightsInChunk(chunk.getPos()); // attempt to retrieve the values from the cache
+
+		int chunkStartX = chunk.getPos().getStartX();
+		int chunkStartZ = chunk.getPos().getStartZ();
 
 		for (int x = 0; x < 16; ++x) {
 			pos.setX(x);
@@ -185,22 +196,86 @@ public class SimplexChunkGenerator extends ChunkGenerator implements Heightmap {
 
 				int height = requestedVals[(x * 16) + z];
 
-				for (int y = 0; y < height; ++y) {
-					pos.setY(y);
-					chunk.setBlockState(pos, Blocks.STONE.getDefaultState(), false);
+				// TODO: needs to be refactored to double instead of int
+				for (StructurePiece piece : pieces) {
+					BlockBox box = piece.getBoundingBox();
+					if (box.intersectsXZ(chunkStartX + x, chunkStartZ + z, chunkStartX + x, chunkStartZ + z)) {
+						height = box.minY;
+					} else if (box.intersectsXZ(chunkStartX + x - 8, chunkStartZ + z - 8, chunkStartX + x + 8, chunkStartZ + z + 8)) {
+						double dx = Math.max(0, Math.max(box.minX - (chunkStartX + x), (chunkStartX + x) - box.maxX)) / 8.0;
+						double dz = Math.max(0, Math.max(box.minZ - (chunkStartZ + z), (chunkStartZ + z) - box.maxZ)) / 8.0;
+						double rad = dx * dx + dz * dz;
+
+						double falloff = rad >= 1 ? 0 : (1 - rad) * (1 - rad);
+
+						height = (int) MathHelper.lerp(falloff, height, box.minY);
+					}
 				}
 
-                // water placement
-                for (int y = 0; y < getSeaLevel(); y++) {
-                    pos.setY(y);
-                    if (chunk.getBlockState(pos).isAir()) {
-                        chunk.setBlockState(pos, Blocks.WATER.getDefaultState(), false);
-                    }
-                }
+				int genHeight = Math.max(getSeaLevel(), height);
+				for (int y = 0; y < genHeight; ++y) {
+					pos.setY(y);
+					if (y > height) {
+						chunk.setBlockState(pos, Blocks.WATER.getDefaultState(), false);
+					} else {
+						chunk.setBlockState(pos, Blocks.STONE.getDefaultState(), false);
+					}
+
+				}
 			}
 		}
 
 		noisePostProcesors.forEach(postProcessor -> postProcessor.process(world, new ChunkRandom(), chunk.getPos().x, chunk.getPos().z, this));
+	}
+
+	private void findStructures(Chunk chunk, StructureAccessor accessor, ObjectList<StructurePiece> pieces, ObjectList<JigsawJunction> junctions) {
+		ChunkPos chunkPos = chunk.getPos();
+		int i = chunkPos.x;
+		int j = chunkPos.z;
+		int k = ChunkSectionPos.getBlockCoord(i);
+		int l = ChunkSectionPos.getBlockCoord(j);
+		Iterator var11 = StructureFeature.JIGSAW_STRUCTURES.iterator();
+
+		while(var11.hasNext()) {
+			StructureFeature<?> structureFeature = (StructureFeature)var11.next();
+			accessor.getStructuresWithChildren(ChunkSectionPos.from(chunkPos, 0), structureFeature).forEach((start) -> {
+				Iterator var6 = start.getChildren().iterator();
+
+				while(true) {
+					while(true) {
+						StructurePiece structurePiece;
+						do {
+							if (!var6.hasNext()) {
+								return;
+							}
+
+							structurePiece = (StructurePiece)var6.next();
+						} while(!structurePiece.intersectsChunk(chunkPos, 12));
+
+						if (structurePiece instanceof PoolStructurePiece) {
+							PoolStructurePiece poolStructurePiece = (PoolStructurePiece)structurePiece;
+							StructurePool.Projection projection = poolStructurePiece.getPoolElement().getProjection();
+							if (projection == StructurePool.Projection.RIGID) {
+								pieces.add(poolStructurePiece);
+							}
+
+							Iterator var10 = poolStructurePiece.getJunctions().iterator();
+
+							while(var10.hasNext()) {
+								JigsawJunction jigsawJunction = (JigsawJunction)var10.next();
+								int kx = jigsawJunction.getSourceX();
+								int lx = jigsawJunction.getSourceZ();
+								if (kx > k - 12 && lx > l - 12 && kx < k + 15 + 12 && lx < l + 15 + 12) {
+									junctions.add(jigsawJunction);
+								}
+							}
+						} else {
+							pieces.add(structurePiece);
+						}
+					}
+				}
+			});
+		}
 	}
 
     @Override
