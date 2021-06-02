@@ -26,16 +26,14 @@ Y63 - Y66: Beach
 From Y67 onwards, biome generation is split into 4 different regions based on height (Y67 - Y90, Y91 - Y140, Y141 - Y190, Y191 - Y256). The biomes can vary, but generally become colder as the height increases. If you would like to increase the amount of cold/hot biomes, a config for that will be available in 0.5.0 (unreleased at time of writing).  If you want to change the heights that these regions start at, take a look at the config!
 
 ## Images  
-Standard simplex noise:  
-![](https://cdn.discordapp.com/attachments/608088354042544139/649758293291696139/unknown.png "")
-Perlin noise:  
-![](https://cdn.discordapp.com/attachments/546812532070023186/652293723962736650/unknown.png)
-Cubic noise:  
-![](https://cdn.discordapp.com/attachments/651607986661228599/652270019014819850/unknown.png)
-Worley noise:  
-![](https://cdn.discordapp.com/attachments/546812532070023186/652303110051594250/unknown.png)
-Foothills noise preset: (Learn more about presets [on the GitHub wiki](https://github.com/SuperCoder7979/simplexterrain/wiki/Config-Presets/_edit))  
-![](https://cdn.discordapp.com/attachments/651608793880461322/652333136335732756/unknown.png)
+Savanna generation:
+![](https://cdn.discordapp.com/attachments/651608036774903844/768957064947957861/unknown.png "")
+Ridged mountain:  
+![](https://cdn.discordapp.com/attachments/688776607049187444/721351747247013898/unknown.png)
+River generation:  
+![](https://cdn.discordapp.com/attachments/688776607049187444/771041441786101811/unknown.png)
+Snowy biome:  
+![](https://cdn.discordapp.com/attachments/688776607049187444/771041498086899782/unknown.png)
 
 ## Credits
 
